@@ -1,0 +1,749 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MealVend App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout concept: a phone frame centred on desktop with a short walkthrough beside it; full-bleed app on a real phone.
+   Identity: fresh green-teal brand, per-week accent colour, yellow starburst for deals. */
+:root{--bg:#eef3f0;--surface:#ffffff;--ink:#13211b;--mut:#566860;--line:#dbe4df;--soft:#e2eee8;--ok:#1b8f63;--warn:#b3261e;--ac:#14a58a;--deal:#ffc400;--deal-ink:#6b1700;--stage:#d9e3de;--bezel:#0b0f0d;
+--acd:color-mix(in srgb,var(--ac) 78%,#000);--sbh:38px;
+--display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;--body:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1613;--surface:#17231e;--ink:#edf3ef;--mut:#9bb0a6;--line:#2a3b34;--soft:#1e2f28;--ok:#3cc790;--warn:#ff8a80;--stage:#080d0b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1613;--surface:#17231e;--ink:#edf3ef;--mut:#9bb0a6;--line:#2a3b34;--soft:#1e2f28;--ok:#3cc790;--warn:#ff8a80;--stage:#080d0b;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--stage);color:var(--ink);font:15px/1.4 var(--body);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--acd);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);margin:0;letter-spacing:-.01em;text-wrap:balance}
+p{margin:0}
+del{color:var(--mut);font-weight:500}
+#stage{height:100%;display:flex;align-items:center;justify-content:center;gap:56px;padding:16px}
+#cap{max-width:290px;display:flex;flex-direction:column;gap:12px}
+#cap h1{font-size:2.2rem;line-height:1}
+#cap ol{margin:4px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px;color:var(--mut)}
+#cap .fine{font-size:.8rem;color:var(--mut)}
+.eyebrow{color:var(--mut);font-size:.8rem}
+#phone{position:relative;width:390px;height:min(844px,100%);background:var(--bezel);border-radius:48px;padding:10px;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+#screen{position:relative;width:100%;height:100%;background:var(--bg);border-radius:38px;overflow:hidden;display:flex;flex-direction:column;isolation:isolate}
+.sb{height:var(--sbh);flex:none;display:flex;justify-content:space-between;align-items:center;padding:6px 26px 0;font-size:.8rem;font-weight:700}
+#view{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+#view::-webkit-scrollbar{display:none}
+.tab{display:none;padding:10px 16px 28px}.tab.on{display:block}
+#tabs{flex:none;display:flex;background:var(--surface);border-top:1px solid var(--line);padding:6px 6px 8px}
+#tabs button{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;color:var(--mut);font-size:.7rem;font-weight:700;position:relative}
+#tabs button.on{color:var(--acd)}
+#tabs svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+#tabs i{position:absolute;top:2px;left:calc(50% + 6px);min-width:16px;height:16px;border-radius:8px;background:var(--acd);color:#fff;font:700 .65rem/16px var(--body);text-align:center;font-style:normal}
+@media (max-width:560px){#stage{padding:0;display:block}#cap{display:none}#phone{width:100%;height:100%;border-radius:0;padding:0;box-shadow:none}#screen{border-radius:0}.sb{display:none}:root{--sbh:0px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* shared pieces */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px}
+.btn{display:block;width:100%;border:0;border-radius:14px;background:var(--acd);color:#fff;font-weight:700;padding:14px;text-align:center}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn.sm{width:auto;padding:10px 16px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--soft);border-radius:99px;padding:3px 10px;font-size:.78rem;border:0;color:var(--ink)}
+.chip.on{background:var(--acd);color:#fff}
+.pill{background:var(--soft);border-radius:99px;padding:2px 10px;font-size:.74rem;font-weight:700}
+.sec{display:flex;align-items:baseline;justify-content:space-between;margin:20px 0 8px}
+.sec h2{font-size:1.15rem}.sec small{color:var(--mut)}
+.meta{font-size:.85rem;color:var(--mut);font-variant-numeric:tabular-nums}
+.tp{font-weight:700;font-variant-numeric:tabular-nums}
+.star{position:absolute;top:-8px;right:-6px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;background:var(--deal);color:var(--deal-ink);font-weight:800;font-size:.68rem;clip-path:var(--burst);transform:rotate(12deg);pointer-events:none;z-index:2}
+.hscroll{display:flex;gap:10px;overflow-x:auto;margin:0 -16px;padding:10px 16px 6px;scrollbar-width:none}
+.hscroll::-webkit-scrollbar{display:none}
+
+/* dish */
+.bowl{width:100%;aspect-ratio:1;border-radius:50%;background:#d9d2c3;padding:7%;container-type:inline-size;box-shadow:inset 0 -6px 0 rgba(0,0,0,.12),0 6px 14px rgba(0,0,0,.18);flex:none}
+.bowl.v-plate{background:#f6f6f1;box-shadow:inset 0 0 0 5px #e4e4dc,0 6px 14px rgba(0,0,0,.18)}
+.bowl.v-board{background:#b98d57;border-radius:20%;box-shadow:inset 0 -5px 0 rgba(0,0,0,.18),0 6px 14px rgba(0,0,0,.18)}
+.food{position:relative;width:100%;height:100%;border-radius:50%;overflow:hidden;box-shadow:inset 0 3px 8px rgba(0,0,0,.25)}
+.v-board .food{border-radius:14%}
+.food span{position:absolute;transform:translate(-50%,-50%);line-height:1;filter:drop-shadow(0 2px 2px rgba(0,0,0,.3))}
+.sauce{position:absolute;inset:22%;border-radius:50%;border:3px dashed;opacity:.75;transform:rotate(20deg)}
+
+/* home */
+.hh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.hh h1{font-size:1.8rem;line-height:1.1}
+.avatar{width:44px;height:44px;border-radius:50%;border:0;background:var(--acd);color:#fff;font:800 1.05rem var(--display)}
+.wbn{display:flex;gap:12px;align-items:center;width:100%;text-align:left;border:0;border-radius:18px;padding:14px;background:linear-gradient(120deg,var(--acd),color-mix(in srgb,var(--ac) 50%,#000));color:#fff}
+.wbn .wbe{font-size:2.4rem;line-height:1}.wbn small{display:block;opacity:.85;font-size:.76rem}.wbn b{font:800 1.25rem var(--display)}.wbn span.s{display:block;font-size:.8rem;opacity:.9}
+.pred{margin-top:14px;display:flex;flex-direction:column;gap:12px}
+.pred .top{display:flex;justify-content:space-between;align-items:center}
+.pred .mid{display:flex;gap:14px;align-items:center}
+.pred .mid .bowl{width:104px}
+.pred .chips{gap:5px}
+.pred .btns{display:grid;grid-template-columns:1fr auto;gap:8px}
+.dealc{position:relative;flex:none;width:112px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;padding:14px 8px 10px;background:var(--surface);border:1px solid var(--line);border-radius:16px}
+.dealc .te{font-size:2rem;line-height:1.2}.dealc b{font-size:.82rem}
+.rec{display:flex;gap:12px;align-items:center;width:100%;text-align:left;margin-bottom:8px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 12px}
+.rec .re{font-size:1.8rem}.rec b{display:block}.rec small{color:var(--mut)}
+.rec .rm{margin-left:auto;text-align:right;font-weight:700;font-size:.85rem;white-space:nowrap}
+.wk{display:flex;gap:8px}
+.wkc{flex:none;width:118px;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:10px}
+.wkc.on{border-color:var(--acd)}.wkc .we{font-size:1.6rem}.wkc b{display:block;font-size:.88rem}.wkc small{color:var(--mut);font-size:.72rem}
+
+/* menu */
+.tab h1.t{font-size:1.8rem;margin-bottom:10px}
+.ask{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.ask label{font-weight:700}
+.ask .row{display:flex;gap:8px}
+.ask input{flex:1;min-width:0;font:inherit;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink)}
+.opt{display:flex;gap:12px;align-items:center;padding-top:10px;border-top:1px dashed var(--line)}
+.opt .bowl{width:76px}.opt>div:last-child{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.opt .btns{display:flex;gap:8px}
+.build{margin-top:6px;display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;border:2px dashed var(--line);background:transparent;border-radius:18px;padding:16px;font-weight:700}
+
+/* builder */
+.sheet{position:absolute;inset:0;z-index:20;background:var(--bg);display:flex;flex-direction:column;transform:translateY(100%);visibility:hidden;transition:transform .32s cubic-bezier(.2,.8,.2,1),visibility 0s .32s}
+.sheet.on{transform:none;visibility:visible;transition:transform .32s cubic-bezier(.2,.8,.2,1)}
+.bh{display:flex;align-items:center;gap:10px;padding:calc(var(--sbh) + 6px) 12px 10px;background:var(--surface);border-bottom:1px solid var(--line)}
+.bh b{font:800 1.1rem var(--display);display:block}.bh small{color:var(--mut)}
+.ib{width:40px;height:40px;border-radius:50%;border:0;background:var(--soft);display:flex;align-items:center;justify-content:center}
+.ib svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.bbody{flex:1;min-height:0;overflow-y:auto;padding:4px 16px 20px;scrollbar-width:none}
+.stp{margin:18px 0 8px;font-size:1.05rem}.stp small{font:400 .8rem var(--body);color:var(--mut);margin-left:8px}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tile{position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;padding:10px 4px 8px;background:var(--surface);border:2px solid var(--line);border-radius:14px;text-align:center}
+.tile .te{font-size:1.8rem;line-height:1.2}.tile b{font-size:.76rem;line-height:1.15;min-height:2.3em;display:flex;align-items:center}
+.tile .tp{font-size:.82rem}.tile .tm{font-size:.64rem;color:var(--mut)}
+.tile.sel{border-color:var(--acd);background:color-mix(in srgb,var(--ac) 12%,var(--surface))}
+.tile.sel::after{content:"";position:absolute;top:6px;left:6px;width:16px;height:16px;border-radius:50%;background:var(--acd) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.7 2.7L12 5.5' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% no-repeat}
+.bf{flex:none;display:grid;grid-template-columns:auto 1fr;gap:6px 12px;align-items:center;padding:10px 16px 12px;background:var(--surface);border-top:1px solid var(--line)}
+.bf .bowl{width:58px}
+.bf .bi{min-width:0}.bf .bp{display:flex;gap:8px;align-items:baseline}.bf .bp b{font:800 1.3rem var(--display)}.bf .bp span{color:var(--ok);font-size:.8rem;font-weight:700}
+.bf .bm{font-size:.76rem;color:var(--mut);font-variant-numeric:tabular-nums}
+.gbar{height:6px;border-radius:3px;background:var(--line);margin-top:5px;overflow:hidden}.gbar s{display:block;height:100%;background:var(--ok);transition:width .25s,background .25s;text-decoration:none}
+.bf .btn{grid-column:1/-1}
+
+/* modal */
+#scrim{position:absolute;inset:0;z-index:30;background:rgba(5,10,8,.55);opacity:0;visibility:hidden;transition:opacity .25s,visibility 0s .25s}
+#scrim.on{opacity:1;visibility:visible;transition:opacity .25s}
+#modal{position:absolute;left:0;right:0;bottom:0;z-index:31;background:var(--bg);border-radius:26px 26px 0 0;padding:10px 18px calc(18px + 4px);max-height:90%;overflow-y:auto;display:flex;flex-direction:column;gap:12px;transform:translateY(105%);visibility:hidden;transition:transform .3s cubic-bezier(.2,.8,.2,1),visibility 0s .3s}
+#modal.on{transform:none;visibility:visible;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.grab{width:40px;height:5px;border-radius:3px;background:var(--line);align-self:center}
+#modal h2{font-size:1.35rem}
+.sumrow{display:flex;gap:14px;align-items:center}.sumrow .bowl{width:76px}
+.lines{list-style:none;margin:0;padding:0}.lines li{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px dashed var(--line);font-size:.9rem}.lines li span:last-child{font-variant-numeric:tabular-nums;white-space:nowrap}
+.lines .sv{color:var(--ok);font-weight:700}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--soft);padding:4px;border-radius:14px}
+.seg button{border:0;background:transparent;border-radius:10px;padding:9px;font-weight:700}.seg button.on{background:var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.lab{font-weight:700;font-size:.85rem;margin-bottom:6px}
+.camp{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.camp button{border:2px solid var(--line);background:var(--surface);border-radius:12px;padding:10px;font-weight:700;text-align:left}.camp button.on{border-color:var(--acd);background:color-mix(in srgb,var(--ac) 12%,var(--surface))}
+.qrbox{width:210px;max-width:70%;align-self:center;background:#fff;border-radius:16px;padding:8px;box-shadow:0 2px 10px rgba(0,0,0,.2)}.qrbox svg{display:block;width:100%;height:auto}
+.code{text-align:center;font:800 2.3rem var(--display);letter-spacing:.3em;padding-left:.3em}
+.sub{color:var(--mut);text-align:center}
+.mrows{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.mrows li{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.mrows .st{width:22px;height:22px;display:flex;align-items:center;justify-content:center;color:var(--ok);font-weight:800}
+.spin{width:16px;height:16px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--acd);animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* orders + profile */
+.ord{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.ord .oh{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.ord .oh b{font-family:var(--display)}
+.ord .oi{font-size:.84rem;color:var(--mut)}
+.ord .btns{display:flex;gap:8px}
+.empty{color:var(--mut);text-align:center;padding:18px 10px;border:1.5px dashed var(--line);border-radius:16px}
+.pf{display:flex;gap:14px;align-items:center;margin-bottom:6px}.pf .avatar{width:64px;height:64px;font-size:1.6rem}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.grid3 div{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 6px;text-align:center;font-size:.72rem;color:var(--mut)}.grid3 b{display:block;font:800 1.3rem var(--display);color:var(--ink)}
+.set{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.step{display:flex;align-items:center;gap:8px}.step button{width:32px;height:32px;border-radius:50%;border:0;background:var(--soft);font-weight:800;font-size:1.1rem;line-height:1}.step b{min-width:64px;text-align:center;font-variant-numeric:tabular-nums}
+.sw{width:50px;height:30px;border-radius:15px;border:0;background:var(--line);position:relative;padding:0}.sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s}.sw.on{background:var(--acd)}.sw.on::after{transform:translateX(20px)}
+
+/* notification + toast + login */
+#notif{position:absolute;left:10px;right:10px;top:calc(var(--sbh) + 6px);z-index:40;display:flex;gap:10px;align-items:flex-start;text-align:left;border:0;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(12px);border-radius:18px;padding:12px;box-shadow:0 8px 28px rgba(0,0,0,.28);transform:translateY(calc(-100% - 70px));opacity:0;visibility:hidden;transition:transform .4s cubic-bezier(.2,.8,.2,1),opacity .3s,visibility 0s .4s}
+#notif.on{transform:none;opacity:1;visibility:visible;transition:transform .4s cubic-bezier(.2,.8,.2,1),opacity .3s}
+#notif .ni{flex:none;width:36px;height:36px;border-radius:10px;background:var(--acd);color:#fff;font:800 .8rem var(--display);display:flex;align-items:center;justify-content:center}
+#notif b{display:flex;justify-content:space-between;font-size:.85rem}#notif b small{color:var(--mut);font-weight:400}#notif span.t{display:block;font-size:.84rem;color:var(--ink)}
+#toast{position:absolute;left:50%;bottom:92px;transform:translate(-50%,10px);z-index:60;background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:99px;font-size:.85rem;opacity:0;pointer-events:none;transition:.2s;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+#login{position:absolute;inset:0;z-index:50;display:flex;flex-direction:column;justify-content:space-between;gap:18px;padding:calc(var(--sbh) + 24px) 22px 26px;background:radial-gradient(120% 70% at 50% 0%,#14806a,#0a3b30 62%,#06241d);color:#fff;transition:opacity .4s,visibility 0s .4s}
+#login.off{opacity:0;visibility:hidden;pointer-events:none}
+#login .logo{font:800 1.5rem var(--display)}#login .logo span{color:#ffd23f}
+#login h1{font-size:2.5rem;line-height:1.02;margin:10px 0 10px}
+#login p.l{opacity:.85;max-width:30ch}
+.bags{display:flex;gap:10px;justify-content:center;align-items:flex-end;margin:6px 0}
+.bg1{width:62px;height:78px;border-radius:3px 3px 8px 8px;background:linear-gradient(#dcbd8e,#c49a63);position:relative;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;font-size:1.7rem;box-shadow:0 8px 18px rgba(0,0,0,.35)}
+.bg1::before{content:"";position:absolute;left:0;right:0;top:0;height:12px;background:#b78c55;border-bottom:2px dashed #8d6a3b;border-radius:3px 3px 0 0}
+.bg1:nth-child(2){height:92px;transform:rotate(-3deg)}.bg1:nth-child(3){transform:rotate(3deg)}
+.pch{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.pch button{border:1.5px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:99px;padding:5px 12px;font-size:.78rem}.pch button.on{background:#fff;color:#0a3b30;font-weight:700}
+#nfc{position:relative;width:100%;border:0;border-radius:16px;background:#ffd23f;color:#3a2a00;font-weight:800;padding:16px;overflow:hidden}
+#nfc.read::after{content:"";position:absolute;left:50%;top:50%;width:20px;height:20px;border-radius:50%;background:rgba(58,42,0,.25);transform:translate(-50%,-50%);animation:rip 1s ease-out forwards}
+@keyframes rip{to{width:520px;height:520px;opacity:0}}
+</style>
+<div id="stage">
+<aside id="cap">
+<p class="eyebrow">Prototype</p>
+<h1>MealVend app</h1>
+<p>The student app for the vending machines. Tap through it on the phone.</p>
+<ol><li>Tap the student card to sign in.</li><li>Check the AI prediction and the deals.</li><li>Confirm the meal or build your own.</li><li>Choose the campus.</li><li>Show the pass and simulate the pick-up.</li></ol>
+<p class="fine">All students, orders and stock in this demo are simulated.</p>
+</aside>
+<div id="phone"><div id="screen">
+<div class="sb"><span id="clock">9:41</span><span>MealVend</span></div>
+<main id="view">
+<section id="t-home" class="tab on"></section>
+<section id="t-menu" class="tab"></section>
+<section id="t-orders" class="tab"></section>
+<section id="t-profile" class="tab"></section>
+</main>
+<nav id="tabs" aria-label="Main">
+<button data-act="tab" data-t="home" class="on"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
+<button data-act="tab" data-t="menu"><svg viewBox="0 0 24 24"><path d="M7 3v8M4 3v5a3 3 0 0 0 6 0V3M7 11v10M17 3c-2 2-3 5-3 8h3v10"/></svg>Menu</button>
+<button data-act="tab" data-t="orders"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"/></svg>Orders<i id="obadge" hidden>0</i></button>
+<button data-act="tab" data-t="profile"><svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0"/></svg>Profile</button>
+</nav>
+<button id="notif" data-act="notiftap" aria-live="polite"></button>
+<div id="builder" class="sheet" aria-label="Meal builder"></div>
+<div id="scrim" data-act="mclose"></div>
+<div id="modal" role="dialog" aria-modal="true"></div>
+<div id="toast" role="status"></div>
+<div id="login">
+<div><div class="logo">Meal<span>Vend</span></div><h1>Lunch, ready before you are hungry.</h1><p class="l">Pre-order from the machine on your campus. The app learns what you like.</p></div>
+<div><div class="bags"><div class="bg1">🍣</div><div class="bg1">🥑</div><div class="bg1">🍚</div></div></div>
+<div><p style="font-size:.8rem;opacity:.8">Demo profile</p><div class="pch" id="pch"></div><button id="nfc" data-act="login" style="margin-top:16px">Tap your student card</button></div>
+</div>
+</div></div>
+</div>
+
+<script>
+const BRAND='MealVend';
+const X=(n,e,pr,g,k,p,c,f,col='')=>[n,e,pr,col,g,k,p,c,f];
+const ST=(t,n,min,max,kind,items)=>({t,n,min,max,kind,items});
+//DATA
+const THEMES=[
+{id:'poke',name:'Poké bowls',emoji:'🥢',noun:'bowl',plural:'bowls',vessel:'bowl',ac:'#ff5a5f',ac2:'#14a58a',steps:[
+ST('Base','choose 1',1,1,'base',[X('Sushi rice','🍚',2.5,150,195,3.5,43,.4,'#f6f1e4'),X('Brown rice','🍘',2.5,150,165,3.5,34,1.3,'#cdb28a'),X('Quinoa','🌾',3,130,155,5.7,27.5,2.5,'#e3cf9a'),X('Salad mix','🥬',2,80,14,1,2,.2,'#8fc46a'),X('Noodles','🍜',2.5,150,205,7,40,2,'#f0d48a'),X('Soba noodles','🍜',3,150,150,6,31,.5,'#b59a78'),X('Cauliflower rice','🥦',2.5,120,30,2.5,5,.3,'#eee6cf'),X('Black rice','🍙',3,150,190,4,40,1.5,'#5a4a6a')]),
+ST('Protein','choose 1–2',1,2,'main',[X('Salmon','🐟',4,80,165,16,0,10.5),X('Tuna','🍣',4.5,80,90,19.5,0,1),X('Chicken','🍗',3.5,90,148,28,0,3.2),X('Tofu','🧈',3,90,70,8,1.5,4),X('Shrimp','🍤',4,70,70,16,.3,.7),X('Egg','🥚',1.5,55,80,7,.5,5.5),X('Smoked salmon','🐠',4.5,70,130,14,0,8),X('Teriyaki beef','🥩',4.5,80,190,20,3,11),X('Octopus','🐙',4.5,80,70,14,2,1),X('Crab sticks','🦀',3,70,60,7,7,.3)]),
+ST('Toppings','up to 4',0,4,'ring',[X('Avocado','🥑',1.2,40,64,.8,3.4,6),X('Edamame','🫛',.8,30,36,3.3,2.7,1.5),X('Cucumber','🥒',.5,30,5,.2,1.1,0),X('Carrot','🥕',.5,25,10,.2,2.4,.1),X('Corn','🌽',.5,25,22,.8,4.7,.3),X('Mango','🥭',1,35,21,.3,5.2,.1),X('Pineapple','🍍',1,35,18,.2,4.6,0),X('Tomato','🍅',.5,30,5,.3,1.2,.1),X('Radish','🔴',.5,25,4,.2,.8,0),X('Seaweed salad','🌿',1.2,30,30,1,5,.5),X('Pickled ginger','🫚',.5,10,8,0,1.8,0),X('Red cabbage','🟣',.5,25,8,.3,1.8,0),X('Mushrooms','🍄',.8,30,7,.9,.9,.1),X('Bell pepper','🫑',.6,30,9,.3,1.8,.1),X('Kimchi','🥬',.8,30,8,.6,1.3,.1)]),
+ST('Sauce','choose 1',0,1,'sauce',[X('Soy','🍶',.3,15,8,1.2,.8,0,'#4a2c1a'),X('Spicy mayo','🌶️',.5,15,70,.2,1,7.5,'#f08a4b'),X('Sesame','🥄',.5,15,55,.5,2,5,'#d9b77e'),X('Teriyaki','🍯',.4,15,20,.8,4,0,'#6b3a1e'),X('Ponzu','🍋',.4,15,8,.5,1.5,0,'#c98a3b'),X('Wasabi mayo','🟢',.5,15,65,.2,1,7,'#a8c66c'),X('Sweet chili','🌶️',.4,15,30,0,7,0,'#e0524a'),X('Peanut sauce','🥜',.6,15,75,3,3,6,'#b88a52')]),
+ST('Crunch','up to 2',0,2,'small',[X('Fried onion','🧅',.5,8,45,.5,3.5,3.3),X('Peanuts','🥜',.5,10,58,2.5,1.6,5),X('Sesame seeds','⚪',.3,4,24,.8,.9,2.1),X('Wonton crisps','🥠',.5,8,40,.8,5,2),X('Crispy garlic','🧄',.4,5,30,.8,3,1.6),X('Cashews','🌰',.6,10,58,1.9,3,4.7),X('Nori flakes','🟩',.3,2,5,.5,.3,.1)])
+],presets:[
+['Salmon Classic','🍣','Fresh & balanced',['Sushi rice','Salmon','Avocado','Edamame','Cucumber','Soy','Sesame seeds']],
+['Spicy Tuna','🌶️','For heat lovers',['Brown rice','Tuna','Mango','Carrot','Cucumber','Spicy mayo','Fried onion']],
+['Chicken Teriyaki','🍗','Student favourite',['Noodles','Chicken','Corn','Carrot','Tomato','Teriyaki','Peanuts']],
+['Veggie Tofu','🌱','100% plant-based',['Quinoa','Tofu','Avocado','Edamame','Cucumber','Carrot','Sesame','Sesame seeds']],
+['Tropical Shrimp','🍤','Sweet & fresh',['Sushi rice','Shrimp','Mango','Pineapple','Avocado','Spicy mayo','Peanuts']],
+['Protein Power','💪','After the gym',['Salad mix','Chicken','Egg','Avocado','Edamame','Tomato','Soy']],
+['Surf & Turf','🥩','Rich & savoury',['Black rice','Teriyaki beef','Shrimp','Mushrooms','Kimchi','Edamame','Peanut sauce','Crispy garlic']]]},
+
+{id:'pasta',name:'Pasta',emoji:'🍝',noun:'pasta',plural:'pasta dishes',vessel:'plate',ac:'#e4572e',ac2:'#5a8f29',steps:[
+ST('Pasta','choose 1',1,1,'base',[X('Spaghetti','🍝',2.5,180,285,10.5,56,1.7,'#f1d98f'),X('Penne','🍝',2.5,180,285,10.5,56,1.7,'#ecd08a'),X('Fusilli','🌀',2.5,180,285,10.5,56,1.7,'#efd48f'),X('Tagliatelle','🍝',3,180,290,11,56,2.5,'#f3dc9c'),X('Whole wheat penne','🌾',3,180,225,9.5,45,1.8,'#cdb27a'),X('Gluten-free fusilli','🌽',3.2,180,260,5,56,1.5,'#f2e08a'),X('Gnocchi','🥔',3.2,180,270,6,56,1,'#f0e2bf'),X('Ravioli ricotta','🥟',4,180,300,12,40,9,'#f4e6b4'),X('Zucchini noodles','🥒',3,150,25,2,4,.3,'#b9d37a')]),
+ST('Sauce','choose 1',1,1,'sauce',[X('Tomato sauce','🍅',1.2,100,60,2,10,1.5,'#d6452e'),X('Bolognese','🥩',2.8,120,160,9,8,10,'#a8442a'),X('Carbonara','🥚',2.5,100,190,7,8,14,'#f1d88c'),X('Pesto','🌿',1.8,50,190,4,3,18,'#6fa34a'),X('Cream mushroom','🍄',2,100,130,3,6,10,'#cfb28a'),X('Arrabbiata','🌶️',1.5,100,55,2,9,1.5,'#c4301f'),X('Four cheese','🧀',2.5,100,220,9,6,18,'#f1c95a'),X('Alfredo','🥛',2.2,100,200,4,6,18,'#f4e6b8'),X('Olive oil & garlic','🧄',1.2,20,177,0,0,20,'#d9c46a'),X('Pumpkin cream','🎃',2,100,90,2,10,5,'#e8a14a')]),
+ST('Protein','up to 2',0,2,'main',[X('Grilled chicken','🍗',3.5,90,148,28,0,3.2),X('Bacon bits','🥓',2,30,130,9,.3,10),X('Meatballs','🧆',3.5,90,190,11,8,12),X('Shrimp','🍤',4,70,70,16,.3,.7),X('Italian sausage','🌭',3,80,240,11,2,21),X('Tuna','🐟',2.5,60,70,15,0,1),X('Ham','🍖',2,40,55,8,.5,2.3),X('Mozzarella pearls','🧀',2,50,140,9,1,11),X('Tofu cubes','🧈',3,90,70,8,1.5,4),X('Smoked salmon','🍣',4.5,60,110,12,0,7),X('Chickpeas','🫘',1.2,60,98,5.3,16.4,1.6)]),
+ST('Vegetables','up to 4',0,4,'ring',[X('Cherry tomatoes','🍅',.8,40,8,.4,1.6,.1),X('Mushrooms','🍄',.8,40,9,1.2,1.2,.1),X('Spinach','🥬',.6,30,7,.9,1.1,.1),X('Zucchini','🥒',.6,40,7,.5,1.3,.1),X('Bell pepper','🫑',.7,40,10,.4,2.4,.1),X('Broccoli','🥦',.8,50,17,1.4,3.5,.2),X('Olives','🫒',.7,20,23,.2,.8,2.1),X('Sun-dried tomatoes','🔴',1,20,52,2.8,8.9,.6),X('Artichoke','🥬',1.2,40,25,1.8,4.4,.1),X('Aubergine','🍆',.8,50,40,.6,3,3),X('Red onion','🧅',.4,20,8,.2,1.9,0),X('Rocket','🌿',.6,15,4,.4,.6,.1),X('Peas','🟢',.6,40,32,2,5,.2)]),
+ST('Toppings','up to 2',0,2,'small',[X('Parmesan','🧀',.6,10,40,3.6,.3,2.8),X('Pine nuts','🌰',1,8,54,1.1,1,5.5),X('Fresh basil','🌿',.3,3,1,.1,.1,0),X('Chili flakes','🌶️',.2,1,3,.1,.5,.1),X('Garlic breadcrumbs','🍞',.4,10,40,1.2,7,.8),X('Olive oil drizzle','🫒',.3,8,71,0,0,8)])
+],presets:[
+['Bolognese','🍝','The classic',['Spaghetti','Bolognese','Parmesan','Fresh basil']],
+['Carbonara','🥓','Creamy & rich',['Spaghetti','Carbonara','Bacon bits','Parmesan']],
+['Pesto Chicken','🌿','Fresh & green',['Fusilli','Pesto','Grilled chicken','Cherry tomatoes','Rocket','Pine nuts']],
+['Arrabbiata Veggie','🌶️','Spicy & vegan',['Penne','Arrabbiata','Zucchini','Bell pepper','Olives','Chili flakes']],
+['Creamy Mushroom','🍄','Comfort food',['Tagliatelle','Cream mushroom','Mushrooms','Spinach','Parmesan']],
+['Seafood Pasta','🍤','Light & fresh',['Spaghetti','Olive oil & garlic','Shrimp','Cherry tomatoes','Fresh basil','Chili flakes']]]},
+
+{id:'sandwich',name:'Sandwiches',emoji:'🥪',noun:'sandwich',plural:'sandwiches',vessel:'board',ac:'#c9731a',ac2:'#8a5a2b',steps:[
+ST('Bread','choose 1',1,1,'base',[X('White baguette','🥖',2,100,270,9,55,1,'#e8c98f'),X('Wholegrain bread','🍞',2,80,190,8,33,2.4,'#b98f5a'),X('Sourdough','🍞',2.5,90,230,9,45,1.2,'#d1a869'),X('Ciabatta','🥖',2.5,90,235,8,45,2.5,'#e5c58a'),X('Brioche bun','🍔',2.5,70,230,6,36,6.5,'#e0a85a'),X('Wrap tortilla','🌯',2,60,190,5,32,4.5,'#f0d9a8'),X('Bagel','🥯',2.5,90,245,9,48,1.5,'#d4a261'),X('Pita','🫓',2,60,165,5.5,33,.7,'#ecd3a0'),X('Gluten-free bread','🍞',2.8,80,190,3,35,3.5,'#cfb98a')]),
+ST('Filling','choose 1–2',1,2,'main',[X('Ham','🍖',1.5,40,55,8,.5,2.3),X('Turkey','🦃',1.8,40,45,9,.5,.8),X('Chicken breast','🍗',2,50,82,15,0,2),X('Tuna mayo','🐟',2,50,110,9,.5,8),X('Salami','🥓',1.8,25,95,5.5,.3,8),X('Roast beef','🥩',2.5,50,80,11,.5,4),X('Bacon','🥓',1.8,25,110,7,0,9),X('Egg salad','🥚',1.8,60,110,5,1,9),X('Falafel','🧆',2.2,60,160,6.5,15,9),X('Grilled halloumi','🧀',2.5,50,160,11,1,12.5),X('Brie','🧀',2,30,100,6,0,8.4),X('Mozzarella','🧀',1.8,40,100,7,1,8),X('Smoked salmon','🍣',3.5,40,70,8,0,4),X('Hummus','🫘',1,40,66,3,5,4.5),X('Crispy chicken','🍗',2.5,70,190,13,11,10),X('Cheddar','🧀',1.2,30,120,7.5,.1,10)]),
+ST('Fresh & veggies','up to 5',0,5,'ring',[X('Lettuce','🥬',.3,15,2,.2,.4,0),X('Tomato','🍅',.4,30,5,.3,1.2,.1),X('Cucumber','🥒',.3,25,4,.2,.9,0),X('Red onion','🧅',.2,15,6,.2,1.4,0),X('Pickles','🥒',.3,20,3,.1,.6,0),X('Avocado','🥑',1,40,64,.8,3.4,6),X('Roasted peppers','🫑',.6,30,10,.3,2.3,.1),X('Grilled zucchini','🥒',.6,40,10,.6,1.5,.2),X('Rocket','🌿',.4,10,3,.3,.4,.1),X('Carrot','🥕',.3,25,10,.2,2.4,.1),X('Spinach','🥬',.3,15,3,.4,.5,0),X('Jalapeños','🌶️',.4,15,4,.2,.7,.1),X('Olives','🫒',.5,15,17,.1,.6,1.6),X('Coleslaw','🥗',.6,40,60,.5,4,4.5),X('Sun-dried tomatoes','🔴',.8,15,39,2,6.7,.5),X('Caramelised onions','🧅',.5,25,40,.4,8,.8)]),
+ST('Sauce','choose 1',0,1,'sauce',[X('Mayo','🥚',.3,15,100,.2,.2,11,'#f6ecc9'),X('Mustard','🟡',.3,10,7,.5,.6,.4,'#d8b62e'),X('Ketchup','🍅',.3,15,15,.2,3.5,0,'#c4392b'),X('Pesto','🌿',.5,15,57,1.2,.9,5.5,'#6fa34a'),X('Garlic sauce','🧄',.4,15,70,.3,1,7.5,'#f4ecd0'),X('Harissa','🌶️',.5,10,20,.6,1.5,1.5,'#c8402a'),X('Honey mustard','🍯',.4,15,40,.3,6,1.5,'#e0b53e'),X('BBQ sauce','🍖',.4,15,25,.2,6,.1,'#6b3320'),X('Tzatziki','🥛',.5,20,25,1,2,1.5,'#eaf0d8')]),
+ST('Extras','up to 2',0,2,'small',[X('Fried egg','🍳',1.2,50,90,6,.4,7),X('Extra cheese slice','🧀',.8,20,70,4.5,0,5.7),X('Crispy onions','🧅',.4,8,45,.5,3.5,3.3),X('Crisps','🥔',.8,25,130,1.6,13,8)])
+],presets:[
+['Ham & Cheese','🥪','The everyday classic',['White baguette','Ham','Cheddar','Lettuce','Tomato','Mayo']],
+['Chicken Club','🍗','Hearty',['Sourdough','Chicken breast','Bacon','Lettuce','Tomato','Avocado','Mayo']],
+['Tuna Crunch','🐟','Fresh & crunchy',['Ciabatta','Tuna mayo','Cucumber','Red onion','Lettuce','Mustard']],
+['Falafel Pita','🧆','Veggie favourite',['Pita','Falafel','Cucumber','Tomato','Red onion','Lettuce','Tzatziki']],
+['Italian','🍅','Salami & pesto',['Ciabatta','Salami','Mozzarella','Tomato','Rocket','Pesto']],
+['Halloumi Veggie','🧀','Warm & melty',['Wholegrain bread','Grilled halloumi','Roasted peppers','Rocket','Tomato','Harissa']]]},
+
+{id:'mexican',name:'Burritos & Tacos',emoji:'🌯',noun:'burrito',plural:'burritos & tacos',vessel:'board',ac:'#c0392b',ac2:'#2e8b57',steps:[
+ST('Base','choose 1',1,1,'base',[X('Flour tortilla','🌯',2,70,220,6,36,5,'#f0d9a8'),X('Corn tacos','🌮',2.5,75,165,4,32,2,'#f2d36b'),X('Nacho chips','🌽',2.5,50,245,3.5,32,12,'#f0c85a'),X('Salad base','🥬',2,80,14,1,2,.2,'#8fc46a'),X('Quesadilla wrap','🫓',2.8,90,300,12,30,14,'#e8cf94')]),
+ST('Filling','choose 1–2',1,2,'main',[X('Chicken fajita','🍗',3.5,90,150,25,3,4),X('Pulled pork','🐖',3.8,90,200,20,4,11),X('Beef mince','🥩',3.8,90,220,19,3,15),X('Chorizo','🌭',3.2,40,150,8,1,12),X('Grilled shrimp','🍤',4,70,70,16,.3,.7),X('Black bean veggie','🫘',2,100,130,8,23,.5),X('Spiced tofu','🧈',3,90,80,9,2,4.5),X('Crispy fish','🐟',3.8,90,190,12,12,10),X('Fried egg','🍳',1.5,55,100,7,.5,7.5),X('Refried beans','🫘',1.5,80,90,5,13,2)]),
+ST('Fresh & sides','up to 5',0,5,'ring',[X('Mexican rice','🍚',.8,80,105,2,21,1.1),X('Pico de gallo','🍅',.8,40,12,.5,2.5,.1),X('Guacamole','🥑',1.5,40,70,.9,3.5,6.5),X('Corn','🌽',.6,30,26,1,5.6,.4),X('Black beans','🫘',.8,40,52,3.4,9,.2),X('Jalapeños','🌶️',.5,15,4,.2,.7,.1),X('Lettuce','🥬',.3,20,3,.3,.6,0),X('Red onion','🧅',.3,15,6,.2,1.4,0),X('Fajita peppers','🫑',.7,40,12,.4,2.4,.1),X('Grilled onions','🧅',.5,30,15,.4,3.5,.1),X('Pickled red cabbage','🟣',.5,25,8,.3,1.8,0),X('Coriander','🌿',.2,5,1,.1,.1,0),X('Mango salsa','🥭',.9,40,25,.3,6,.1),X('Roasted sweet potato','🍠',.8,50,45,.8,10,.1)]),
+ST('Cheese & cream','up to 2',0,2,'small',[X('Grated cheddar','🧀',.8,20,80,5,.1,6.6),X('Mozzarella','🧀',.8,20,56,4,.4,4),X('Sour cream','🥛',.6,25,50,.8,1,5),X('Feta','🧀',1,20,53,2.8,.8,4.3),X('Cheese sauce','🧀',.9,25,50,2,3,3.5)]),
+ST('Sauce','choose 1',0,1,'sauce',[X('Mild salsa','🍅',.4,30,10,.4,2,0,'#c9452e'),X('Hot salsa','🌶️',.4,30,12,.4,2.2,0,'#a82a1d'),X('Chipotle mayo','🌶️',.5,15,75,.2,1,8,'#c97a46'),X('Lime crema','🍋',.5,20,45,.5,1.5,4.3,'#e8efc2'),X('Smoky BBQ','🍖',.4,15,25,.2,6,.1,'#6b3320'),X('Salsa verde','🟢',.4,30,10,.4,2,0,'#7fae48')])
+],presets:[
+['Chicken Burrito','🌯','Wrapped & filling',['Flour tortilla','Chicken fajita','Mexican rice','Black beans','Pico de gallo','Grated cheddar','Mild salsa']],
+['Beef Tacos','🌮','3 crunchy tacos',['Corn tacos','Beef mince','Lettuce','Pico de gallo','Grated cheddar','Hot salsa']],
+['Veggie Bowl','🥑','Fresh & plant-based',['Salad base','Black bean veggie','Guacamole','Corn','Pico de gallo','Mexican rice','Lime crema']],
+['Loaded Nachos','🧀','To share',['Nacho chips','Pulled pork','Jalapeños','Guacamole','Grated cheddar','Sour cream','Chipotle mayo']],
+['Fish Tacos','🐟','Light & zesty',['Corn tacos','Crispy fish','Pickled red cabbage','Mango salsa','Lime crema']]]},
+
+{id:'wok',name:'Wok & Noodles',emoji:'🥡',noun:'wok box',plural:'wok boxes',vessel:'bowl',ac:'#d6402d',ac2:'#b8860b',steps:[
+ST('Base','choose 1',1,1,'base',[X('Egg noodles','🍜',2.5,180,250,8,48,2.8,'#f0d48a'),X('Rice noodles','🍜',2.5,180,195,2,44,.3,'#efe7d0'),X('Jasmine rice','🍚',2.2,180,235,4.5,52,.4,'#f4eed8'),X('Udon','🍜',3,200,210,5,44,.9,'#efe4cf'),X('Fried rice','🍚',3,180,280,6,45,8,'#e6c875'),X('Glass noodles','🍜',2.8,150,120,.2,30,0,'#e6e6dc'),X('Brown rice','🍘',2.5,180,200,4,42,1.6,'#cdb28a')]),
+ST('Protein','choose 1–2',1,2,'main',[X('Chicken','🍗',3.5,90,148,28,0,3.2),X('Beef strips','🥩',4,80,190,20,2,11),X('Tofu','🧈',3,90,70,8,1.5,4),X('Shrimp','🍤',4,70,70,16,.3,.7),X('Pork belly','🐖',3.8,70,250,12,1,22),X('Fried egg','🍳',1.5,55,100,7,.5,7.5),X('Tempeh','🫘',3.2,80,155,15,8,8),X('Squid','🦑',4,70,65,12,2,1),X('Chicken katsu','🍗',4,90,230,15,14,12)]),
+ST('Vegetables','up to 5',0,5,'ring',[X('Broccoli','🥦',.8,50,17,1.4,3.5,.2),X('Bok choy','🥬',.7,50,7,.8,1,.1),X('Carrot','🥕',.5,40,16,.4,3.8,.1),X('Bell pepper','🫑',.6,40,10,.4,2.4,.1),X('Mushrooms','🍄',.8,40,9,1.2,1.2,.1),X('Bean sprouts','🌱',.5,40,12,1.2,2.4,.1),X('Spring onion','🧅',.3,10,3,.2,.7,0),X('Baby corn','🌽',.7,40,12,1.2,2.4,.1),X('Snow peas','🫛',.8,40,17,1.2,2.8,.1),X('Zucchini','🥒',.6,40,7,.5,1.3,.1),X('Water chestnuts','🌰',.8,30,17,.3,4,0),X('Cabbage','🥬',.4,40,10,.5,2.3,.1),X('Pineapple','🍍',.8,35,17,.2,4.3,0),X('Edamame','🫛',.8,30,36,3.3,2.7,1.5)]),
+ST('Sauce','choose 1',1,1,'sauce',[X('Soy-ginger','🍶',.4,30,22,1.5,3.5,0,'#4a2c1a'),X('Teriyaki','🍯',.4,30,40,1.5,8,0,'#6b3a1e'),X('Sweet & sour','🍍',.5,40,50,.2,12,0,'#e8662f'),X('Black bean sauce','🫘',.5,30,35,2,5,1,'#3a2418'),X('Satay peanut','🥜',.7,30,150,6,6,12,'#b88a52'),X('Sambal chili','🌶️',.5,20,25,.5,5,.5,'#c4301f'),X('Hoisin','🍯',.5,25,55,1,12,.5,'#4d2a1c'),X('Garlic oyster','🧄',.5,30,30,1,6,.1,'#5a3722'),X('Coconut curry','🥥',.8,60,100,1.5,5,8,'#e6b23c')]),
+ST('Toppings','up to 2',0,2,'small',[X('Crispy onion','🧅',.5,8,45,.5,3.5,3.3),X('Peanuts','🥜',.5,10,58,2.5,1.6,5),X('Sesame seeds','⚪',.3,4,24,.8,.9,2.1),X('Fresh coriander','🌿',.2,3,1,.1,.1,0),X('Lime wedge','🍋',.2,20,5,.1,1.6,0),X('Chili flakes','🌶️',.2,1,3,.1,.5,.1),X('Cashews','🌰',.6,10,58,1.9,3,4.7)])
+],presets:[
+['Chicken Teriyaki','🍗','Sweet & savoury',['Egg noodles','Chicken','Broccoli','Carrot','Bell pepper','Teriyaki','Sesame seeds']],
+['Beef & Black Bean','🥩','Bold flavours',['Jasmine rice','Beef strips','Bell pepper','Snow peas','Mushrooms','Black bean sauce','Spring onion']],
+['Veggie Satay','🥜','Plant-based',['Rice noodles','Tofu','Bok choy','Carrot','Bean sprouts','Satay peanut','Peanuts']],
+['Sweet & Sour Shrimp','🍤','Tangy favourite',['Jasmine rice','Shrimp','Pineapple','Bell pepper','Baby corn','Sweet & sour','Lime wedge']],
+['Pad Thai Style','🍜','Street food classic',['Rice noodles','Shrimp','Bean sprouts','Spring onion','Satay peanut','Peanuts','Lime wedge']],
+['Katsu Curry','🍛','Comfort food',['Jasmine rice','Chicken katsu','Carrot','Broccoli','Coconut curry']]]},
+
+{id:'salad',name:'Salads',emoji:'🥗',noun:'salad',plural:'salads',vessel:'bowl',ac:'#2f9e5b',ac2:'#e07a1f',steps:[
+ST('Base','choose 1',1,1,'base',[X('Mixed greens','🥬',2,80,16,1.3,2.4,.3,'#8fc46a'),X('Romaine','🥬',2,80,14,1,2.5,.2,'#9ccf72'),X('Baby spinach','🥬',2,80,18,2.3,2.9,.3,'#5f9b4a'),X('Rocket base','🌿',2.2,60,15,1.5,2.2,.4,'#7fb35a'),X('Kale','🥬',2.2,70,30,2.5,5,.6,'#4f8a3f'),X('Couscous','🌾',2.5,120,135,4.6,28,.2,'#ecd9a0'),X('Quinoa','🌾',3,130,155,5.7,27.5,2.5,'#e3cf9a'),X('Bulgur','🌾',2.5,120,100,3.8,22,.3,'#cdb07a')]),
+ST('Protein','up to 2',0,2,'main',[X('Grilled chicken','🍗',3.5,90,148,28,0,3.2),X('Tuna','🐟',3,70,80,17,0,1),X('Falafel','🧆',2.8,60,160,6.5,15,9),X('Halloumi','🧀',3,50,160,11,1,12.5),X('Boiled egg','🥚',1.5,55,80,7,.5,5.5),X('Smoked salmon','🍣',4.5,60,110,12,0,7),X('Crispy tofu','🧈',3,90,150,10,5,10),X('Chickpeas','🫘',1.5,80,131,7,22,2),X('Goat cheese','🧀',2.5,40,105,6,.5,8.5),X('Feta','🧀',2,40,105,5.6,1.6,8.5),X('Bacon bits','🥓',2,20,90,6,.2,7),X('Prawns','🍤',4,70,70,16,.3,.7)]),
+ST('Veggies & fruit','choose 1–5',1,5,'ring',[X('Tomato','🍅',.5,40,8,.4,1.6,.1),X('Cucumber','🥒',.5,40,6,.3,1.5,0),X('Avocado','🥑',1.2,40,64,.8,3.4,6),X('Carrot','🥕',.5,30,12,.3,2.9,.1),X('Beetroot','🔴',.7,40,17,.6,3.9,.1),X('Red onion','🧅',.3,20,8,.2,1.9,0),X('Sweetcorn','🌽',.5,30,26,1,5.6,.4),X('Bell pepper','🫑',.6,40,12,.4,2.4,.1),X('Olives','🫒',.7,20,23,.2,.8,2.1),X('Radish','🔴',.4,25,4,.2,.8,0),X('Roasted pumpkin','🎃',.8,50,13,.5,3,.1),X('Mushrooms','🍄',.8,40,9,1.2,1.2,.1),X('Broccoli','🥦',.8,50,17,1.4,3.5,.2),X('Apple','🍎',.6,40,21,.1,5.5,.1),X('Pomegranate','🍒',1,25,20,.4,4.2,.3),X('Orange segments','🍊',.6,40,19,.4,4.7,.1),X('Strawberries','🍓',.8,40,13,.3,3,.1),X('Grapes','🍇',.7,40,28,.3,7,.1)]),
+ST('Crunch','up to 2',0,2,'small',[X('Croutons','🍞',.5,15,65,2,11,1.5),X('Walnuts','🌰',.8,12,78,1.8,1.6,7.8),X('Sunflower seeds','🌻',.4,10,58,2,2,5),X('Parmesan shavings','🧀',.6,10,40,3.6,.3,2.8),X('Almonds','🥜',.8,12,70,2.5,2.6,6),X('Pumpkin seeds','🎃',.5,10,56,3,1,4.9),X('Dried cranberries','🍒',.5,10,33,0,8,.1)]),
+ST('Dressing','choose 1',0,1,'sauce',[X('Caesar','🥚',.4,30,150,2.5,2,15,'#f1ead0'),X('Balsamic vinaigrette','🍇',.3,20,45,0,4,3,'#4a2c3a'),X('Olive oil & lemon','🍋',.3,15,100,0,0,11,'#e5d56b'),X('Honey mustard','🍯',.4,20,70,.4,8,4,'#e0b53e'),X('Yogurt-herb','🥛',.4,30,30,2,3,1,'#eef3dc'),X('Tahini','🥜',.5,20,120,3.5,3,10.8,'#d3b78a'),X('Ranch','🥣',.4,30,130,1,2,14,'#f5f3e6'),X('Pesto vinaigrette','🌿',.4,20,80,1,1,8,'#6fa34a')])
+],presets:[
+['Caesar Chicken','🥗','The classic',['Romaine','Grilled chicken','Boiled egg','Tomato','Croutons','Parmesan shavings','Caesar']],
+['Greek Feta','🫒','Mediterranean',['Romaine','Feta','Tomato','Cucumber','Red onion','Olives','Olive oil & lemon']],
+['Salmon Avocado','🥑','Omega-3 boost',['Baby spinach','Smoked salmon','Avocado','Cucumber','Radish','Sunflower seeds','Yogurt-herb']],
+['Veggie Power','🌱','100% plant-based',['Kale','Chickpeas','Avocado','Beetroot','Carrot','Pumpkin seeds','Tahini']],
+['Goat Cheese & Walnut','🧀','Sweet & savoury',['Mixed greens','Goat cheese','Apple','Beetroot','Walnuts','Balsamic vinaigrette']]]}
+];
+
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const fmt=n=>'€'+n.toFixed(2),sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let W=0,T=THEMES[0],aiWho='0';
+const SLOTS=['Kantienberg','Stroopkai','Leuwstraat','Watersportbaan'];
+const tmr=()=>{const d=new Date();d.setDate(d.getDate()+1);return d};
+const ymd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const empty=()=>T.steps.map(()=>[]);
+const flat=s=>T.steps.flatMap((st,k)=>s[k].map(i=>({k,i,it:st.items[i]})));
+const total=s=>flat(s).reduce((a,x)=>a+pz(x.it),0);
+const mac=s=>flat(s).reduce((a,x)=>a.map((v,j)=>v+x.it[4+j]),[0,0,0,0,0]);
+const ok=s=>T.steps.every((st,k)=>s[k].length>=st.min);
+const mk=names=>{const s=empty();names.forEach(n=>T.steps.forEach((st,k)=>{const i=st.items.findIndex(y=>y[0]==n);if(i>-1)s[k].push(i)}));return s};
+const kc=m=>Math.round(m[1]);
+
+const R=(a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296})(2026);
+const gauss=()=>Math.sqrt(-2*Math.log(R()+1e-9))*Math.cos(6.283185*R());
+const mean=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=R()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const DOWN=['Monday','Tuesday','Wednesday','Thursday','Friday'];
+const tmDow=()=>{const g=tmr().getDay();return g>=1&&g<=5?g-1:0};
+const ARCH=[
+{k:'Sporty 💪',likes:['Chicken','Grilled chicken','Chicken breast','Chicken fajita','Egg','Boiled egg','Tuna','Quinoa','Edamame','Avocado','Brown rice','Broccoli','Chickpeas','Salad mix','Baby spinach','Beef strips','Tempeh','Turkey','Whole wheat penne','Soy']},
+{k:'Veggie 🌱',likes:['Tofu','Tofu cubes','Crispy tofu','Falafel','Hummus','Chickpeas','Avocado','Quinoa','Mushrooms','Spinach','Zucchini','Aubergine','Black bean veggie','Spiced tofu','Guacamole','Tahini','Kale','Grilled halloumi','Halloumi','Pesto','Edamame','Tempeh']},
+{k:'Sweet tooth 🍍',likes:['Mango','Pineapple','Teriyaki','Sweet chili','Sweet & sour','Honey mustard','Mango salsa','Apple','Strawberries','Grapes','Orange segments','Corn','Sweetcorn','Roasted sweet potato','Peanuts','Hoisin','Teriyaki beef']},
+{k:'Spice lover 🌶️',likes:['Spicy mayo','Wasabi mayo','Arrabbiata','Chili flakes','Jalapeños','Harissa','Hot salsa','Chipotle mayo','Sambal chili','Kimchi','Italian sausage','Chorizo','Sweet chili']},
+{k:'Classic 🍖',likes:['Ham','Cheddar','Mayo','Tomato sauce','Bolognese','Meatballs','Crisps','Lettuce','Tomato','Ketchup','Bacon','Salami','Spaghetti','Grated cheddar','Parmesan','Carbonara','Sushi rice','Beef mince','Pulled pork']},
+{k:'Seafood 🐟',likes:['Salmon','Smoked salmon','Tuna','Shrimp','Grilled shrimp','Prawns','Octopus','Crab sticks','Seaweed salad','Cucumber','Ponzu','Sushi rice','Olive oil & garlic','Squid','Avocado']}
+];
+ARCH.forEach(a=>a.set=new Set(a.likes));
+const ALLN=[...new Set(THEMES.flatMap(t=>t.steps.flatMap(s=>s.items.map(i=>i[0]))))],NI={};ALLN.forEach((n,i)=>NI[n]=i);
+const NK={};THEMES.forEach(t=>t.steps.forEach(s=>s.items.forEach(i=>NK[i[0]]=s.kind)));
+const itemOf=n=>{for(const st of T.steps){const it=st.items.find(i=>i[0]==n);if(it)return it}return null};
+// ---- synthetic students & order history (8 weeks) ----
+const BASEC=[70,55,40,30],FN=['Emma','Lucas','Mila','Noah','Louise','Liam','Olivia','Adam','Zoë','Arthur','Nina','Jules','Lena','Milan','Sara','Tom','Yara','Finn','Eva','Ravi','Lotte','Sam','Amina','Jonas','Clara','Mehdi','Elise','Victor','Hana','Bram'];
+function genOrder(th,a,fav){
+  const likes=ARCH[a].set;
+  return th.steps.flatMap(st=>{
+    let n;if(st.kind=='base')n=1;else if(st.kind=='main')n=(st.max>1&&R()<.3)?2:1;else if(st.kind=='ring')n=st.max<2?1:1+(R()*Math.min(st.max,3)|0);else if(st.kind=='small')n=R()<.6?1:0;else n=(st.min>0||R()<.8)?1:0;
+    n=Math.max(st.min,Math.min(st.max,n));
+    const pool=st.items.map(it=>({n:it[0],w:1+(likes.has(it[0])?5:0)+(fav.has(it[0])?9:0)+R()*.5})),out=[];
+    while(out.length<n&&pool.length){const tot=pool.reduce((x,y)=>x+y.w,0);let r=R()*tot,i=0;while(i<pool.length-1&&(r-=pool[i].w)>0)i++;out.push(pool[i].n);pool.splice(i,1)}
+    return out});
+}
+const STU=[];
+for(let i=0;i<120;i++){
+  const a=R()*6|0;let r=R()*155,c=0;while(c<3&&(r-=BASEC[c])>0)c++;
+  const days=shuffle([0,1,2,3,4]).slice(0,2+(R()<.5?1:0)).sort(),orders=[],fav=new Set(shuffle(ALLN).slice(0,14));
+  for(let w=0;w<8;w++){const th=THEMES[w%6];days.forEach(d=>{if(R()<.85)orders.push({w,d,th:th.id,names:genOrder(th,a,fav),ag:7-w})})}
+  STU.push({name:FN[i%30]+' '+String.fromCharCode(65+(i/30|0))+'.',arch:a,campus:c,orders});
+}
+const DEMO=[0,1,2,3,4,5].map(a=>{const c=STU.map((s,i)=>i).filter(i=>STU[i].arch==a);const f=c.find(i=>STU[i].orders.filter(o=>o.d==tmDow()).length>=5);return f!=null?f:c[0]}).filter(i=>i!=null);
+aiWho=String(DEMO[0]||0);
+const SH={};THEMES.forEach(t=>{const c={};let n=0;STU.forEach(s=>s.orders.forEach(o=>{if(o.th==t.id){n++;o.names.forEach(x=>c[x]=(c[x]||0)+1)}}));Object.keys(c).forEach(k=>c[k]/=Math.max(1,n));SH[t.id]=c});
+// ---- 1. personal prediction model ----
+function vecOf(orders){const v=new Float32Array(ALLN.length);let tw=0;orders.forEach(o=>{const g=Math.pow(.92,o.ag);tw+=g;o.names.forEach(n=>{if(NI[n]!=null)v[NI[n]]+=g})});if(tw)for(let i=0;i<v.length;i++)v[i]/=tw;return v}
+function cos(a,b){let d=0,x=0,y=0;for(let i=0;i<a.length;i++){d+=a[i]*b[i];x+=a[i]*a[i];y+=b[i]*b[i]}return x&&y?d/Math.sqrt(x*y):0}
+function blendFor(v,self,pool){
+  const sims=[];pool.forEach((p,i)=>{if(i!==self)sims.push([i,cos(v,p)])});sims.sort((a,b)=>b[1]-a[1]);
+  const nb=sims.slice(0,12),cf=new Float32Array(v.length);let sw=0;
+  nb.forEach(([i,s])=>{sw+=s;const p=pool[i];for(let k=0;k<cf.length;k++)cf[k]+=s*p[k]});
+  if(sw)for(let k=0;k<cf.length;k++)cf[k]/=sw;
+  return {cf,bl:v.map((x,k)=>.7*x+.3*cf[k])};
+}
+function typOf(orders){const t={base:0,main:0,ring:0,small:0,sauce:0};if(!orders.length)return{base:1,main:1,ring:2,small:1,sauce:1};orders.forEach(o=>o.names.forEach(n=>{const k=NK[n];if(k)t[k]++}));Object.keys(t).forEach(k=>t[k]/=orders.length);return t}
+function predictNames(bl,th,typ){return th.steps.flatMap(st=>{const n=Math.max(st.min,Math.min(st.max,Math.round(typ[st.kind])));return st.items.map(i=>i[0]).sort((a,b)=>bl[NI[b]]-bl[NI[a]]).slice(0,n)})}
+let _VF,_met;
+const vfull=()=>_VF||(_VF=STU.map(s=>vecOf(s.orders)));
+function metrics(){
+  if(_met)return _met;
+  const VH=STU.map(s=>{const l=s.orders[s.orders.length-1];return vecOf(s.orders.slice(0,-1).map(o=>({...o,ag:o.ag-l.ag})))});
+  const pop={};THEMES.forEach(t=>{const a=new Float32Array(ALLN.length);let n=0;STU.forEach(s=>s.orders.slice(0,-1).forEach(o=>{if(o.th==t.id){n++;o.names.forEach(x=>a[NI[x]]++)}}));pop[t.id]=a.map(v=>v/Math.max(1,n))});
+  let hit=0,base=0,cnt=0;
+  STU.forEach((s,i)=>{if(s.orders.length<6)return;const last=s.orders[s.orders.length-1],hist=s.orders.slice(0,-1),th=THEMES.find(t=>t.id==last.th);
+    const {bl}=blendFor(VH[i],i,VH),ty=typOf(hist),p=predictNames(bl,th,ty),q=predictNames(pop[th.id],th,ty);
+    hit+=last.names.filter(n=>p.includes(n)).length/last.names.length;base+=last.names.filter(n=>q.includes(n)).length/last.names.length;cnt++});
+  return _met={hit:hit/cnt,base:base/cnt,n:cnt};
+}
+
+const THF={poke:1.15,pasta:1.1,sandwich:1,mexican:1.05,wok:.95,salad:.8},DOWF=[.95,1.05,.7,1.1,.8];
+const D=[];
+for(let w=0;w<8;w++){const th=THEMES[w%6].id;for(let d=0;d<5;d++)for(let c=0;c<4;c++){const rain=R()<.3,exam=R()<.2;D.push({w,d,c,th,rain,exam,y:Math.round(BASEC[c]*DOWF[d]*THF[th]*(rain?1.18:1)*(exam?1.15:1)*(1+.03*w)*Math.exp(.07*gauss()))})}}
+function fit(upTo){
+  const rows=D.filter(r=>r.w<upTo),B={},cnt={};
+  rows.forEach(r=>{const k=r.c+'_'+r.d;B[k]=(B[k]||0)+r.y;cnt[k]=(cnt[k]||0)+1});Object.keys(B).forEach(k=>B[k]/=cnt[k]);
+  const rel=rows.map(r=>({r,v:r.y/B[r.c+'_'+r.d]})),ratio=f=>mean(rel.filter(x=>f(x.r)).map(x=>x.v))/(mean(rel.filter(x=>!f(x.r)).map(x=>x.v))||1)||1;
+  const Fr=ratio(r=>r.rain),Fe=ratio(r=>r.exam),Ft={};THEMES.forEach(t=>{const a=rel.filter(x=>x.r.th==t.id).map(x=>x.v);Ft[t.id]=a.length?mean(a):1});
+  const L={};rows.forEach(r=>{const k=r.c+'_'+r.d,adj=r.y/((r.rain?Fr:1)*(r.exam?Fe:1)*Ft[r.th]);L[k]=L[k]==null?adj:.5*adj+.5*L[k]});
+  return {L,Fr,Fe,Ft};
+}
+const pred=(m,c,d,th,rain,exam)=>m.L[c+'_'+d]*(rain?m.Fr:1)*(exam?m.Fe:1)*m.Ft[th];
+let _bt;
+function backtest(){
+  if(_bt)return _bt;
+  const act=[[],[],[],[]],fc=[[],[],[],[]];let e1=0,e2=0,n=0;
+  for(let w=4;w<8;w++){const m=fit(w);D.filter(r=>r.w==w).forEach(r=>{const p=pred(m,r.c,r.d,r.th,r.rain,r.exam),pv=D.find(x=>x.w==w-1&&x.c==r.c&&x.d==r.d).y;e1+=Math.abs(p-r.y)/r.y;e2+=Math.abs(pv-r.y)/r.y;n++;act[r.c].push(r.y);fc[r.c].push(Math.round(p))})}
+  return _bt={act,fc,mape:e1/n,naive:e2/n};
+}
+
+// ---- 4. smart pricing: discounts on surplus stock ----
+(()=>{const pts=[];for(let i=0;i<24;i++){const a=i*Math.PI/12-Math.PI/2,r=i%2?40:50;pts.push((50+r*Math.cos(a)).toFixed(1)+'% '+(50+r*Math.sin(a)).toFixed(1)+'%')}document.documentElement.style.setProperty('--burst','polygon('+pts.join(',')+')')})();
+const STOCKR={},SUG={};let DEALS=null;
+(()=>{
+  const m=fit(8),dow=tmDow();
+  THEMES.forEach(t=>{
+    const sh=SH[t.id]||{},rows=[];
+    t.steps.forEach(st=>st.items.forEach(it=>{
+      const demand=[0,1,2,3].reduce((a,c)=>a+pred(m,c,dow,t.id,false,false),0)*(sh[it[0]]||0);
+      rows.push({n:it[0],e:it[1],demand,stock:Math.max(1,Math.ceil(demand*(.75+1.6*R())))});
+    }));
+    STOCKR[t.id]=rows;SUG[t.id]={};
+    rows.filter(r=>r.stock/Math.max(r.demand,.5)>=1.45&&r.stock-r.demand>=3).sort((a,b)=>(b.stock-b.demand)-(a.stock-a.demand)).slice(0,8).forEach(r=>{const q=r.stock/Math.max(r.demand,.5);SUG[t.id][r.n]=q>=2?50:q>=1.7?30:20});
+  });
+})();
+try{DEALS=JSON.parse(localStorage.getItem('pvd'))}catch(e){}
+if(!DEALS){DEALS={};THEMES.forEach(t=>Object.entries(SUG[t.id]).forEach(([n,p])=>DEALS[t.id+'|'+n]=p))}
+const saveD=()=>{try{localStorage.setItem('pvd',JSON.stringify(DEALS))}catch(e){}};
+const pct=it=>DEALS[T.id+'|'+it[0]]||0;
+const pz=it=>Math.round(it[2]*(1-pct(it)/100)*100)/100;
+const saved=s=>flat(s).reduce((a,x)=>a+x.it[2]-pz(x.it),0);
+
+// ---- 3. natural-language meal builder ----
+const GR={};['meat','fish','shell','egg','dairy','peanut','nuts','gluten','pork','honey','spicy','sweet'].forEach(k=>GR[k]=new Set());
+const addG=(k,a)=>a.forEach(x=>GR[k].add(x));
+addG('pork',['Pork belly','Pulled pork','Bacon','Bacon bits','Ham','Salami','Chorizo','Italian sausage','Carbonara','Bolognese']);
+addG('meat',['Chicken','Teriyaki beef','Grilled chicken','Meatballs','Turkey','Chicken breast','Roast beef','Crispy chicken','Chicken fajita','Beef mince','Beef strips','Chicken katsu',...GR.pork]);
+addG('shell',['Shrimp','Grilled shrimp','Prawns','Crab sticks','Octopus','Squid']);
+addG('fish',['Salmon','Tuna','Smoked salmon','Tuna mayo','Crispy fish',...GR.shell]);
+addG('egg',['Egg','Boiled egg','Egg salad','Fried egg','Carbonara','Mayo','Spicy mayo','Wasabi mayo','Chipotle mayo','Caesar','Egg noodles','Tagliatelle','Ravioli ricotta','Ranch']);
+addG('dairy',['Parmesan','Mozzarella pearls','Four cheese','Alfredo','Cream mushroom','Pumpkin cream','Cheddar','Brie','Mozzarella','Grilled halloumi','Halloumi','Goat cheese','Feta','Grated cheddar','Sour cream','Cheese sauce','Lime crema','Tzatziki','Yogurt-herb','Extra cheese slice','Parmesan shavings','Ravioli ricotta','Carbonara','Brioche bun','Quesadilla wrap','Caesar','Ranch']);
+addG('peanut',['Peanuts','Peanut sauce','Satay peanut']);
+addG('nuts',['Cashews','Pine nuts','Walnuts','Almonds','Pesto','Pesto vinaigrette']);
+addG('gluten',['Noodles','Soba noodles','Spaghetti','Penne','Fusilli','Tagliatelle','Whole wheat penne','Gnocchi','Ravioli ricotta','White baguette','Wholegrain bread','Sourdough','Ciabatta','Brioche bun','Wrap tortilla','Bagel','Pita','Flour tortilla','Quesadilla wrap','Egg noodles','Udon','Couscous','Bulgur','Croutons','Garlic breadcrumbs','Wonton crisps','Soy','Teriyaki','Soy-ginger','Hoisin','Teriyaki beef','Chicken katsu','Crispy chicken','Crispy fish','Meatballs','Italian sausage','Garlic oyster']);
+addG('honey',['Honey mustard']);
+addG('spicy',['Spicy mayo','Wasabi mayo','Arrabbiata','Chili flakes','Jalapeños','Harissa','Hot salsa','Chipotle mayo','Sambal chili','Kimchi','Sweet chili','Chorizo','Italian sausage']);
+addG('sweet',['Mango','Pineapple','Teriyaki','Sweet chili','Sweet & sour','Honey mustard','Hoisin','Mango salsa','Strawberries','Grapes','Apple','Orange segments','Pomegranate','Dried cranberries','Roasted sweet potato','Caramelised onions']);
+const GW={shrimp:['shell'],prawn:['shell'],crab:['shell'],lobster:['shell'],peanut:['peanut'],nut:['peanut','nuts'],shellfish:['shell'],crustacean:['shell'],seafood:['fish','shell'],fish:['fish'],egg:['egg'],dairy:['dairy'],milk:['dairy'],lactose:['dairy'],cheese:['dairy'],meat:['meat'],pork:['pork'],spicy:['spicy'],sweet:['sweet'],gluten:['gluten'],wheat:['gluten'],honey:['honey']};
+const GL={peanut:'peanuts',nuts:'tree nuts',shell:'shellfish',fish:'fish',egg:'egg',dairy:'dairy',meat:'meat',pork:'pork',gluten:'gluten',spicy:'spicy food',sweet:'sweet food',honey:'honey'};
+const STOP=new Set(['free','gluten','sauce','rice','salad','bread','cream','fried','sweet','sour','with','mixed','grilled','crispy','smoked','roasted','baby','black','brown','white','whole','extra','wheat','fresh','dried','pickled','spring','cherry','mild','hot','lime','garlic','oil','mix','wedge','base','slice','pearl','drizzle','shaving','bean','nacho','chip','crisp']);
+const sing=w=>w.replace(/ies$/,'y').replace(/s$/,'');
+const TOK={};ALLN.forEach(n=>TOK[n]=n.toLowerCase().split(/[^a-zà-ÿ']+/).filter(t=>t.length>=3&&!STOP.has(sing(t))).map(sing));
+const THW=[/poke|\bbowl\b/,/pasta|spaghetti|penne|lasagn|carbonara|bolognese/,/sandwich|baguette|\bsub\b|panini/,/burrito|taco|mexican|nacho|quesadilla/,/\bwok\b|stir[- ]?fry|noodle|asian/,/salad|salade/];
+function parse(txt){
+  const q=txt.toLowerCase(),P={ex:new Set(),exG:new Set(),exW:new Set(),likeN:new Set(),likeG:new Set(),likeW:new Set(),theme:null};
+  if(/\bvegan\b/.test(q))P.diet='vegan';else if(/vegetarian|veggie\b|plant[- ]based/.test(q))P.diet='vegetarian';else if(/pescatarian|pescetarian/.test(q))P.diet='pescatarian';
+  if(/halal/.test(q))P.halal=true;if(/gluten|coeliac|celiac/.test(q))P.gf=true;
+  let m=q.match(/€\s*(\d+(?:[.,]\d+)?)/)||q.match(/(\d+(?:[.,]\d+)?)\s*(?:€|eur)/)||q.match(/(?:under|below|max(?:imum)?|less than|at most|budget(?: of)?|up to|within)\s*(\d+(?:[.,]\d+)?)(?!\s*(?:kcal|cal|g\b|gram|%|\d))/);
+  if(m&&parseFloat(m[1].replace(',','.'))<=30)P.maxPrice=parseFloat(m[1].replace(',','.'));
+  m=q.match(/(\d{3,4})\s*(?:kcal|cal(?:ories)?)/);
+  if(m){const v=+m[1];if(/(?:under|below|max(?:imum)?|less than|at most|up to|within|<)\s*(?:about\s*)?\d{3,4}\s*(?:kcal|cal)/.test(q))P.maxKcal=v;else{P.minKcal=Math.round(v*.85);P.maxKcal=Math.round(v*1.1)}}
+  m=q.match(/(\d{2,3})\s*g?\s*(?:of\s*)?protein/)||q.match(/protein[^0-9]{0,12}(\d{2,3})/);if(m)P.minProt=+m[1];
+  if(/high[- ]protein|protein[- ]rich|muscle|gym|workout|post[- ]workout/.test(q)){P.goal='protein';if(!P.minProt)P.minProt=30}
+  if(/low[- ]carb|keto/.test(q))P.lowCarb=true;
+  if(/\blight\b|\bsmall\b|snack|low[- ]cal/.test(q)){P.maxKcal=Math.min(P.maxKcal||9999,450)}
+  if(/\bbig\b|hungry|filling|heavy|starving/.test(q)&&!P.minKcal)P.minKcal=650;
+  if(!P.maxPrice&&/cheap|budget|student price/.test(q))P.maxPrice=6;
+  THW.forEach((r,k)=>{if(r.test(q))P.theme=k});
+  let prevNeg=false;
+  q.split(/[,.;!?]| and | but | plus |\bthen\b/).forEach(cl=>{
+    const cue=/\b(no|not|without|avoid|allerg\w*|hate|dislike|exclude|except|free of|cannot|can't|cant|don'?t|dont|never|intoleran\w*)\b/.test(cl),pos=/\b(want|love|like|prefer|add|extra|crav\w*|with|give|make|need|looking|get|have|include|take)\b/.test(cl);
+    const neg=cue||(prevNeg&&!pos);prevNeg=neg;
+    (cl.match(/[a-zà-ÿ']+/g)||[]).map(sing).forEach(w=>{
+      const gs=GW[w];
+      if(gs){gs.forEach(g=>{if(g=='gluten'||(g=='honey'&&!neg))return;(neg?P.exG:P.likeG).add(g)});return}
+      const hits=ALLN.filter(n=>TOK[n].includes(w));
+      if(hits.length){hits.forEach(n=>(neg?P.ex:P.likeN).add(n));(neg?P.exW:P.likeW).add(w)}
+    });
+  });
+  return P;
+}
+function allowed(n,P){
+  if(P.ex.has(n))return false;for(const g of P.exG)if(GR[g].has(n))return false;
+  if(P.diet=='vegan'&&['meat','fish','shell','egg','dairy','honey'].some(g=>GR[g].has(n)))return false;
+  if(P.diet=='vegetarian'&&['meat','fish','shell'].some(g=>GR[g].has(n)))return false;
+  if(P.diet=='pescatarian'&&GR.meat.has(n))return false;if(P.halal&&GR.pork.has(n))return false;if(P.gf&&GR.gluten.has(n))return false;return true;
+}
+function understood(P){
+  const c=[];if(P.diet)c.push(P.diet);if(P.halal)c.push('halal');if(P.gf)c.push('gluten-free');
+  [...P.exG].forEach(g=>c.push('no '+(GL[g]||g)));[...P.exW].forEach(w=>c.push('no '+w));
+  if(P.maxPrice)c.push('≤ '+fmt(P.maxPrice));if(P.maxKcal)c.push('≤ '+P.maxKcal+' kcal');if(P.minKcal)c.push('≥ '+P.minKcal+' kcal');if(P.minProt)c.push('protein ≥ '+P.minProt+' g');if(P.lowCarb)c.push('low carb');
+  if(P.likeW.size)c.push('likes '+[...P.likeW].join(', '));[...P.likeG].forEach(g=>c.push('likes '+(GL[g]||g)));
+  return c;
+}
+function solve(P){
+  const th=T,pools=th.steps.map(st=>st.items.map((it,i)=>({it,i})).filter(x=>allowed(x.it[0],P)));
+  const bad=th.steps.findIndex((st,k)=>pools[k].length<st.min);
+  if(bad>=0)return {fail:`I can't build a ${th.noun} for that this week – nothing in “${th.steps[bad].t}” (${th.name}) fits those rules. Try another week or relax one rule.`};
+  const run=hard=>{
+    const out=[],seen=new Set();
+    for(let t=0;t<4000;t++){
+      const s=th.steps.map((st,k)=>{const pool=pools[k];let n;
+        if(st.kind=='base')n=1;else if(st.kind=='main')n=(st.max>1&&R()<(P.goal=='protein'?.65:.3))?2:1;else if(st.kind=='ring')n=st.max<2?1:1+(R()*Math.min(st.max,4)|0);else if(st.kind=='small')n=R()<.5?1:0;else n=(st.min>0||R()<.85)?1:0;
+        n=Math.max(st.min,Math.min(st.max,pool.length,n));return shuffle(pool).slice(0,n).map(x=>x.i)});
+      const key=JSON.stringify(s);if(seen.has(key))continue;seen.add(key);
+      const pr=total(s),m=mac(s);
+      if(hard&&((P.maxPrice&&pr>P.maxPrice+1e-9)||(P.maxKcal&&m[1]>P.maxKcal)))continue;
+      let sc=R()*2;
+      flat(s).forEach(x=>{const n=x.it[0];if(P.likeN.has(n))sc+=10;for(const g of P.likeG)if(GR[g].has(n))sc+=4});
+      if(P.minProt)sc-=Math.max(0,P.minProt-m[2])*4;else if(P.goal=='protein')sc+=m[2]*1.5;
+      if(P.minKcal)sc-=Math.max(0,P.minKcal-m[1])*.1;if(P.maxKcal)sc-=Math.abs(m[1]-P.maxKcal*.9)*.03;
+      if(P.lowCarb)sc-=m[3]*.8;sc+=m[2]/(m[1]||1)*40;sc-=Math.max(0,m[4]*9/(m[1]||1)-.4)*30;if(!P.maxPrice)sc-=pr*.3;flat(s).forEach(x=>{sc+=pct(x.it)/100*3});
+      out.push({s,sc,pr,m});
+    }
+    return out.sort((a,b)=>b.sc-a.sc);
+  };
+  let relaxed=false,c=run(true);if(!c.length){c=run(false);relaxed=true}
+  if(!c.length)return {fail:'I could not build a valid meal from those rules.'};
+  const opts=[],k2=x=>JSON.stringify(x.s.slice(0,2));
+  c.forEach(x=>{if(opts.length<3&&!opts.some(o=>k2(o)==k2(x)))opts.push(x)});c.forEach(x=>{if(opts.length<3&&!opts.includes(x))opts.push(x)});
+  return {opts,relaxed};
+}
+
+/* ================= MealVend app ================= */
+const LSX={m:{},get(k){try{const v=localStorage.getItem(k);if(v!=null)return JSON.parse(v)}catch(e){}return this.m[k]??null},set(k,v){this.m[k]=v;try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let UID=+DEMO[0],ORD=LSX.get('mva_ord')||[],cart=empty(),campus=SLOTS[STU[UID].campus],when='tomorrow',notifOn=true,tab='home',chatRes=null,lastQ='',goal=LSX.get('mva_goal')||{kcal:2000,prot:100},busy=false,nTimer=null,OPTS=[],REO=[];
+const first=()=>STU[UID].name.split(' ')[0];
+const dayLabel=o=>(o.when=='tomorrow'?'Tomorrow':'Today')+' · '+new Date(o.date+'T12:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+const sumOf=(thId,names)=>{const th=THEMES.find(t=>t.id==thId);let p=0,k=0,pr=0;if(th)th.steps.forEach(st=>st.items.forEach(it=>{if(names.includes(it[0])){p+=it[2];k+=it[5];pr+=it[6]}}));return{p,k,pr}};
+
+/* ---- persona + prediction ---- */
+function persona(){
+  const s=STU[UID],mine=ORD.filter(o=>o.uid==UID);
+  const extra=mine.map((o,i)=>({th:o.th,names:o.items,d:(new Date(o.t).getDay()+6)%7,w:99,ag:-0.3*(i+1)}));
+  return{name:s.name,arch:ARCH[s.arch].k,id:UID,orders:s.orders.concat(extra)};
+}
+function predict(){
+  const p=persona(),v=vecOf(p.orders),o=blendFor(v,p.id,vfull()),bl=o.bl,ty=typOf(p.orders);
+  return{p,v,bl,names:predictNames(bl,T,ty)};
+}
+
+/* ---- dish ---- */
+function dish(s,px){
+  let base='#e6dfd0',sc=null;const g={main:[],ring:[],small:[]};
+  T.steps.forEach((st,k)=>s[k].forEach(i=>{const it=st.items[i];if(st.kind=='base')base=it[3]||base;else if(st.kind=='sauce')sc=it[3]||sc;else g[st.kind].push(it)}));
+  let h=`<div class="bowl v-${T.vessel}"${px?` style="width:${px}px"`:''}><div class="food" style="background:radial-gradient(circle at 50% 40%,${base},color-mix(in srgb,${base} 70%,#000))">`;
+  const put=(arr,r,size,rot)=>arr.forEach((it,k)=>{const a=k/arr.length*6.283+rot;h+=`<span style="left:${(50+r*Math.cos(a)).toFixed(1)}%;top:${(50+r*Math.sin(a)).toFixed(1)}%;font-size:${size}cqw">${it[1]}</span>`});
+  put(g.ring,33,g.ring.length>6?12:17,-1.2);put(g.main,g.main.length>1?13:0,24,0);
+  if(sc)h+=`<div class="sauce" style="border-color:${sc}"></div>`;
+  put(g.small,22,9,.8);
+  return h+'</div></div>';
+}
+const chipH=(n,x='')=>{const it=itemOf(n);return `<span class="chip">${it?it[1]+' ':''}${n}${x}</span>`};
+const priceH=it=>(pct(it)?`<del>${fmt(it[2])}</del> `:'')+fmt(pz(it));
+const macLine=m=>`${kc(m)} kcal · ${m[2].toFixed(0)} g protein`;
+
+/* ---- renderers ---- */
+function renderHome(){
+  const pr=predict(),p=pr.p,names=pr.names,s=mk(names),m=mac(s),bl=pr.bl,sv=saved(s);
+  const h=new Date().getHours(),greet=h<12?'Good morning':h<18?'Good afternoon':'Good evening';
+  const tl=tmr().toLocaleDateString('en-GB',{weekday:'long'});
+  const ptom=Math.min(97,Math.round(100*(new Set(p.orders.filter(x=>x.d==tmDow()).map(x=>x.w)).size+.5)/9));
+  const ideal=mean(names.map(n=>bl[NI[n]]));
+  const recs=T.presets.map((pp,k)=>({k,pp,sc:mean(pp[3].map(n=>bl[NI[n]]||0))})).sort((a,b)=>b.sc-a.sc).slice(0,3).map(x=>({...x,pc:Math.min(99,Math.round(100*x.sc/Math.max(ideal,1e-6))),pr:mk(x.pp[3])}));
+  const deals=T.steps.flatMap((st,k)=>st.items.map((it,i)=>({k,i,it}))).filter(x=>pct(x.it)).sort((a,b)=>pct(b.it)-pct(a.it));
+  $('#t-home').innerHTML=`
+<div class="hh"><div><p class="eyebrow">${greet}</p><h1>${first()}</h1></div><button class="avatar" data-act="tab" data-t="profile" aria-label="Profile">${first()[0]}</button></div>
+<button class="wbn" data-act="tab" data-t="menu"><span class="wbe">${T.emoji}</span><span><small>Week ${W+1} of ${THEMES.length} · this week's menu</small><b>${T.name}</b><span class="s">${T.steps.reduce((a,x)=>a+x.items.length,0)} ingredients · next week: ${THEMES[(W+1)%THEMES.length].name}</span></span></button>
+<section class="card pred" aria-label="Prediction for tomorrow">
+<div class="top"><span class="pill">AI pick for ${tl}</span><span class="meta">${ptom}% sure you will order</span></div>
+<div class="mid">${dish(s)}<div><div class="chips">${names.map(n=>chipH(n,' '+Math.round(bl[NI[n]]*100)+'%')).join('')}</div></div></div>
+<div><b class="tp" style="font-size:1.2rem">${fmt(total(s))}</b> <span class="meta">${macLine(m)}${sv>.005?` · <span style="color:var(--ok);font-weight:700">saves ${fmt(sv)}</span>`:''}</span></div>
+<div class="btns"><button class="btn" data-act="predok">Confirm for ${tl}</button><button class="btn ghost sm" data-act="prededit">Edit</button></div>
+<p class="meta">Based on your ${p.orders.length} past orders and students with similar taste.</p>
+</section>
+<div class="sec"><h2>Deals of the day</h2><small>${deals.length} products</small></div>
+<div class="hscroll">${deals.map(d=>`<button class="dealc" data-act="deal" data-k="${d.k}" data-i="${d.i}"><span class="star">-${pct(d.it)}%</span><span class="te">${d.it[1]}</span><b>${d.it[0]}</b><span class="tp">${priceH(d.it)}</span></button>`).join('')}</div>
+<div class="sec"><h2>Recommended for you</h2></div>
+${recs.map(r=>`<button class="rec" data-act="preset" data-k="${r.k}"><span class="re">${r.pp[1]}</span><span><b>${r.pp[0]}</b><small>${r.pc}% match · ${r.pp[2]}</small></span><span class="rm">${fmt(total(r.pr))}</span></button>`).join('')}
+<div class="sec"><h2>Weekly menu</h2><small>changes every week</small></div>
+<div class="hscroll">${THEMES.map((t,k)=>`<button class="wkc${k==W?' on':''}" data-act="week" data-w="${k}"><span class="we">${t.emoji}</span><b>${t.name}</b><small>Week ${k+1}${k==W?' · now':''}</small></button>`).join('')}</div>`;
+}
+const EXS=['Vegetarian, high protein, under €7','No peanuts, under 600 kcal','Spicy chicken with mango','Cheap halal wok'];
+function renderMenu(){
+  let res='';
+  if(chatRes){
+    const r=chatRes.r;
+    if(r.fail)res=`<p class="meta">${r.fail}</p>`;
+    else{OPTS=r.opts;res=`<p class="meta">${chatRes.note}${r.relaxed?'I could not meet every limit, so these are the closest matches. ':''}${chatRes.P&&understood(chatRes.P).length?'':'No specific rule found, so these are balanced picks. '}</p>${understood(chatRes.P).length?`<div class="chips">${understood(chatRes.P).map(x=>`<span class="chip">${x}</span>`).join('')}</div>`:''}`+r.opts.map((o,i)=>`<div class="opt"><div>${dish(o.s)}</div><div><div class="chips">${flat(o.s).map(x=>`<span class="chip">${x.it[1]} ${x.it[0]}${pct(x.it)?' ★':''}</span>`).join('')}</div><div class="meta">${fmt(o.pr)} · ${macLine(o.m)}</div><div class="btns"><button class="btn sm" data-act="optbuy" data-i="${i}">Order</button><button class="btn ghost sm" data-act="optedit" data-i="${i}">Edit</button></div></div></div>`).join('')}
+  }
+  $('#t-menu').innerHTML=`
+<h1 class="t">Menu</h1>
+<div class="hscroll" style="padding-top:2px">${THEMES.map((t,k)=>`<button class="wkc${k==W?' on':''}" data-act="week" data-w="${k}"><span class="we">${t.emoji}</span><b>${t.name}</b><small>Week ${k+1}${k==W?' · now':''}</small></button>`).join('')}</div>
+<section class="card ask"><label for="aiq">Describe what you feel like</label><div class="row"><input id="aiq" type="text" autocomplete="off" placeholder="e.g. vegetarian, high protein, under €7" value="${lastQ.replace(/"/g,'&quot;')}"><button class="btn sm" data-act="ask">Ask</button></div><div class="chips">${EXS.map((x,i)=>`<button class="chip" data-act="ex" data-i="${i}">${x}</button>`).join('')}</div>${res}</section>
+<div class="sec"><h2>Ready-made ${T.plural}</h2></div>
+${T.presets.map((pp,k)=>{const s=mk(pp[3]),m=mac(s),sv=saved(s);return `<button class="rec" data-act="preset" data-k="${k}"><span class="re">${pp[1]}</span><span><b>${pp[0]}</b><small>${pp[2]} · ${macLine(m)}</small></span><span class="rm">${fmt(total(s))}${sv>.005?`<br><span style="color:var(--ok)">saves ${fmt(sv)}</span>`:''}</span></button>`}).join('')}
+<button class="build" data-act="build"><span>Build your own ${T.noun}</span><span aria-hidden="true">›</span></button>`;
+}
+function renderOrders(){
+  const mine=ORD.filter(o=>o.uid==UID),up=mine.filter(o=>o.status=='upcoming').reverse(),done=mine.filter(o=>o.status=='collected').reverse();
+  REO=[];const reo=(th,names)=>REO.push({th,names})-1;
+  const hist=STU[UID].orders.slice(-5).reverse();
+  $('#t-orders').innerHTML=`
+<h1 class="t">Orders</h1>
+<div class="sec" style="margin-top:6px"><h2>Upcoming</h2></div>
+${up.length?up.map(o=>{const th=THEMES.find(t=>t.id==o.th);return `<div class="card ord"><div class="oh"><div><b>${dayLabel(o)}</b><div class="meta">${o.campus} machine · ${th?th.name:''}</div></div><span class="tp">${fmt(o.total)}</span></div><div class="oi">${o.items.join(' · ')}</div><div class="btns"><button class="btn sm" data-act="showpass" data-id="${o.id}">Show pass</button><button class="btn ghost sm" data-act="cancel" data-id="${o.id}">Cancel</button></div></div>`}).join(''):`<div class="empty">Nothing planned. Confirm your AI pick on the Home tab.</div>`}
+<div class="sec"><h2>Past orders</h2></div>
+${done.map(o=>{const th=THEMES.find(t=>t.id==o.th);return `<div class="card ord"><div class="oh"><div><b>${th?th.emoji+' '+th.name:''}</b><div class="meta">${new Date(o.date+'T12:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})} · ${o.campus}</div></div><span class="tp">${fmt(o.total)}</span></div><div class="oi">${o.items.join(' · ')}</div><div class="btns"><button class="btn ghost sm" data-act="reorder" data-i="${reo(o.th,o.items)}">Order again</button></div></div>`}).join('')}
+${hist.map(o=>{const th=THEMES.find(t=>t.id==o.th),sm=sumOf(o.th,o.names);return `<div class="card ord"><div class="oh"><div><b>${th?th.emoji+' '+th.name:''}</b><div class="meta">Week ${o.w+1} · ${DOWN[o.d]}</div></div><span class="tp">${fmt(sm.p)}</span></div><div class="oi">${o.names.join(' · ')}</div><div class="btns"><button class="btn ghost sm" data-act="reorder" data-i="${reo(o.th,o.names)}">Order again</button></div></div>`}).join('')}`;
+  const n=up.length,b=$('#obadge');b.hidden=!n;b.textContent=n;
+}
+function renderProfile(){
+  const pr=predict(),v=pr.v,mine=ORD.filter(o=>o.uid==UID),taste=[...ALLN.keys()].sort((a,b)=>v[b]-v[a]).slice(0,8).filter(i=>v[i]>0);
+  const sv=mine.reduce((a,o)=>a+(o.saved||0),0);
+  $('#t-profile').innerHTML=`
+<h1 class="t">Profile</h1>
+<div class="pf"><div class="avatar">${first()[0]}</div><div><h2 style="font-size:1.3rem">${STU[UID].name}</h2><p class="meta">${pr.p.arch} · student card linked</p></div></div>
+<div class="grid3" style="margin:12px 0"><div><b>${pr.p.orders.length}</b>orders</div><div><b>${fmt(sv)}</b>saved on deals</div><div><b>${mine.filter(o=>o.status=='collected').length}</b>picked up</div></div>
+<div class="sec"><h2>Pick-up campus</h2></div>
+<div class="camp">${SLOTS.map(c=>`<button data-act="campus" data-c="${c}" class="${c==campus?'on':''}">${c}</button>`).join('')}</div>
+<div class="sec"><h2>Nutrition goals</h2><small>per day</small></div>
+<div class="set"><span>Calories</span><span class="step"><button data-act="goal" data-g="kcal" data-d="-100" aria-label="Less calories">−</button><b>${goal.kcal} kcal</b><button data-act="goal" data-g="kcal" data-d="100" aria-label="More calories">+</button></span></div>
+<div class="set"><span>Protein</span><span class="step"><button data-act="goal" data-g="prot" data-d="-5" aria-label="Less protein">−</button><b>${goal.prot} g</b><button data-act="goal" data-g="prot" data-d="5" aria-label="More protein">+</button></span></div>
+<div class="set"><span>Smart notifications</span><button class="sw${notifOn?' on':''}" data-act="notif" role="switch" aria-checked="${notifOn}" aria-label="Smart notifications"></button></div>
+<div class="sec"><h2>Your taste</h2><small>learned from your orders</small></div>
+<div class="chips">${taste.map(i=>chipH(ALLN[i],' '+Math.round(v[i]*100)+'%')).join('')}</div>
+<div class="sec"></div>
+<button class="btn ghost" data-act="replay">Replay the AI notification</button>
+<button class="btn ghost" data-act="signout" style="margin-top:8px">Sign out</button>`;
+}
+function renderAll(){renderHome();renderMenu();renderOrders();renderProfile()}
+function go(t){tab=t;$$('.tab').forEach(e=>e.classList.toggle('on',e.id=='t-'+t));$$('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t==t));$('#view').scrollTop=0}
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),1800)}
+function setWeek(w){W=w;T=THEMES[w];cart=empty();chatRes=null;document.documentElement.style.setProperty('--ac',T.ac);renderAll()}
+
+/* ---- builder ---- */
+function toggle(k,i){const st=T.steps[k],a=cart[k],x=a.indexOf(i);if(x>-1)a.splice(x,1);else{if(st.max==1)a.length=0;else if(a.length>=st.max){toast('Max '+st.max+' for '+st.t);return false}a.push(i)}return true}
+function openBuilder(prefill){
+  if(prefill)cart=prefill.map(a=>a.slice());
+  const b=$('#builder');
+  b.innerHTML=`<div class="bh"><button class="ib" data-act="bclose" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><div><b>Build your ${T.noun}</b><small>Week ${W+1} · ${T.name}</small></div></div>
+<div class="bbody">${T.steps.map((st,k)=>`<h3 class="stp">${k+1} · ${st.t}<small>${st.n}</small></h3><div class="tiles">${st.items.map((it,i)=>`<button class="tile" data-act="pick" data-k="${k}" data-i="${i}">${pct(it)?`<span class="star">-${pct(it)}%</span>`:''}<span class="te">${it[1]}</span><b>${it[0]}</b><span class="tp">${priceH(it)}</span><span class="tm">${it[4]} g · ${it[5]} kcal</span></button>`).join('')}</div>`).join('')}</div>
+<div class="bf"><div id="bdish"></div><div class="bi"><div class="bp"><b id="bprice"></b><span id="bsave"></span></div><div class="bm" id="bmac"></div><div class="gbar" title="Share of your per-meal goal"><s id="gfill"></s></div></div><button class="btn" id="bgo" data-act="bnext">Continue</button></div>`;
+  b.classList.add('on');b.querySelector('.bbody').scrollTop=0;updateBuilder();
+}
+function updateBuilder(){
+  $$('#builder .tile').forEach(el=>el.classList.toggle('sel',cart[+el.dataset.k].includes(+el.dataset.i)));
+  const m=mac(cart),sv=saved(cart),meal=goal.kcal/3,r=ok(cart),miss=T.steps.findIndex((st,k)=>cart[k].length<st.min);
+  $('#bdish').innerHTML=dish(cart);$('#bprice').textContent=fmt(total(cart));$('#bsave').textContent=sv>.005?'You save '+fmt(sv):'';
+  $('#bmac').textContent=`${macLine(m)} · ${m[3].toFixed(0)} g carbs · ${m[4].toFixed(0)} g fat`;
+  const g=$('#gfill');g.style.width=Math.min(100,m[1]/meal*100)+'%';g.style.background=m[1]>meal*1.15?'var(--warn)':'var(--ok)';
+  const bg=$('#bgo');bg.disabled=!r;bg.textContent=r?'Continue':'Pick: '+T.steps[miss].t;
+}
+function closeBuilder(){$('#builder').classList.remove('on')}
+
+/* ---- modal ---- */
+function showModal(html){$('#modal').innerHTML='<div class="grab"></div>'+html;$('#modal').classList.add('on');$('#scrim').classList.add('on')}
+function hideModal(){if(busy)return;$('#modal').classList.remove('on');$('#scrim').classList.remove('on')}
+function openCheckout(){
+  const items=flat(cart),m=mac(cart),sv=saved(cart),tl=tmr().toLocaleDateString('en-GB',{weekday:'long'});
+  showModal(`<h2>Confirm your order</h2>
+<div class="sumrow">${dish(cart)}<div><b class="tp" style="font-size:1.3rem">${fmt(total(cart))}</b><p class="meta">${macLine(m)}</p></div></div>
+<ul class="lines">${items.map(x=>`<li><span>${x.it[1]} ${x.it[0]}${pct(x.it)?' ★':''}</span><span>${fmt(pz(x.it))}</span></li>`).join('')}${sv>.005?`<li class="sv"><span>Deal savings</span><span>−${fmt(sv)}</span></li>`:''}</ul>
+<div><div class="lab">When</div><div class="seg"><button data-act="when" data-v="today" class="${when=='today'?'on':''}">Today</button><button data-act="when" data-v="tomorrow" class="${when=='tomorrow'?'on':''}">Tomorrow (${tl})</button></div></div>
+<div><div class="lab">Pick-up campus</div><div class="camp">${SLOTS.map(c=>`<button data-act="campus" data-c="${c}" class="${c==campus?'on':''}">${c}</button>`).join('')}</div></div>
+<button class="btn" data-act="confirm">Confirm · ${fmt(total(cart))}</button>`);
+}
+function qrSvg(code){
+  let h=2166136261;for(const c of code){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}
+  const rnd=()=>{h^=h<<13;h^=h>>>17;h^=h<<5;return(h>>>0)/4294967296},N=25,g=[];
+  for(let y=0;y<N;y++){g[y]=[];for(let x=0;x<N;x++)g[y][x]=rnd()<.5}
+  const fin=(ox,oy)=>{for(let y=-1;y<8;y++)for(let x=-1;x<8;x++){const X=ox+x,Y=oy+y;if(X<0||Y<0||X>=N||Y>=N)continue;const inside=x>=0&&y>=0&&x<7&&y<7;g[Y][X]=inside?(x==0||y==0||x==6||y==6||(x>=2&&x<=4&&y>=2&&y<=4)):false}};
+  fin(0,0);fin(N-7,0);fin(0,N-7);
+  let r='';for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(g[y][x])r+=`<rect x="${x+2}" y="${y+2}" width="1" height="1"/>`;
+  return `<svg viewBox="0 0 ${N+4} ${N+4}" role="img" aria-label="Demo pick-up QR code" shape-rendering="crispEdges"><rect width="${N+4}" height="${N+4}" fill="#fff"/><g fill="#111">${r}</g></svg>`;
+}
+function openPass(id){
+  const o=ORD.find(x=>x.id==id);if(!o)return;
+  showModal(`<h2>Your pick-up pass</h2><p class="sub">${dayLabel(o)}<br>${o.campus} machine</p><div class="qrbox">${qrSvg(o.code)}</div><div class="code">${o.code}</div><p class="meta" style="text-align:center">Hold the QR code to the machine reader or type the code. Demo code only.</p><button class="btn" data-act="pickup" data-id="${o.id}"${o.status=='collected'?' disabled':''}>Simulate: scan at the machine</button><button class="btn ghost" data-act="mclose">Close</button>`);
+}
+async function pickup(id){
+  const o=ORD.find(x=>x.id==id);if(!o||busy)return;busy=true;
+  const th=THEMES.find(t=>t.id==o.th),em=n=>{for(const st of th.steps){const it=st.items.find(i=>i[0]==n);if(it)return it[1]}return''};
+  showModal(`<h2>${o.campus} machine</h2><p class="sub" id="mmsg">Pass accepted. Packing your bags.</p><ul class="mrows">${o.items.map((n,i)=>`<li><span>${em(n)} ${n}</span><span class="st" id="mr${i}"></span></li>`).join('')}</ul><div id="mfin"></div>`);
+  for(let i=0;i<o.items.length;i++){const e=$('#mr'+i);if(!e)break;e.innerHTML='<span class="spin"></span>';await sleep(520);e.textContent='✓'}
+  o.status='collected';LSX.set('mva_ord',ORD);busy=false;
+  const mm=$('#mmsg');if(mm)mm.textContent='All bags are in the tray. Enjoy your meal!';
+  const f=$('#mfin');if(f)f.innerHTML='<button class="btn" data-act="mclose">Done</button>';
+  renderOrders();renderProfile();
+}
+function confirmOrder(){
+  const items=flat(cart),m=mac(cart),d=when=='tomorrow'?tmr():new Date(),al='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code='';for(let i=0;i<4;i++)code+=al[Math.random()*al.length|0];
+  const o={id:Date.now(),uid:UID,t:Date.now(),th:T.id,when,date:ymd(d),campus,code,items:items.map(x=>x.it[0]),total:total(cart),saved:saved(cart),kcal:Math.round(m[1]),prot:Math.round(m[2]),status:'upcoming'};
+  ORD.push(o);LSX.set('mva_ord',ORD);cart=empty();closeBuilder();go('orders');renderAll();openPass(o.id);toast('Order confirmed');
+}
+
+/* ---- notification ---- */
+function showNotif(){
+  if(!notifOn)return;
+  const pr=predict(),n=$('#notif'),tl=tmr().toLocaleDateString('en-GB',{weekday:'long'});
+  n.innerHTML=`<span class="ni">MV</span><span><b>Lunch ${tl}?<small>now</small></b><span class="t">${pr.names.slice(0,3).join(' · ')} is ready to confirm at ${campus}. Tap to order in one step.</span></span>`;
+  n.classList.add('on');clearTimeout(nTimer);nTimer=setTimeout(()=>n.classList.remove('on'),8000);
+}
+
+/* ---- ask the AI ---- */
+function ask(text){
+  text=(text||'').trim();if(!text)return;lastQ=text;
+  const P=parse(text);let note='';
+  if(P.theme!=null&&P.theme!=W){setWeek(P.theme);note=`Switched to week ${W+1}: ${T.name}. `}
+  chatRes={P,r:solve(P),note};renderMenu();
+}
+
+/* ---- events ---- */
+$('#screen').addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act,d=b.dataset;
+  switch(a){
+    case 'tab':go(d.t);break;
+    case 'week':setWeek(+d.w);toast('Week '+(W+1)+': '+T.name);break;
+    case 'persona':UID=+d.i;campus=SLOTS[STU[UID].campus];$$('#pch button').forEach(x=>x.classList.toggle('on',x==b));break;
+    case 'login':{const n=$('#nfc');if(n.classList.contains('read'))break;n.classList.add('read');n.textContent='Reading card…';
+      setTimeout(()=>{$('#login').classList.add('off');n.classList.remove('read');n.textContent='Tap your student card';cart=empty();renderAll();go('home');setTimeout(showNotif,2400)},1000);break}
+    case 'signout':$('#login').classList.remove('off');$('#notif').classList.remove('on');break;
+    case 'predok':{const pr=predict();cart=mk(pr.names);when='tomorrow';openCheckout();break}
+    case 'prededit':openBuilder(mk(predict().names));break;
+    case 'notiftap':$('#notif').classList.remove('on');{const pr=predict();cart=mk(pr.names);when='tomorrow';openCheckout()}break;
+    case 'deal':cart=empty();toggle(+d.k,+d.i);openBuilder(cart);break;
+    case 'preset':openBuilder(mk(T.presets[+d.k][3]));break;
+    case 'build':openBuilder(empty());break;
+    case 'pick':if(toggle(+d.k,+d.i)!==false)updateBuilder();break;
+    case 'bclose':closeBuilder();break;
+    case 'bnext':if(ok(cart))openCheckout();break;
+    case 'when':when=d.v;openCheckout();break;
+    case 'campus':campus=d.c;if($('#modal').classList.contains('on')&&$('#modal').querySelector('[data-act="confirm"]'))openCheckout();else{renderProfile();toast('Pick-up campus: '+campus)}break;
+    case 'confirm':confirmOrder();break;
+    case 'mclose':hideModal();break;
+    case 'showpass':openPass(+d.id);break;
+    case 'pickup':pickup(+d.id);break;
+    case 'cancel':ORD=ORD.filter(o=>o.id!=+d.id);LSX.set('mva_ord',ORD);renderOrders();toast('Order cancelled');break;
+    case 'reorder':{const r=REO[+d.i],wi=THEMES.findIndex(t=>t.id==r.th);if(wi!=W)setWeek(wi);openBuilder(mk(r.names));break}
+    case 'ask':ask($('#aiq').value);break;
+    case 'ex':ask(EXS[+d.i]);break;
+    case 'optedit':openBuilder(OPTS[+d.i].s);break;
+    case 'optbuy':cart=OPTS[+d.i].s.map(x=>x.slice());when='tomorrow';openCheckout();break;
+    case 'goal':goal[d.g]=Math.max(d.g=='kcal'?1400:50,Math.min(d.g=='kcal'?3000:200,goal[d.g]+(+d.d)));LSX.set('mva_goal',goal);renderProfile();break;
+    case 'notif':notifOn=!notifOn;renderProfile();break;
+    case 'replay':notifOn=true;go('home');showNotif();renderProfile();break;
+  }
+});
+$('#screen').addEventListener('keydown',e=>{if(e.target.id=='aiq'&&e.key=='Enter'){e.preventDefault();ask(e.target.value)}});
+$('#pch').innerHTML=DEMO.map((i,k)=>`<button data-act="persona" data-i="${i}" class="${k==0?'on':''}">${STU[i].name.split(' ')[0]} · ${ARCH[STU[i].arch].k}</button>`).join('');
+const tick=()=>{const d=new Date();$('#clock').textContent=d.getHours()+':'+String(d.getMinutes()).padStart(2,'0')};tick();setInterval(tick,30000);
+document.documentElement.style.setProperty('--ac',T.ac);
+renderAll();
+
+</script>

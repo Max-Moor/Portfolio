@@ -1,0 +1,600 @@
+<title>Max Moor, carnet de chantier</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&family=DM+Mono:wght@400;500&family=Caveat:wght@600&display=swap">
+<style>
+/* Concept: un carnet de chantier. Rail de navigation collant à gauche (où je suis, quoi filtrer),
+   puis une colonne de chapitres chronologiques qui rangent texte, photos, vidéos et documents au même endroit. */
+:root{
+  --bg:#E8EBF2; --surface:#F6F7FB; --ink:#0A1440; --muted:#4F5A7E; --line:#C4CBDD;
+  --accent:#D33641; --accent-ink:#FFFFFF; --mark:#BFC9F2; --night:#0A1448; --night-fg:#F4F6FF;
+  --font-d:'Bricolage Grotesque','Arial Black',system-ui,sans-serif;
+  --font-b:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-m:'DM Mono',ui-monospace,Menlo,monospace;
+  --font-h:'Caveat','Comic Sans MS',cursive;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1226; --surface:#161B38; --ink:#EEF0FA; --muted:#A3ACCB; --line:#2E3560;
+  --accent:#F0626C; --accent-ink:#0E1226; --mark:#3B4BA8; --night:#070A1C; --night-fg:#F4F6FF; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1226; --surface:#161B38; --ink:#EEF0FA; --muted:#A3ACCB; --line:#2E3560;
+  --accent:#F0626C; --accent-ink:#0E1226; --mark:#3B4BA8; --night:#070A1C; --night-fg:#F4F6FF; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--font-b);
+  background-image:radial-gradient(var(--line) 1px,transparent 1.2px);background-size:22px 22px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+a{color:inherit}
+h1,h2,h3,h4{font-family:var(--font-d);margin:0;text-wrap:balance;letter-spacing:-0.02em;line-height:1.02}
+p{margin:0}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.mono{font-family:var(--font-m);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+
+/* ---------- cadre : rail + colonne ---------- */
+.frame{max-width:1360px;margin:0 auto;display:grid;grid-template-columns:230px minmax(0,1fr);gap:0 56px}
+.rail{position:sticky;top:0;align-self:start;height:100vh;height:100dvh;padding:24px 0;display:flex;flex-direction:column;gap:22px;overflow-y:auto}
+.brand{font:800 30px/1 var(--font-d);letter-spacing:-.03em}
+.brand small{display:block;font:400 12px/1.4 var(--font-m);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.lang{display:inline-flex;border:2px solid var(--ink);border-radius:999px;overflow:hidden;align-self:flex-start}
+.lang button{font:500 13px var(--font-m);letter-spacing:.08em;border:0;background:transparent;color:var(--ink);padding:7px 14px;cursor:pointer;min-height:36px}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.rail h2{font:500 11px var(--font-m);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.chips{display:flex;flex-direction:column;gap:6px}
+.chip{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;font:600 15px var(--font-b);border:2px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 12px;border-radius:10px;cursor:pointer;transition:border-color .2s,background .2s}
+.chip span{font:500 12px var(--font-m);color:var(--muted)}
+.chip:hover{border-color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip[aria-pressed="true"] span{color:var(--bg)}
+.toc{list-style:none;margin:0;padding:0 0 0 14px;position:relative;display:flex;flex-direction:column;gap:2px}
+.toc::before{content:"";position:absolute;left:3px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.toc a{display:block;position:relative;text-decoration:none;padding:5px 0 5px 12px;font:500 14px/1.3 var(--font-b);color:var(--muted);transition:color .2s,opacity .2s}
+.toc a::before{content:"";position:absolute;left:-15px;top:12px;width:10px;height:10px;border-radius:50%;background:var(--bg);border:2px solid var(--line);transition:background .2s,border-color .2s,transform .2s}
+.toc a b{display:block;font:500 11px var(--font-m);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.toc a:hover{color:var(--ink)}
+.toc a.on{color:var(--ink);font-weight:600}
+.toc a.on::before{background:var(--ink);border-color:var(--ink);transform:scale(1.15)}
+.toc a.here{color:var(--ink);font-weight:600}
+.toc a.here::before{background:var(--accent);border-color:var(--accent);transform:scale(1.25);box-shadow:0 0 0 5px color-mix(in srgb,var(--accent) 25%,transparent)}
+.toc a i{display:block;font:500 10px var(--font-m);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-style:normal;margin-top:1px}
+.toc a.dim{opacity:.35}
+.hint{font:400 13px/1.45 var(--font-b);color:var(--muted)}
+
+/* ---------- colonne principale ---------- */
+.main{min-width:0;padding:24px 0 0}
+.hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:36px 48px;align-items:center;padding:40px 0 56px}
+.kicker{display:inline-flex;gap:10px;align-items:center;font:500 12px var(--font-m);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.kicker i{width:34px;height:2px;background:var(--accent);display:block}
+.hero h1{font-size:clamp(52px,8.2vw,128px);font-weight:800;margin:18px 0 18px;line-height:.92}
+.hl{background:linear-gradient(transparent 58%,var(--mark) 58% 92%,transparent 92%);padding:0 .06em}
+.tag{font:700 clamp(22px,2.6vw,34px)/1.15 var(--font-d);letter-spacing:-.02em;color:var(--accent)}
+.lead{max-width:34em;margin-top:18px;color:var(--ink)}
+.start{margin-top:28px;display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;gap:10px;align-items:center;font:600 15px var(--font-b);text-decoration:none;border:2px solid var(--ink);padding:11px 16px;border-radius:999px;background:var(--surface);color:var(--ink);cursor:pointer;transition:transform .2s,background .2s,color .2s}
+.btn:hover{transform:translateY(-2px);background:var(--ink);color:var(--bg)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.pri:hover{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.btn svg{width:16px;height:16px;flex:none}
+.first{display:inline-flex;flex-wrap:wrap;gap:6px;margin-top:14px;font-size:15px;text-decoration:none;border:2px solid var(--accent);padding:8px 14px;background:var(--surface);color:var(--ink);transition:background .2s,color .2s}
+.first b{color:var(--accent)}
+.first:hover{background:var(--accent);color:var(--accent-ink)}
+.first:hover b{color:var(--accent-ink)}
+.tip{margin-top:14px;font-size:14px;color:var(--muted);max-width:34em}
+.portrait{position:relative;justify-self:center;width:min(100%,420px);rotate:2deg}
+.portrait img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;object-position:50% 20%;border:3px solid var(--ink);background:var(--night);box-shadow:12px 12px 0 var(--accent)}
+.tape{position:absolute;width:110px;height:30px;background:color-mix(in srgb,var(--mark) 82%,transparent);top:-14px;left:50%;translate:-50% 0;rotate:-4deg}
+.note{position:absolute;right:-6px;bottom:-34px;font:600 30px/1 var(--font-h);rotate:-5deg;color:var(--ink);display:flex;gap:6px;align-items:flex-end}
+.note svg{width:46px;height:34px;color:var(--accent);rotate:10deg}
+
+/* carte vidéo d'intro (à venir) */
+.intro{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center;border:2px dashed var(--ink);padding:16px 18px;margin:0 0 72px;background:var(--surface)}
+.intro .pl{width:56px;height:56px;border-radius:50%;background:var(--accent);display:grid;place-items:center;color:var(--accent-ink)}
+.intro p{font-size:15px;color:var(--muted)}
+.intro b{display:block;font:700 22px var(--font-d);color:var(--ink);letter-spacing:-.02em}
+
+/* ---------- chapitres ---------- */
+.sec-h{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px 40px;margin-bottom:28px}
+.sec-h h2{font-size:clamp(40px,6vw,84px);font-weight:800}
+.sec-h p{max-width:30em;color:var(--muted)}
+.tl{position:relative;padding-left:34px}
+.tl::before{content:"";position:absolute;left:9px;top:8px;bottom:0;width:3px;background:repeating-linear-gradient(var(--ink) 0 10px,transparent 10px 16px)}
+.ch{position:relative;padding:0 0 64px;transition:opacity .3s}
+.ch::before{content:"";position:absolute;left:-34px;top:10px;width:21px;height:21px;border-radius:50%;background:var(--bg);border:4px solid var(--ink)}
+.ch.here::before{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 6px color-mix(in srgb,var(--accent) 25%,transparent)}
+.ch.next::before{border-style:dashed}
+.ch.dim{opacity:.3}
+.ch-head{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;margin-bottom:12px}
+.when{font:500 13px var(--font-m);letter-spacing:.07em;text-transform:uppercase;color:var(--accent)}
+.st{font:500 11px var(--font-m);letter-spacing:.08em;text-transform:uppercase;border:1.5px solid var(--ink);border-radius:999px;padding:2px 9px}
+.st.now{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.ch h3{font-size:clamp(30px,3.8vw,52px);font-weight:800;margin-bottom:14px}
+.body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px 40px;align-items:start}
+.body.one{grid-template-columns:minmax(0,1fr)}
+.txt p{max-width:36em}
+.txt ul{margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;max-width:36em}
+.txt li{position:relative;padding-left:22px;font-size:15px;color:var(--muted)}
+.txt li::before{content:"";position:absolute;left:0;top:.55em;width:10px;height:2px;background:var(--accent)}
+.proofs.row .proof.wide{grid-column:1/-1}
+.bthumb{width:360px}
+.bthumb img{display:block;width:100%;aspect-ratio:2.28/1;object-fit:cover;border:1.5px solid var(--ink);box-shadow:3px 3px 0 var(--accent)}
+@media(max-width:760px){.bthumb{width:150px}.bthumb img{aspect-ratio:1/1}}
+.proofs.row.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:760px){.proofs.row.c2{grid-template-columns:1fr}}
+.proofs.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.ch.hot h3{color:var(--ink)}
+.ch.hot .txt p{font-size:19px}
+.ch.hot::after{content:"";position:absolute;inset:-14px 0 36px -14px;border:2px solid var(--accent);pointer-events:none}
+.proofs{display:flex;flex-direction:column;gap:14px;min-width:0}
+.proof{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:center;text-decoration:none;border:2px solid var(--ink);background:var(--surface);padding:10px;transition:transform .25s,box-shadow .25s,opacity .3s}
+a.proof:hover{transform:translate(-3px,-3px);box-shadow:6px 6px 0 var(--accent)}
+.proof.dim{opacity:.3}
+.proof .lbl{font:500 11px var(--font-m);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.proof h4{font-size:21px;font-weight:700;margin:2px 0 4px;line-height:1.08}
+.proof p{font-size:14px;line-height:1.45;color:var(--muted)}
+.proof .go{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font:600 12px var(--font-m);letter-spacing:.06em;text-transform:uppercase;background:var(--accent);color:var(--accent-ink);border:2px solid var(--accent);border-radius:999px;padding:6px 14px;transition:background .2s,color .2s,border-color .2s}
+a.proof{cursor:pointer}
+a.proof:hover .go{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.dwrap{position:relative;width:124px;flex:none}
+.dwrap::before{content:"";position:absolute;inset:6px -6px -6px 6px;border:1.5px solid var(--ink);background:var(--surface)}
+.dwrap .dthumb{position:relative;width:100%;transition:transform .25s}
+a.proof:hover .dwrap .dthumb{transform:translate(-3px,-3px)}
+.dbadge{position:absolute;left:-8px;top:10px;z-index:2;background:var(--ink);color:var(--bg);font:500 11px var(--font-m);letter-spacing:.08em;padding:3px 8px}
+.vthumb{width:132px;aspect-ratio:16/10;background:var(--night);color:var(--night-fg);position:relative;overflow:hidden;display:grid;place-items:center}
+.vthumb::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,transparent 0 10px,rgba(255,255,255,.05) 10px 11px)}
+.vthumb.has::before{display:none}.vthumb.has img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 38%;filter:brightness(.7)}.vthumb.logo{background:#fff;border:1.5px solid var(--ink)}.vthumb.logo img{object-fit:contain;padding:14px 16px;filter:none}.vthumb.logo i{position:absolute;right:6px;bottom:6px;width:30px;height:30px}.vthumb.logo i svg{width:12px;height:12px}
+.vthumb i{position:relative;width:40px;height:40px;border-radius:50%;background:var(--accent);display:grid;place-items:center;transition:transform .25s}
+a.proof:hover .vthumb i{transform:scale(1.18)}
+.vthumb i svg{width:16px;height:16px;color:var(--accent-ink);margin-left:2px}
+.vthumb em{position:absolute;left:8px;bottom:6px;font:500 10px var(--font-m);letter-spacing:.08em;text-transform:uppercase;font-style:normal;color:var(--night-fg);opacity:.8}
+.dthumb{width:78px;aspect-ratio:7/10;object-fit:cover;border:1.5px solid var(--ink);display:block;box-shadow:3px 3px 0 var(--accent)}
+.lthumb{width:78px;aspect-ratio:7/10;border:1.5px solid var(--ink);background:var(--night);color:var(--night-fg);display:grid;place-items:center;font:500 11px var(--font-m);letter-spacing:.08em;text-align:center}
+.lthumb svg{width:22px;height:22px;display:block;margin:0 auto 4px}
+.proof.locked{border-style:dashed;background:transparent}
+
+/* Drop Loop : prix + planche photo */
+.prizes{display:flex;flex-wrap:wrap;gap:14px;margin:6px 0 24px}
+.stamp{flex:1 1 260px;border:3px solid var(--accent);color:var(--ink);padding:12px 16px;rotate:-1.2deg;background:var(--surface);position:relative}
+.stamp:nth-child(2){rotate:1deg}
+.stamp{display:flex;gap:14px;align-items:center}
+@keyframes tvib{0%{transform:translateY(0) rotate(-4deg)}25%{transform:translateY(-2px) rotate(0deg)}50%{transform:translateY(0) rotate(4deg)}75%{transform:translateY(-2px) rotate(0deg)}100%{transform:translateY(0) rotate(-4deg)}}
+.stamp .tr{transform-origin:50% 92%;animation:tvib 1.8s ease-in-out infinite}
+.stamp:nth-child(2) .tr{animation-delay:-.7s}
+@media (prefers-reduced-motion:reduce){.stamp .tr{animation:none}}
+#c-droploop .body .proofs{transform:translateY(-10px)}
+#c-droploop .prizes{margin-top:20px}.stamp .tr{flex:none;width:50px;height:56px}.stamp .tx{min-width:0}.stamp b{display:block;font:800 22px/1.05 var(--font-d);letter-spacing:-.02em}
+.stamp span{font-size:14px;color:var(--muted)}
+.stamp .mono{display:block;color:var(--accent);margin-bottom:4px}
+.sheet h4{font:500 12px var(--font-m);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:26px 0 12px;display:flex;align-items:center;gap:12px}
+.sheet h4::after{content:"";height:2px;flex:1;background:var(--line)}
+.sheet h4 b{color:var(--ink)}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:18px}
+.pol{margin:0;background:var(--surface);border:2px solid var(--ink);padding:8px 8px 10px;cursor:zoom-in;transition:transform .3s;rotate:var(--r,0deg);text-align:left;display:block;font:inherit;color:inherit;width:100%}
+.pol:hover{transform:translateY(-4px) rotate(0deg)}
+.pol img{display:block;width:100%;aspect-ratio:var(--ar,3/4);object-fit:cover}
+.pol figcaption{font-size:13px;line-height:1.35;margin-top:8px;color:var(--muted)}
+.pol figcaption b{display:block;font:700 15px var(--font-d);color:var(--ink);letter-spacing:-.01em}
+.wide{grid-column:span 2}
+.row.gal{grid-template-columns:repeat(6,minmax(0,1fr))}.row.gal .pol{grid-column:span 2}.row.gal .pol.wide{grid-column:span 3}
+@media(max-width:760px){.row.gal{grid-template-columns:repeat(2,minmax(0,1fr))}.row.gal .pol,.row.gal .pol.wide{grid-column:auto}.row.gal .pol.wide{grid-column:1/-1}}
+.pv{position:fixed;inset:0;z-index:60;background:rgba(10,11,12,.92);display:flex;flex-direction:column;align-items:center;padding:14px 14px 18px}
+.pv .bar{width:min(100%,1200px);display:flex;align-items:center;gap:12px;color:#F1F2F3;margin-bottom:10px}
+.pv .bar b{font:700 17px var(--font-d);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pv .bar button{font:600 13px var(--font-b);border:2px solid #F1F2F3;background:transparent;color:#F1F2F3;padding:7px 12px;cursor:pointer;border-radius:999px}
+.pv .bar button.x{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.pv iframe{flex:1;width:min(100%,1200px);border:0;background:#fff;border-radius:6px;min-height:0}
+.pv.phone iframe{width:min(100%,420px)}
+.lb{position:fixed;inset:0;z-index:50;background:rgba(10,11,12,.9);display:grid;place-items:center;padding:24px;cursor:zoom-out}
+.lb figure{margin:0;max-width:min(92vw,820px);color:#F1F2F3}
+.lb img{max-width:100%;max-height:78vh;display:block;margin:0 auto;border:3px solid #F1F2F3}
+.lb figcaption{margin-top:12px;font-size:15px;text-align:center}
+
+/* ---------- en bref + contact ---------- */
+.bref{padding:24px 0 80px}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:36px 40px;margin-top:20px}
+.li span{white-space:pre-line}.jobs .li span:last-child{white-space:pre}
+.blk h3{font:500 12px var(--font-m);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.li{display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid var(--line);padding:9px 0;font-size:15px}
+.li span:last-child{color:var(--muted);text-align:right;font-size:13px}
+.tools{display:flex;flex-wrap:wrap;gap:8px}
+.tools span{border:1.5px solid var(--ink);padding:3px 11px;border-radius:999px;font-size:14px;background:var(--surface)}
+.lv{display:inline-flex;gap:3px;vertical-align:middle}
+.lv i{width:16px;height:6px;background:var(--line);display:block}
+.lv i.f{background:var(--accent)}
+.contact{background:var(--night);color:var(--night-fg);margin:0 calc(-1*max(16px,env(safe-area-inset-right,0px)));padding:72px max(16px,env(safe-area-inset-right,0px)) 40px}
+.contact .in{max-width:1360px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,320px);gap:40px 64px;align-items:end}
+.contact h2{font-size:clamp(56px,10vw,150px);font-weight:800;line-height:.9}
+.contact h2 em{font-style:normal;color:#FF7A84}
+.contact p{max-width:30em;margin-top:18px;color:#C3C9CE}
+.coords{display:flex;flex-direction:column;gap:10px;margin-top:28px;font:500 15px var(--font-m)}
+.coord{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;border-bottom:1px solid #3a4046;padding-bottom:10px}
+.coord span.k{color:#8a949c;font-size:11px;letter-spacing:.1em;text-transform:uppercase;min-width:74px}
+.coord a,.coord b{font-weight:500;color:var(--night-fg);text-underline-offset:4px;overflow-wrap:anywhere}
+.cp{font:500 11px var(--font-m);letter-spacing:.08em;text-transform:uppercase;background:transparent;border:1.5px solid #5a636b;color:var(--night-fg);padding:3px 9px;border-radius:999px;cursor:pointer}
+.cp:hover{border-color:var(--accent);color:var(--accent)}
+.contact img{width:100%;max-width:320px;justify-self:end;display:block;border:3px solid var(--night-fg);rotate:-2deg;aspect-ratio:3/4;object-fit:cover;object-position:50% 30%;box-shadow:10px 10px 0 var(--accent)}
+.foot{max-width:1360px;margin:48px auto 0;font:400 12px var(--font-m);letter-spacing:.08em;text-transform:uppercase;color:#8a949c;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
+
+/* ---------- mobile ---------- */
+.mbar{display:none}
+@media (max-width:980px){
+  .frame{grid-template-columns:minmax(0,1fr)}
+  .rail{display:none}
+  .mbar{display:flex;position:sticky;top:env(safe-area-inset-top,0px);z-index:20;gap:10px;align-items:center;background:var(--bg);padding:10px 0;border-bottom:2px solid var(--ink);margin-bottom:8px;overflow-x:auto}
+  .mbar .brand{font-size:22px;flex:none}
+  .mbar .chip{flex:none;padding:6px 12px;font-size:14px}
+  .mbar .lang{flex:none}
+  .mbar .lang button{padding:7px 9px}
+  .hero{grid-template-columns:minmax(0,1fr);padding-top:20px}
+  .portrait{order:-1;width:min(78%,340px);margin-bottom:24px;justify-self:start}
+  .body{grid-template-columns:minmax(0,1fr)}
+  .contact .in{grid-template-columns:minmax(0,1fr)}
+  .contact img{justify-self:start;max-width:260px}
+}
+@media (max-width:520px){
+  .proof{grid-template-columns:minmax(0,1fr)}
+  .vthumb{width:100%}
+  .dthumb,.lthumb{width:96px}.dwrap{width:96px;margin:0 6px 6px 0}
+  .tl{padding-left:28px}.ch::before{left:-28px}
+  .wide{grid-column:auto}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+.rv{animation:up .6s cubic-bezier(.16,.84,.24,1) both}
+@keyframes up{from{transform:translateY(18px)}to{transform:none}}
+</style>
+
+<div class="frame">
+  <aside class="rail" id="rail" aria-label="Navigation"></aside>
+  <div class="main">
+    <div class="mbar" id="mbar"></div>
+    <main id="app"></main>
+  </div>
+</div>
+<div id="contactWrap"></div>
+<div id="lbHost"></div>
+
+<script>
+const IMG=/*IMG*/{};
+const ICON={
+  play:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>',
+  doc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg>',
+  down:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16M5 13l7 7 7-7"/></svg>',
+  lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="1"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+  web:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>',
+  arrow:'<svg viewBox="0 0 60 44" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 38C16 36 34 26 44 8M44 8l-14 3M44 8l2 14"/></svg>'
+};
+const MV=/*MV*/{};
+const LK={
+  schFR:'https://lnkd.in/p/e2n2JSwN',schNL:'https://lnkd.in/p/eDW8ucFB',bigmat:'https://lnkd.in/p/ew_WKdzU',
+  aupair:'https://youtu.be/HMZ_G-LEB7g',blood:'https://www.youtube.com/watch?v=fhUw_ojU_yU&t=8032s',bip:'https://youtu.be/njCNWwjxoGk',
+  mvApp:'mealvend-app.html',mvWeb:'mealvend-site.html',
+  book:'https://drive.google.com/file/d/1tNOS75FCBLisAFJgUSZGEezzJ0PWrU3T/view?usp=sharing',
+  dropPdf:'https://drive.google.com/file/d/1hKwLe4xHWKN6h7ihU0NGwc-PBaZadkxV/view?usp=sharing',
+  schPdf:'https://drive.google.com/file/d/1JXEgx6mDFaqpRopcZOlNjiaTqOhLMOzP/view?usp=sharing',
+  lamp:'https://drive.google.com/file/d/1riSLulvQYamvwyXCXa5DmlpcLKn1JPKy/view?usp=sharing',bati:'https://drive.google.com/file/d/1HBjsna6jD6MYjmxuFu7ZlpmBUWYIUxb4/view?usp=sharing',turismo:'https://drive.google.com/file/d/1wHgbumLz5tY48A3KWvYP-RuYA7WTI8gW/view?usp=sharing',reel:'https://drive.google.com/file/d/16iAIsC8bXrFdG0udll0brUr2UZ0ScPD4/view?usp=sharing',
+  od3d:'https://www.od3d.be/',linkedin:'https://www.linkedin.com/in/max-moor-b253a624b'
+};
+
+/* ---------- textes de l'interface ---------- */
+const S={
+fr:{
+  tagline:'Jeune, dynamique, impatient d’apprendre.',
+  kicker:'Portfolio · Marketing et vidéo',
+  h1a:'Bonjour, je suis',h1b:'Max.',
+  lead:'Je suis étudiant en marketing à HELMo et j’adore filmer, monter et raconter des histoires en vidéo, en français comme en néerlandais. Voici un aperçu de ce que j’ai déjà réalisé.',
+  startQ:'Par où commencer ?',
+  bVid:'Voir mes vidéos',bDoc:'Lire mes documents',bPath:'Suivre mon parcours',
+  tip:'Chaque étape du parcours réunit au même endroit le texte, les photos, la vidéo et le document qui vont avec. Rien à chercher ailleurs.',
+  note:'me voici !',
+  firstB:'Petit clin d’œil :',firstT:'un de mes tout premiers jobs étudiants, en 2019, c’était déjà chez Hubo.',
+  introT:'Ma vidéo de présentation',introP:'Elle arrive bientôt. En attendant, tout le reste est juste en dessous.',
+  filter:'Afficher',all:'Tout',vids:'Vidéos',docs:'Documents',nav:'Où je suis',
+  pathT:'Mon parcours',pathP:'Du plus ancien au plus récent. Les filtres permettent de ne voir que les vidéos ou que les documents.',
+  watch:'Regarder',try:'Essayer le prototype',open:'Ouvrir le PDF',visit:'Visiter le site',openf:'Ouvrir',newtab:'Ouvrir dans un onglet',here:'Je suis ici',
+  brefT:'En bref',brefIntro:'Je termine mon bachelier en marketing entre HELMo (Liège) et l’Artevelde Hogeschool (Gand). Je cherche un stage de 15 semaines dans une entreprise dynamique, où je pourrai apprendre plein de choses dans des domaines variés, idéalement dans un univers créatif.',
+  bLang:'Langues',bTools:'Outils',bJobs:'Expériences',bSchool:'Secondaire',bLic:'Permis',
+  cT1:'Parlons',cT2:'ensemble.',cP:'Je serai ravi de vous présenter ces projets en personne et de répondre à toutes vos questions. N’hésitez pas à m’écrire.',
+  mail:'E-mail',phone:'Téléphone',copy:'Copier',copied:'Copié',li:'Voir le profil',
+  top:'Retour en haut',close:'Fermer',
+  steps:{I:'Conception',II:'Louvain',III:'Liège'},
+  step:'Étape',sheetT:'Les photos, dans l’ordre',
+  cnt:(v,d)=>v+' vidéos · '+d+' documents',
+  foot:'Carnet de Max Moor · 2026'
+},
+nl:{
+  tagline:'Jong, dynamisch, leergierig.',
+  kicker:'Portfolio · Marketing en video',
+  h1a:'Hallo, ik ben',h1b:'Max.',
+  lead:'Ik studeer marketing aan HELMo en ik film, monteer en vertel graag verhalen in beeld, in het Frans en in het Nederlands. Hier ziet u wat ik al gerealiseerd heb.',
+  startQ:'Waar beginnen?',
+  bVid:'Mijn video’s bekijken',bDoc:'Mijn documenten lezen',bPath:'Mijn traject volgen',
+  tip:'Elke stap in het traject bundelt de tekst, foto’s, video en het document die erbij horen. Nergens anders zoeken.',
+  note:'hier ben ik!',
+  firstB:'Kleine knipoog:',firstT:'een van mijn allereerste studentenjobs, in 2019, was al bij Hubo.',
+  introT:'Mijn voorstellingsvideo',introP:'Die komt eraan. Intussen staat alles hieronder al klaar.',
+  filter:'Tonen',all:'Alles',vids:'Video’s',docs:'Documenten',nav:'Waar ik ben',
+  pathT:'Mijn traject',pathP:'Van oud naar nieuw. Met de filters ziet u alleen de video’s of alleen de documenten.',
+  watch:'Bekijken',try:'Prototype proberen',open:'PDF openen',visit:'Site bezoeken',openf:'Openen',newtab:'Openen in een tabblad',here:'Hier ben ik nu',
+  brefT:'In het kort',brefIntro:'Ik rond mijn bachelor Marketing af tussen HELMo (Luik) en de Artevelde Hogeschool (Gent). Ik zoek een stage van 15 weken in een dynamisch bedrijf, waar ik veel kan bijleren in verschillende domeinen, het liefst in een creatieve sector.',
+  bLang:'Talen',bTools:'Tools',bJobs:'Werkervaring',bSchool:'Secundair',bLic:'Rijbewijzen',
+  cT1:'Laten we',cT2:'praten.',cP:'Ik vertel er graag meer over en beantwoord al uw vragen. U kunt me gerust schrijven.',
+  mail:'E-mail',phone:'Telefoon',copy:'Kopiëren',copied:'Gekopieerd',li:'Profiel bekijken',
+  top:'Terug naar boven',close:'Sluiten',
+  steps:{I:'Ontwerp',II:'Louvain',III:'Luik'},
+  step:'Stap',sheetT:'De foto’s, in volgorde',
+  cnt:(v,d)=>v+' video’s · '+d+' documenten',
+  foot:'Carnet van Max Moor · 2026'
+},
+en:{
+  tagline:'Young, dynamic, eager to learn.',
+  kicker:'Portfolio · Marketing and video',
+  h1a:'Hello, I’m',h1b:'Max.',
+  lead:'I am a marketing student at HELMo and I love filming, editing and telling stories on video, in French as well as in Dutch. Here is an overview of what I have already made.',
+  startQ:'Where to start?',
+  bVid:'Watch my videos',bDoc:'Read my documents',bPath:'Follow my journey',
+  tip:'Each stage of the journey brings together the text, photos, video and document that go with it, in one place. Nothing to look for elsewhere.',
+  note:'here I am!',
+  firstB:'A little nod:',firstT:'one of my very first student jobs, in 2019, was already at Hubo.',
+  introT:'My introduction video',introP:'It is coming soon. In the meantime, everything else is right below.',
+  filter:'Show',all:'All',vids:'Videos',docs:'Documents',nav:'Where I am',
+  pathT:'My journey',pathP:'From oldest to most recent. The filters let you see only the videos or only the documents.',
+  watch:'Watch',try:'Try the prototype',open:'Open the PDF',visit:'Visit the website',openf:'Open',newtab:'Open in a new tab',here:'I am here',
+  brefT:'At a glance',brefIntro:'I am finishing my bachelor’s degree in marketing between HELMo (Liège) and Artevelde Hogeschool (Ghent). I am looking for a 15-week internship in a dynamic company, where I can learn a lot in a variety of fields, ideally in a creative environment.',
+  bLang:'Languages',bTools:'Tools',bJobs:'Experience',bSchool:'Secondary school',bLic:'Licences',
+  cT1:'Let’s talk',cT2:'together.',cP:'I would be delighted to present these projects in person and answer any questions you may have. Please do not hesitate to write to me.',
+  mail:'E-mail',phone:'Phone',copy:'Copy',copied:'Copied',li:'View profile',
+  top:'Back to top',close:'Close',
+  steps:{I:'Design',II:'Leuven',III:'Liège'},
+  step:'Step',sheetT:'The photos, in order',
+  cnt:(v,d)=>v+' videos · '+d+' documents',
+  foot:'Max Moor’s notebook · 2026'
+},
+de:{
+  tagline:'Jung, dynamisch, lernhungrig.',
+  kicker:'Portfolio · Marketing und Video',
+  h1a:'Guten Tag, ich bin',h1b:'Max.',
+  lead:'Ich studiere Marketing an der HELMo und filme, schneide und erzähle gern Geschichten im Video, auf Französisch wie auf Niederländisch. Hier sehen Sie einen Überblick über das, was ich bereits realisiert habe.',
+  startQ:'Wo anfangen?',
+  bVid:'Meine Videos ansehen',bDoc:'Meine Dokumente lesen',bPath:'Meinen Werdegang verfolgen',
+  tip:'Jede Station des Werdegangs vereint Text, Fotos, Video und das dazugehörige Dokument an einem Ort. Sie müssen nirgendwo anders suchen.',
+  note:'hier bin ich!',
+  firstB:'Ein kleiner Hinweis:',firstT:'Einer meiner allerersten Studentenjobs war 2019 schon bei Hubo.',
+  introT:'Mein Vorstellungsvideo',introP:'Es kommt bald. Bis dahin finden Sie alles andere direkt darunter.',
+  filter:'Anzeigen',all:'Alles',vids:'Videos',docs:'Dokumente',nav:'Wo ich bin',
+  pathT:'Mein Werdegang',pathP:'Vom Ältesten zum Neuesten. Mit den Filtern sehen Sie nur die Videos oder nur die Dokumente.',
+  watch:'Ansehen',try:'Prototyp ausprobieren',open:'PDF öffnen',visit:'Website besuchen',openf:'Öffnen',newtab:'In neuem Tab öffnen',here:'Hier bin ich gerade',
+  brefT:'Kurz gefasst',brefIntro:'Ich schließe meinen Bachelor in Marketing zwischen der HELMo (Lüttich) und der Artevelde Hogeschool (Gent) ab. Ich suche ein 15-wöchiges Praktikum in einem dynamischen Unternehmen, in dem ich in verschiedenen Bereichen viel lernen kann, am liebsten in einem kreativen Umfeld.',
+  bLang:'Sprachen',bTools:'Tools',bJobs:'Berufserfahrung',bSchool:'Sekundarschule',bLic:'Führerscheine',
+  cT1:'Lassen Sie uns',cT2:'sprechen.',cP:'Ich stelle Ihnen diese Projekte gern persönlich vor und beantworte alle Ihre Fragen. Schreiben Sie mir gerne.',
+  mail:'E-Mail',phone:'Telefon',copy:'Kopieren',copied:'Kopiert',li:'Profil ansehen',
+  top:'Zurück nach oben',close:'Schließen',
+  steps:{I:'Entwurf',II:'Löwen',III:'Lüttich'},
+  step:'Schritt',sheetT:'Die Fotos, der Reihe nach',
+  cnt:(v,d)=>v+' Videos · '+d+' Dokumente',
+  foot:'Max Moors Notizbuch · 2026'
+}};
+
+/* ---------- chapitres ---------- */
+const C=[
+{id:'hubo2019',y:'2019',st:'past',hl:true,badge:['Un de mes tout premiers jobs étudiants','Een van mijn allereerste studentenjobs'],when:['2019 – 2020','2019 – 2020'],short:['Hubo, un de mes premiers jobs','Hubo, een van mijn eerste jobs'],
+ t:['Un de mes tout premiers jobs étudiants, chez Hubo','Een van mijn allereerste studentenjobs, bij Hubo'],
+ d:['Tout a commencé là : l’un de mes tout premiers jobs étudiants, en 2019, dans un magasin Hubo. Je connais la maison et les rouages de l’enseigne de l’intérieur. Si mon stage de 2027 se confirme, il pourrait me ramener dans la même enseigne, côté marketing cette fois.','Het begon daar: een van mijn allereerste studentenjobs, in 2019, in een Hubo-winkel. Ik ken het huis en de werking van de winkelketen van binnenuit. Als mijn stage in 2027 doorgaat, brengt die me misschien terug naar dezelfde winkelketen, dit keer aan de marketingkant.'],
+ b:[['Étudiant responsable du rayon outillage et visserie.','Réapprovisionnement des rayons.','Conseil aux clients.','Le seul à pouvoir s’occuper des clients anglophones.'],['Student-verantwoordelijke voor de afdeling gereedschap en bevestigingsmateriaal.','Rekken bevoorraden.','Klanten adviseren.','De enige die Engelstalige klanten kon helpen.']],p:[]},
+{id:'hec',y:'2022',st:'past',when:['09/2022 – 06/2023','09/2022 – 06/2023'],short:['HEC Liège','HEC Luik'],
+ t:['Économie et gestion à HEC','Economie en management aan HEC'],
+ d:['Ma première année d’études après le secondaire, à HEC Liège.','Mijn eerste studiejaar na het secundair, aan HEC Luik.'],
+ b:[['Analyse économique et gestion d’entreprise.','Bases de la comptabilité et de la finance.'],['Economische analyse en bedrijfsbeheer.','Basis van boekhouden en financiën.']],p:[]},
+{id:'aupair',y:'2023',st:'past',when:['08/2023 – 08/2024','08/2023 – 08/2024'],short:['Au pair aux États-Unis','Au pair in de VS'],
+ t:['Mon année au pair aux États-Unis','Mijn au-pairjaar in de Verenigde Staten'],
+ d:['Un an de l’autre côté de l’Atlantique ! Avant de partir, j’ai tourné et monté ma propre vidéo de candidature.','Een jaar aan de andere kant van de Atlantische Oceaan! Voor ik vertrok, filmde en monteerde ik zelf mijn sollicitatievideo.'],
+ b:[['Dallas, Texas (08/2023 – 01/2024), puis Newtown, Connecticut (01/2024 – 08/2024).','Adaptabilité et autonomie, communication interculturelle, sens des responsabilités et gestion du temps.','Pendant cette année, j’ai écrit un livre de 470 pages : « Un au pair aux États-Unis ».'],
+    ['Dallas, Texas (08/2023 – 01/2024), daarna Newtown, Connecticut (01/2024 – 08/2024).','Aanpassingsvermogen en zelfstandigheid, interculturele communicatie, verantwoordelijkheidszin en timemanagement.','Tijdens dat jaar schreef ik een boek van 470 pagina’s: « Un au pair aux États-Unis ».']],
+ p:[{k:'video',img:'flagUS',url:LK.aupair,tag:['Vidéo · Au pair','Video · Au pair'],t:['Vidéo de candidature au pair','Au-pair sollicitatievideo'],d:['Ma vidéo de candidature pour partir au pair en 2023, que j’ai produite et montée moi-même.','Mijn sollicitatievideo om in 2023 au pair te worden, die ik zelf heb geproduceerd en gemonteerd.']},
+  {k:'doc',img:'coverBook',url:LK.book,tag:['Livre · Extrait PDF','Boek · Fragment PDF'],t:['« Un au pair aux États-Unis », journal de bord','« Un au pair aux États-Unis », reisdagboek'],d:['Les 100 premières pages du livre que j’ai écrit pendant cette année, qui compte 470 pages au total.','De eerste 100 pagina’s van het boek dat ik tijdens dat jaar schreef, in totaal 470 pagina’s.']}]},
+{id:'od3d',row:true,c2:true,y:'2024',st:'past',when:['08/2024','08/2024'],short:['Impression 3D, O&D 3D','3D-printen, O&D 3D'],
+ t:['Impression 3D, O&D 3D','3D-printen, O&D 3D'],
+ d:['À mon retour des États-Unis, en août 2024, j’ai rejoint mes amis dans leur aventure de l’impression 3D. Je m’occupe du site web, du SEO et du GEO. Voici quelques moments marquants de cette aventure.','Bij mijn terugkeer uit de VS, in augustus 2024, sloot ik me aan bij mijn vrienden in hun avontuur met 3D-printen. Ik zorg voor de website, SEO en GEO. Hier enkele hoogtepunten van dat avontuur.'],
+ b:[[],[]],p:[{k:'link',wide:true,img:'od3dBanner',url:LK.od3d,tag:['Site web','Website'],t:['od3d.be','od3d.be'],d:['Le site que je gère : contenu, SEO et GEO.','De site die ik beheer: inhoud, SEO en GEO.']},
+  {k:'video',url:LK.lamp,tag:['Prototype · Lampe','Prototype · Lamp'],t:['Une lampe de bureau imprimée en 3D','Een 3D-geprinte bureaulamp'],d:['Un prototype conçu au laboratoire d’impression 3D d’O&D 3D, que j’aimerais lancer à terme, quand j’aurai du temps à y consacrer.','Een prototype dat ik in het 3D-printlab van O&D 3D maakte en op termijn graag zou lanceren, als ik er tijd voor heb.']},
+  {k:'video',img:'logoBati',logo:1,url:LK.bati,tag:['Vidéo · Batibouw','Video · Batibouw'],t:['Aftermovie Batibouw 2025','Aftermovie Batibouw 2025'],d:['Notre venue à Batibouw avec O&D 3D, grâce à l’invitation d’un de nos clients.','Ons bezoek aan Batibouw met O&D 3D, dankzij de uitnodiging van een van onze klanten.']},
+  {k:'video',url:LK.turismo,tag:['Rencontre · Turismo','Ontmoeting · Turismo'],t:['Une rencontre autour de Turismo','Een ontmoeting rond Turismo'],d:['Une rencontre avec un homme d’affaires pour parler business et projet commun. Turismo est une plateforme de location de voitures premium, que nous voulions fournir en impression 3D.','Een ontmoeting met een zakenman om te praten over zaken en een gezamenlijk project. Turismo is een platform voor de verhuur van premiumwagens, dat we met 3D-print wilden beleveren.']},
+  {k:'video',url:LK.reel,tag:['Vidéo · Réseaux sociaux','Video · Sociale media'],t:['Nos routines au quotidien','Onze dagelijkse routines'],d:['Un reel pour les réseaux sociaux de l’entreprise, tourné dans notre premier local. Depuis, nous avons déménagé dans la cave d’une ancienne entreprise, puis loué un entrepôt de 200 m².','Een reel voor de sociale media van het bedrijf, gefilmd in ons eerste lokaal. Sindsdien verhuisden we naar de kelder van een oud bedrijf en huren we nu een magazijn van 200 m².']}]},
+{id:'bachelier',y:'2024',st:'past',when:['09/2024 – 06/2027','09/2024 – 06/2027'],short:['Bachelier en marketing','Bachelor marketing'],
+ t:['C’est parti pour le bachelier en marketing','Aan de slag met de bachelor marketing'],
+ d:['À HELMo Guillemins, à Liège, jusqu’en juin 2027.','Aan HELMo Guillemins in Luik, tot juni 2027.'],
+ b:[['Études de marché et analyse du comportement des consommateurs.','Gestion de projet et développement d’une stratégie marketing.','Marketing digital et communication.'],['Marktonderzoek en analyse van consumentengedrag.','Projectmanagement en ontwikkeling van een marketingstrategie.','Digitale marketing en communicatie.']],p:[]},
+{id:'bigmat',y:'2025',st:'past',when:['30/01/2025','30/01/2025'],short:['BigMat Haren','BigMat Haren'],
+ t:['BigMat Haren','BigMat Haren'],
+ d:['Une vidéo que j’ai également réalisée pour Schütte, de l’idée jusqu’au montage. Elle montre la mise en place des nouveaux rayonnages de la gamme chez BigMat Haren.','Een video die ik ook voor Schütte maakte, van idee tot montage. Ze toont de plaatsing van de nieuwe rekken van het assortiment bij BigMat Haren.'],
+ b:[[],[]],p:[{k:'video',img:'logoBigmat',logo:1,url:LK.bigmat,tag:['Vidéo · Client','Video · Klant'],t:['BigMat Haren','BigMat Haren'],d:['La mise en place des nouveaux rayonnages de la gamme, chez BigMat Haren.','De plaatsing van de nieuwe rekken van het assortiment bij BigMat Haren.']}]},
+{id:'droploop',y:'2025',st:'past',when:['09/2025 – 05/2026','09/2025 – 05/2026'],short:['Drop Loop','Drop Loop'],big:true,
+ t:['Drop Loop','Drop Loop'],
+ d:['Un récupérateur d’eau de pluie pour balcons, jusqu’à 15 litres. Avec mon équipe, nous l’avons imaginé, fabriqué et présenté, du premier prototype jusqu’à deux prix dont nous sommes très fiers. Hubo était notre principal sponsor.','Een regenwatertank voor balkons, tot 15 liter. Met mijn team bedachten, bouwden en presenteerden we hem, van het eerste prototype tot twee prijzen waar we heel trots op zijn. Hubo was onze belangrijkste sponsor.'],
+ b:[[],[]],
+ p:[{k:'doc',img:'coverDrop',url:LK.dropPdf,tag:['Recherche · PDF','Onderzoek · PDF'],t:['Rapport final Drop Loop','Eindverslag Drop Loop'],d:['Le dossier de recherche, avec photos. Groupe 8.','Het onderzoeksdossier, met foto’s. Groep 8.']}]},
+{id:'schutte',row:true,y:'2026',st:'past',when:['26 – 30/01/2026','26 – 30/01/2026'],short:['Stage chez Schütte','Stage bij Schütte'],
+ t:['Stage chez Schütte','Stage bij Schütte'],
+ d:['Une semaine d’immersion chez ce grossiste B2B de robinetterie et de salle de bain. J’ai passé deux jours à la foire DIY Pro & Garden de Courtrai, où j’ai tourné et monté deux vidéos du stand, puis j’ai découvert le siège à Osnabrück, en Allemagne. Mon rapport de stage raconte tout ça.','Een week onderdompeling bij deze B2B-groothandel in kranen en badkamerproducten. Ik bracht twee dagen door op de beurs DIY Pro & Garden in Kortrijk, waar ik twee video’s van de stand filmde en monteerde, en ontdekte daarna het hoofdkantoor in Osnabrück, Duitsland. Mijn stageverslag vertelt het hele verhaal.'],
+ b:[[],[]],
+ p:[{k:'video',img:'logoSchutte',logo:1,url:LK.schFR,tag:['Vidéo · FR','Video · FR'],t:['Le stand Schütte à Courtrai','De Schütte-stand in Kortrijk (FR)'],d:['Mon père présente le stand Schütte à la foire DIY Pro & Garden de Courtrai, en français. Je l’ai filmé et monté.','Mijn vader stelt de Schütte-stand voor op de beurs DIY Pro & Garden in Kortrijk, in het Frans. Ik filmde en monteerde het.']},
+    {k:'video',img:'logoSchutte',logo:1,url:LK.schNL,tag:['Vidéo · NL','Video · NL'],t:['De Schütte-stand in Kortrijk','De Schütte-stand in Kortrijk'],d:['La même présentation, en néerlandais. Filmée et montée par moi aussi.','Dezelfde presentatie, in het Nederlands. Ook door mij gefilmd en gemonteerd.']},
+    {k:'doc',img:'coverSch',url:LK.schPdf,tag:['Rapport de stage','Stageverslag'],t:['Stage chez Schütte','Stage bij Schütte'],d:['Mon analyse du marché et de l’entreprise, et le récit de ma semaine à la foire de Courtrai.','Mijn markt- en bedrijfsanalyse en het verhaal van mijn week op de beurs in Kortrijk.']}]},
+{id:'bip',y:'2026',st:'past',when:['03/2026','03/2026'],short:['Édition BIP','BIP-editie'],
+ t:['After movie BIP 2026','Aftermovie BIP 2026'],
+ d:['L’after movie d’un programme qui réunit des étudiants internationaux venus travailler en Belgique sur une problématique. Je l’ai produit moi-même.','De aftermovie van een programma dat internationale studenten samenbrengt om in België aan een probleemstelling te werken. Zelf geproduceerd.'],
+ b:[[],[]],p:[{k:'video',img:'logoHelmo',logo:1,url:LK.bip,tag:['Vidéo · BIP','Video · BIP'],t:['After movie BIP 2026','Aftermovie BIP 2026'],d:['L’after movie de l’édition BIP 2026.','De aftermovie van de BIP-editie 2026.']}]},
+{id:'blood',y:'2026',st:'past',when:['18/03/2026','18/03/2026'],short:['Film : Blood 2','Film: Blood 2'],
+ t:['« Projet Blood 2 », un film dont je suis le colonel','« Projet Blood 2 », een film waarin ik de kolonel speel'],
+ d:['Une expérience hors du commun : j’y incarne le colonel, un militaire corrompu, dans un film de 2 h 25.','Een uitzonderlijke ervaring: ik speel er de kolonel in, een corrupte militair, in een film van 2 u 25.'],
+ b:[[],[]],
+ gal:[{i:'bloodPoster',r:-1.2,ar:'7/10',t:['L’affiche','De affiche'],c:['L’affiche de « Projet: Blood 2 », projeté le 18 mars 2026 au centre culturel de Welkenraedt.','De affiche van « Projet: Blood 2 », vertoond op 18 maart 2026 in het cultureel centrum van Welkenraedt.']},
+      {i:'bloodColonel',r:1.2,ar:'3/4',t:['Le colonel','De kolonel'],c:['Moi, dans mon rôle du colonel. Nous avons tourné dans un avion, à l’aérodrome de Spa.','Ik, in mijn rol van kolonel. We draaiden in een vliegtuig, op het vliegveld van Spa.']},
+      {i:'bloodTalk',r:1,ar:'2/3',t:['La soirée','De avond'],c:['Un mot au micro devant le public, le soir de la projection.','Een woordje aan de micro voor het publiek, op de avond van de vertoning.']},
+      {i:'bloodHall',r:.8,ar:'3/2',w:1,t:['La salle','De zaal'],c:['La salle vide, avant l’arrivée du public, avec l’affiche à l’écran.','De lege zaal, voor de komst van het publiek, met de affiche op het scherm.']},
+      {i:'bloodGroup',r:-.8,ar:'3/2',w:1,t:['L’équipe','Het team'],c:['L’équipe du film et la salle, après la projection.','Het filmteam en de zaal, na de vertoning.']}],
+ p:[{k:'video',img:'bloodPoster',url:LK.blood,tag:['Film · Rôle du colonel','Film · Rol van de kolonel'],t:['Projet Blood 2 (2 h 25)','Project Blood 2 (2 u 25)'],d:['Le film complet, sur YouTube.','De volledige film, op YouTube.']}]},
+{id:'erasmus',y:'2026',st:'now',when:['09/2026 – 02/2027','09/2026 – 02/2027'],short:['Erasmus à Gand','Erasmus in Gent'],
+ t:['Erasmus à Gand','Erasmus in Gent'],
+ d:['Je suis en ce moment en International Business à l’Artevelde Hogeschool.','Op dit moment volg ik International Business aan de Artevelde Hogeschool.'],
+ b:[['Leadership et inclusion : développer des compétences de leadership pour créer des environnements sûrs.','Entrepreneuriat : préparation à un avenir d’entrepreneur.','Advanced AI in Business : construire des agents autonomes et des automatisations complexes.'],['Leiderschap en inclusie: leiderschapsvaardigheden ontwikkelen om veilige omgevingen te creëren.','Ondernemerschap: voorbereiding op een toekomst als ondernemer.','Advanced AI in Business: autonome agents en complexe automatiseringen bouwen.']],p:[]},
+{id:'mealvend',y:'2026',st:'now',here:true,when:['10/2026 – en cours','10/2026 – lopend'],short:['Projet MealVend','Project MealVend'],
+ t:['MealVend : des repas sains pour étudiants','MealVend: gezonde maaltijden voor studenten'],
+ d:['Pendant mon Erasmus, je dois lancer un projet : j’ai choisi un distributeur automatique intelligent de repas sains et pratiques pour les étudiants. J’en ai conçu deux prototypes.','Tijdens mijn Erasmus moet ik een project lanceren: ik koos een slimme automaat met gezonde en praktische maaltijden voor studenten. Ik ontwierp er twee prototypes van.'],
+ b:[['L’application : prédictions de repas par IA, menus de la semaine, promotions, précommande avec retrait sur le campus et pass de retrait.','Le site web : constructeur de menu hebdomadaire, animation du distributeur, macros en direct, commande pour le lendemain et un onglet IA (prévisions de demande, prix intelligents).','Toutes les données de ces démonstrations sont simulées.'],['De app: maaltijdvoorspellingen met AI, weekmenu’s, promoties, vooraf bestellen met afhaling op de campus en een afhaalpas.','De website: weekmenubouwer, animatie van de automaat, live macro’s, bestellen voor de volgende dag en een AI-tabblad (vraagvoorspelling, slimme prijzen).','Alle gegevens in deze demo’s zijn gesimuleerd.']],
+ p:[{k:'proto',mv:'app',img:'mvApp',badge:'APP',url:LK.mvApp,tag:['Prototype · Téléphone','Prototype · Telefoon'],t:['MealVend, l’application','MealVend, de app'],d:['L’application étudiante : prédictions par IA, promotions et précommande.','De studentenapp: AI-voorspellingen, promoties en vooraf bestellen.']},
+  {k:'proto',mv:'web',img:'mvWeb',badge:'WEB',url:LK.mvWeb,tag:['Prototype · Ordinateur','Prototype · Computer'],t:['MealVend, le site web','MealVend, de website'],d:['Menu de la semaine, distributeur animé, macros et onglet IA.','Weekmenu, geanimeerde automaat, macro’s en AI-tabblad.']}]},
+{id:'stage',y:'2027',st:'next',when:['02 – 05/2027','02 – 05/2027'],short:['Stage en marketing','Stage in marketing'],
+ t:['Stage en marketing','Stage in marketing'],
+ d:['Un stage d’environ quinze semaines au département marketing de Hubo Belgique est envisagé, et j’aurais très hâte de m’y lancer.','Een stage van ongeveer vijftien weken op de marketingafdeling van Hubo Belgique is in beeld, en ik zou er enorm veel zin in hebben.'],
+ b:[[],[]],p:[{k:'lock',tag:['Dossier stratégique · verrouillé','Strategisch dossier · vergrendeld'],t:['Hubo Summer Launch','Hubo Summer Launch'],d:['Un dossier de recherche sur lequel je travaille en ce moment. Je le présenterai avec plaisir en personne !','Een onderzoeksdossier waar ik op dit moment aan werk. Ik presenteer het graag persoonlijk!']}]}
+];
+const STATUS={fr:{now:'En cours',next:'À venir'},nl:{now:'Bezig',next:'Binnenkort'},en:{now:'Ongoing',next:'Upcoming'},de:{now:'Laufend',next:'Demnächst'}};
+const TR={"en": {"Étudiant responsable du rayon outillage et visserie.": "Student in charge of the tools and fasteners department.", "Réapprovisionnement des rayons.": "Restocking shelves.", "Conseil aux clients.": "Advising customers.", "Le seul à pouvoir s’occuper des clients anglophones.": "The only one able to serve English-speaking customers.", "Analyse économique et gestion d’entreprise.": "Economic analysis and business management.", "Bases de la comptabilité et de la finance.": "Basics of accounting and finance.", "Dallas, Texas (08/2023 – 01/2024), puis Newtown, Connecticut (01/2024 – 08/2024).": "Dallas, Texas (08/2023 – 01/2024), then Newtown, Connecticut (01/2024 – 08/2024).", "Adaptabilité et autonomie, communication interculturelle, sens des responsabilités et gestion du temps.": "Adaptability and independence, intercultural communication, sense of responsibility and time management.", "Pendant cette année, j’ai écrit un livre de 470 pages : « Un au pair aux États-Unis ».": "During that year, I wrote a 470-page book: “Un au pair aux États-Unis”.", "Études de marché et analyse du comportement des consommateurs.": "Market research and analysis of consumer behaviour.", "Gestion de projet et développement d’une stratégie marketing.": "Project management and developing a marketing strategy.", "Marketing digital et communication.": "Digital marketing and communication.", "Leadership et inclusion : développer des compétences de leadership pour créer des environnements sûrs.": "Leadership and inclusion: developing leadership skills to create safe environments.", "Entrepreneuriat : préparation à un avenir d’entrepreneur.": "Entrepreneurship: preparing for a future as an entrepreneur.", "Advanced AI in Business : construire des agents autonomes et des automatisations complexes.": "Advanced AI in Business: building autonomous agents and complex automations.", "L’application : prédictions de repas par IA, menus de la semaine, promotions, précommande avec retrait sur le campus et pass de retrait.": "The app: AI meal predictions, weekly menus, deals, pre-ordering with campus pick-up and a pick-up pass.", "Le site web : constructeur de menu hebdomadaire, animation du distributeur, macros en direct, commande pour le lendemain et un onglet IA (prévisions de demande, prix intelligents).": "The website: weekly menu builder, vending machine animation, live macros, ordering for the next day and an AI tab (demand forecasting, smart pricing).", "Toutes les données de ces démonstrations sont simulées.": "All data in these demos is simulated.", "Un de mes tout premiers jobs étudiants": "One of my very first student jobs", "2019 – 2020": "2019 – 2020", "Hubo, un de mes premiers jobs": "Hubo, one of my first jobs", "Un de mes tout premiers jobs étudiants, chez Hubo": "One of my very first student jobs, at Hubo", "Tout a commencé là : l’un de mes tout premiers jobs étudiants, en 2019, dans un magasin Hubo. Je connais la maison et les rouages de l’enseigne de l’intérieur. Si mon stage de 2027 se confirme, il pourrait me ramener dans la même enseigne, côté marketing cette fois.": "It all started there: one of my very first student jobs, in 2019, in a Hubo store. I know the company and the inner workings of the chain from the inside. If my 2027 internship is confirmed, it could bring me back to the same chain, on the marketing side this time.", "09/2022 – 06/2023": "09/2022 – 06/2023", "HEC Liège": "HEC Liège", "Économie et gestion à HEC": "Economics and management at HEC", "Ma première année d’études après le secondaire, à HEC Liège.": "My first year of study after secondary school, at HEC Liège.", "08/2023 – 08/2024": "08/2023 – 08/2024", "Au pair aux États-Unis": "Au pair in the USA", "Mon année au pair aux États-Unis": "My au pair year in the United States", "Un an de l’autre côté de l’Atlantique ! Avant de partir, j’ai tourné et monté ma propre vidéo de candidature.": "A year on the other side of the Atlantic! Before leaving, I shot and edited my own application video.", "Vidéo · Au pair": "Video · Au pair", "Vidéo de candidature au pair": "Au pair application video", "Ma vidéo de candidature pour partir au pair en 2023, que j’ai produite et montée moi-même.": "My application video to go au pair in 2023, which I produced and edited myself.", "Livre · Extrait PDF": "Book · PDF excerpt", "« Un au pair aux États-Unis », journal de bord": "“Un au pair aux États-Unis”, travel journal", "Les 100 premières pages du livre que j’ai écrit pendant cette année, qui compte 470 pages au total.": "The first 100 pages of the book I wrote during that year, which is 470 pages long in total.", "08/2024": "08/2024", "Retour et impression 3D": "Back home and 3D printing", "Retour des États-Unis, cap sur l’impression 3D": "Back from the USA, heading into 3D printing", "À mon retour, j’ai rejoint mes amis dans leur aventure de l’impression 3D. Je m’occupe du site web, du SEO et du GEO.": "When I got back, I joined my friends in their 3D printing venture. I take care of the website, SEO and GEO.", "Site web": "Website", "od3d.be": "od3d.be", "Le site que je gère : contenu, SEO et GEO.": "The website I manage: content, SEO and GEO.", "09/2024 – 06/2027": "09/2024 – 06/2027", "Bachelier en marketing": "Bachelor’s in marketing", "C’est parti pour le bachelier en marketing": "Off to a bachelor’s degree in marketing", "À HELMo Guillemins, à Liège, jusqu’en juin 2027.": "At HELMo Guillemins, in Liège, until June 2027.", "30/01/2025": "30/01/2025", "BigMat Haren": "BigMat Haren", "Une vidéo que j’ai également réalisée pour Schütte, de l’idée jusqu’au montage. Elle montre la mise en place des nouveaux rayonnages de la gamme chez BigMat Haren.": "A video I also made for Schütte, from the initial idea to the final edit. It shows the installation of the range’s new shelving at BigMat Haren.", "Vidéo · Client": "Video · Client", "La mise en place des nouveaux rayonnages de la gamme, chez BigMat Haren.": "The installation of the range’s new shelving, at BigMat Haren.", "09/2025 – 05/2026": "09/2025 – 05/2026", "Drop Loop": "Drop Loop", "Un récupérateur d’eau de pluie pour balcons, jusqu’à 15 litres. Avec mon équipe, nous l’avons imaginé, fabriqué et présenté, du premier prototype jusqu’à deux prix dont nous sommes très fiers. Hubo était notre principal sponsor.": "A rainwater collector for balconies, up to 15 litres. With my team, we designed, built and presented it, from the first prototype to two awards we are very proud of. Hubo was our main sponsor.", "Recherche · PDF": "Research · PDF", "Rapport final Drop Loop": "Drop Loop final report", "Le dossier de recherche, avec photos. Groupe 8.": "The research file, with photos. Group 8.", "26 – 30/01/2026": "26 – 30/01/2026", "Stage chez Schütte": "Internship at Schütte", "Une semaine d’immersion chez ce grossiste B2B de robinetterie et de salle de bain. J’ai passé deux jours à la foire DIY Pro & Garden de Courtrai, où j’ai tourné et monté deux vidéos du stand, puis j’ai découvert le siège à Osnabrück, en Allemagne. Mon rapport de stage raconte tout ça.": "A week of immersion at this B2B wholesaler of taps and bathroom products. I spent two days at the DIY Pro & Garden fair in Kortrijk, where I filmed and edited two videos of the stand, then discovered the head office in Osnabrück, Germany. My internship report tells the whole story.", "Vidéo · FR": "Video · FR", "Le stand Schütte à Courtrai": "The Schütte stand in Kortrijk (FR)", "Mon père présente le stand Schütte à la foire DIY Pro & Garden de Courtrai, en français. Je l’ai filmé et monté.": "My father presents the Schütte stand at the DIY Pro & Garden fair in Kortrijk, in French. I filmed and edited it.", "Vidéo · NL": "Video · NL", "De Schütte-stand in Kortrijk": "The Schütte stand in Kortrijk (NL)", "La même présentation, en néerlandais. Filmée et montée par moi aussi.": "The same presentation, in Dutch. Also filmed and edited by me.", "Rapport de stage": "Internship report", "Mon analyse du marché et de l’entreprise, et le récit de ma semaine à la foire de Courtrai.": "My analysis of the market and the company, and the story of my week at the Kortrijk fair.", "03/2026": "03/2026", "Édition BIP": "BIP edition", "After movie BIP 2026": "After movie BIP 2026", "L’after movie d’un programme qui réunit des étudiants internationaux venus travailler en Belgique sur une problématique. Je l’ai produit moi-même.": "The after movie of a programme that brings together international students who come to Belgium to work on a problem. I produced it myself.", "Vidéo · BIP": "Video · BIP", "L’after movie de l’édition BIP 2026.": "The after movie of the 2026 BIP edition.", "09/2026 – 02/2027": "09/2026 – 02/2027", "Erasmus à Gand": "Erasmus in Ghent", "Je suis en ce moment en International Business à l’Artevelde Hogeschool.": "I am currently studying International Business at Artevelde Hogeschool.", "10/2026 – en cours": "10/2026 – ongoing", "Projet MealVend": "MealVend project", "MealVend : des repas sains pour étudiants": "MealVend: healthy meals for students", "Pendant mon Erasmus, je dois lancer un projet : j’ai choisi un distributeur automatique intelligent de repas sains et pratiques pour les étudiants. J’en ai conçu deux prototypes.": "During my Erasmus, I have to launch a project: I chose a smart vending machine offering healthy, convenient meals for students. I designed two prototypes of it.", "Prototype · Téléphone": "Prototype · Phone", "MealVend, l’application": "MealVend, the app", "L’application étudiante : prédictions par IA, promotions et précommande.": "The student app: AI predictions, deals and pre-ordering.", "Prototype · Ordinateur": "Prototype · Computer", "MealVend, le site web": "MealVend, the website", "Menu de la semaine, distributeur animé, macros et onglet IA.": "Weekly menu, animated vending machine, macros and AI tab.", "02 – 05/2027": "02 – 05/2027", "Stage en marketing": "Marketing internship", "Un stage d’environ quinze semaines au département marketing de Hubo Belgique est envisagé, et j’aurais très hâte de m’y lancer.": "An internship of about fifteen weeks in the marketing department of Hubo Belgique is being considered, and I would be very eager to get started.", "Dossier stratégique · verrouillé": "Strategy file · locked", "Hubo Summer Launch": "Hubo Summer Launch", "Un dossier de recherche sur lequel je travaille en ce moment. Je le présenterai avec plaisir en personne !": "A research file I am currently working on. I would be glad to present it in person!", "Louvain": "Leuven", "UCM Business Impact Award": "UCM Business Impact Award", "LJE Challenge 2026, face aux mini-entreprises de toute la Belgique.": "LJE Challenge 2026, against mini-enterprises from all over Belgium.", "Liège": "Liège", "Prix du jury": "Jury prize", "Face aux mini-entreprises de mon école, et une deuxième récompense pour l’équipe.": "Against the mini-enterprises of my school, and a second award for the team.", "Prototype": "Prototype", "Notre tout premier prototype, avec son entonnoir, son pot et son robinet.": "Our very first prototype, with its funnel, pot and tap.", "Packaging": "Packaging", "Jusqu’à 15 L, plastique recyclé, installation sans outil.": "Up to 15 L, recycled plastic, tool-free installation.", "Le stand": "The stand", "À l’atelier, découpe de l’acier pour le stand.": "In the workshop, cutting steel for the stand.", "Notre stand au LJE Challenge.": "Our stand at the LJE Challenge.", "L’équipe": "The team", "Toute l’équipe devant le stand.": "The whole team in front of the stand.", "La scène": "The stage", "Drop Loop sur grand écran : l’équipe remporte l’UCM Business Impact Award.": "Drop Loop on the big screen: the team wins the UCM Business Impact Award.", "Le prix": "The prize", "Le chèque de l’UCM Business Impact Award.": "The cheque for the UCM Business Impact Award.", "L’équipe, très fière, avec le certificat du prix du jury.": "The team, very proud, with the jury prize certificate.", "Français": "French", "Langue maternelle": "Native language", "Anglais": "English", "Allemand": "German", "C1 · diplôme DSD II": "C1 · DSD II diploma", "Néerlandais": "Dutch", "Employé dans un salon de glaces": "Ice cream parlour assistant", "Aide de cuisine": "Kitchen assistant", "Chauffeur-livreur": "Delivery driver", "Employé de magasin": "Shop assistant", "Hubo (2019 – 2020), Okay et Friterie chez Gene · jusqu’en 2022": "Hubo (2019 – 2020), Okay and Friterie chez Gene · until 2022", "CESS, option économie": "CESS, economics option", "Immersion en allemand": "German-language immersion", "Diplôme DSD II · C1": "DSD II diploma · C1", "Rôle principal": "Lead role", "Permis B": "Category B driving licence", "et voiture": "and car", "Impression 3D, O&D 3D": "3D printing, O&D 3D", "À mon retour des États-Unis, en août 2024, j’ai rejoint mes amis dans leur aventure de l’impression 3D. Je m’occupe du site web, du SEO et du GEO. Voici quelques moments marquants de cette aventure.": "When I came back from the USA, in August 2024, I joined my friends in their 3D printing venture. I take care of the website, SEO and GEO. Here are some highlights of that adventure.", "Prototype · Lampe": "Prototype · Lamp", "Une lampe de bureau imprimée en 3D": "A 3D-printed desk lamp", "Un prototype conçu au laboratoire d’impression 3D d’O&D 3D, que j’aimerais lancer à terme, quand j’aurai du temps à y consacrer.": "A prototype designed in the 3D printing lab of O&D 3D, which I would like to launch eventually, once I have time to dedicate to it.", "Vidéo · Batibouw": "Video · Batibouw", "Aftermovie Batibouw 2025": "Batibouw 2025 aftermovie", "Notre venue à Batibouw avec O&D 3D, grâce à l’invitation d’un de nos clients.": "Our visit to Batibouw with O&D 3D, thanks to an invitation from one of our clients.", "Rencontre · Turismo": "Meeting · Turismo", "Une rencontre autour de Turismo": "A meeting around Turismo", "Une rencontre avec un homme d’affaires pour parler business et projet commun. Turismo est une plateforme de location de voitures premium, que nous voulions fournir en impression 3D.": "A meeting with a businessman to talk business and a joint project. Turismo is a premium car rental platform that we wanted to supply with 3D printing.", "Vidéo · Réseaux sociaux": "Video · Social media", "Nos routines au quotidien": "Our daily routines", "Un reel pour les réseaux sociaux de l’entreprise, tourné dans notre premier local. Depuis, nous avons déménagé dans la cave d’une ancienne entreprise, puis loué un entrepôt de 200 m².": "A reel for the company’s social media, shot in our first workshop. Since then we have moved into the cellar of a former company, and then rented a 200 m² warehouse."}, "de": {"Étudiant responsable du rayon outillage et visserie.": "Als Student verantwortlich für die Abteilung Werkzeuge und Befestigungsmaterial.", "Réapprovisionnement des rayons.": "Regale auffüllen.", "Conseil aux clients.": "Kunden beraten.", "Le seul à pouvoir s’occuper des clients anglophones.": "Der Einzige, der englischsprachige Kunden bedienen konnte.", "Analyse économique et gestion d’entreprise.": "Wirtschaftsanalyse und Unternehmensführung.", "Bases de la comptabilité et de la finance.": "Grundlagen der Buchhaltung und des Finanzwesens.", "Dallas, Texas (08/2023 – 01/2024), puis Newtown, Connecticut (01/2024 – 08/2024).": "Dallas, Texas (08/2023 – 01/2024), danach Newtown, Connecticut (01/2024 – 08/2024).", "Adaptabilité et autonomie, communication interculturelle, sens des responsabilités et gestion du temps.": "Anpassungsfähigkeit und Selbstständigkeit, interkulturelle Kommunikation, Verantwortungsbewusstsein und Zeitmanagement.", "Pendant cette année, j’ai écrit un livre de 470 pages : « Un au pair aux États-Unis ».": "In diesem Jahr habe ich ein Buch mit 470 Seiten geschrieben: „Un au pair aux États-Unis“.", "Études de marché et analyse du comportement des consommateurs.": "Marktforschung und Analyse des Konsumentenverhaltens.", "Gestion de projet et développement d’une stratégie marketing.": "Projektmanagement und Entwicklung einer Marketingstrategie.", "Marketing digital et communication.": "Digitales Marketing und Kommunikation.", "Leadership et inclusion : développer des compétences de leadership pour créer des environnements sûrs.": "Leadership und Inklusion: Führungskompetenzen entwickeln, um sichere Umgebungen zu schaffen.", "Entrepreneuriat : préparation à un avenir d’entrepreneur.": "Entrepreneurship: Vorbereitung auf eine Zukunft als Unternehmer.", "Advanced AI in Business : construire des agents autonomes et des automatisations complexes.": "Advanced AI in Business: autonome Agenten und komplexe Automatisierungen entwickeln.", "L’application : prédictions de repas par IA, menus de la semaine, promotions, précommande avec retrait sur le campus et pass de retrait.": "Die App: KI-Mahlzeitenvorhersagen, Wochenmenüs, Angebote, Vorbestellung mit Abholung auf dem Campus und ein Abholpass.", "Le site web : constructeur de menu hebdomadaire, animation du distributeur, macros en direct, commande pour le lendemain et un onglet IA (prévisions de demande, prix intelligents).": "Die Website: Wochenmenü-Konfigurator, Animation des Automaten, Nährwerte in Echtzeit, Bestellung für den nächsten Tag und ein KI-Tab (Nachfrageprognose, intelligente Preise).", "Toutes les données de ces démonstrations sont simulées.": "Alle Daten in diesen Demos sind simuliert.", "Un de mes tout premiers jobs étudiants": "Einer meiner allerersten Studentenjobs", "2019 – 2020": "2019 – 2020", "Hubo, un de mes premiers jobs": "Hubo, einer meiner ersten Jobs", "Un de mes tout premiers jobs étudiants, chez Hubo": "Einer meiner allerersten Studentenjobs, bei Hubo", "Tout a commencé là : l’un de mes tout premiers jobs étudiants, en 2019, dans un magasin Hubo. Je connais la maison et les rouages de l’enseigne de l’intérieur. Si mon stage de 2027 se confirme, il pourrait me ramener dans la même enseigne, côté marketing cette fois.": "Dort hat alles begonnen: einer meiner allerersten Studentenjobs, 2019, in einer Hubo-Filiale. Ich kenne das Unternehmen und die Abläufe der Kette von innen. Sollte mein Praktikum 2027 zustande kommen, könnte es mich zur selben Kette zurückführen, diesmal auf der Marketingseite.", "09/2022 – 06/2023": "09/2022 – 06/2023", "HEC Liège": "HEC Liège", "Économie et gestion à HEC": "Wirtschaft und Management an der HEC", "Ma première année d’études après le secondaire, à HEC Liège.": "Mein erstes Studienjahr nach der Sekundarschule, an der HEC Lüttich.", "08/2023 – 08/2024": "08/2023 – 08/2024", "Au pair aux États-Unis": "Au-pair in den USA", "Mon année au pair aux États-Unis": "Mein Au-pair-Jahr in den Vereinigten Staaten", "Un an de l’autre côté de l’Atlantique ! Avant de partir, j’ai tourné et monté ma propre vidéo de candidature.": "Ein Jahr auf der anderen Seite des Atlantiks! Vor meiner Abreise habe ich mein eigenes Bewerbungsvideo gedreht und geschnitten.", "Vidéo · Au pair": "Video · Au-pair", "Vidéo de candidature au pair": "Au-pair-Bewerbungsvideo", "Ma vidéo de candidature pour partir au pair en 2023, que j’ai produite et montée moi-même.": "Mein Bewerbungsvideo für das Au-pair-Jahr 2023, das ich selbst produziert und geschnitten habe.", "Livre · Extrait PDF": "Buch · PDF-Auszug", "« Un au pair aux États-Unis », journal de bord": "„Un au pair aux États-Unis“, Reisetagebuch", "Les 100 premières pages du livre que j’ai écrit pendant cette année, qui compte 470 pages au total.": "Die ersten 100 Seiten des Buches, das ich in diesem Jahr geschrieben habe und das insgesamt 470 Seiten umfasst.", "08/2024": "08/2024", "Retour et impression 3D": "Rückkehr und 3D-Druck", "Retour des États-Unis, cap sur l’impression 3D": "Zurück aus den USA, auf zum 3D-Druck", "À mon retour, j’ai rejoint mes amis dans leur aventure de l’impression 3D. Je m’occupe du site web, du SEO et du GEO.": "Nach meiner Rückkehr habe ich mich meinen Freunden bei ihrem 3D-Druck-Projekt angeschlossen. Ich kümmere mich um die Website, SEO und GEO.", "Site web": "Website", "od3d.be": "od3d.be", "Le site que je gère : contenu, SEO et GEO.": "Die Website, die ich betreue: Inhalte, SEO und GEO.", "09/2024 – 06/2027": "09/2024 – 06/2027", "Bachelier en marketing": "Bachelor in Marketing", "C’est parti pour le bachelier en marketing": "Auf in den Bachelor Marketing", "À HELMo Guillemins, à Liège, jusqu’en juin 2027.": "An der HELMo Guillemins in Lüttich, bis Juni 2027.", "30/01/2025": "30/01/2025", "BigMat Haren": "BigMat Haren", "Une vidéo que j’ai également réalisée pour Schütte, de l’idée jusqu’au montage. Elle montre la mise en place des nouveaux rayonnages de la gamme chez BigMat Haren.": "Ein Video, das ich ebenfalls für Schütte realisiert habe, von der Idee bis zum Schnitt. Es zeigt den Aufbau der neuen Regale des Sortiments bei BigMat Haren.", "Vidéo · Client": "Video · Kunde", "La mise en place des nouveaux rayonnages de la gamme, chez BigMat Haren.": "Der Aufbau der neuen Regale des Sortiments bei BigMat Haren.", "09/2025 – 05/2026": "09/2025 – 05/2026", "Drop Loop": "Drop Loop", "Un récupérateur d’eau de pluie pour balcons, jusqu’à 15 litres. Avec mon équipe, nous l’avons imaginé, fabriqué et présenté, du premier prototype jusqu’à deux prix dont nous sommes très fiers. Hubo était notre principal sponsor.": "Ein Regenwassersammler für Balkone mit bis zu 15 Litern. Mit meinem Team haben wir ihn entwickelt, gebaut und präsentiert, vom ersten Prototyp bis zu zwei Auszeichnungen, auf die wir sehr stolz sind. Hubo war unser Hauptsponsor.", "Recherche · PDF": "Recherche · PDF", "Rapport final Drop Loop": "Drop-Loop-Abschlussbericht", "Le dossier de recherche, avec photos. Groupe 8.": "Das Recherche-Dossier, mit Fotos. Gruppe 8.", "26 – 30/01/2026": "26 – 30/01/2026", "Stage chez Schütte": "Praktikum bei Schütte", "Une semaine d’immersion chez ce grossiste B2B de robinetterie et de salle de bain. J’ai passé deux jours à la foire DIY Pro & Garden de Courtrai, où j’ai tourné et monté deux vidéos du stand, puis j’ai découvert le siège à Osnabrück, en Allemagne. Mon rapport de stage raconte tout ça.": "Eine Woche Einblick bei diesem B2B-Großhändler für Armaturen und Badprodukte. Zwei Tage verbrachte ich auf der Messe DIY Pro & Garden in Kortrijk, wo ich zwei Videos vom Stand gedreht und geschnitten habe. Anschließend lernte ich die Zentrale in Osnabrück in Deutschland kennen. Mein Praktikumsbericht erzählt die ganze Geschichte.", "Vidéo · FR": "Video · FR", "Le stand Schütte à Courtrai": "Der Schütte-Stand in Kortrijk (FR)", "Mon père présente le stand Schütte à la foire DIY Pro & Garden de Courtrai, en français. Je l’ai filmé et monté.": "Mein Vater stellt den Schütte-Stand auf der Messe DIY Pro & Garden in Kortrijk vor, auf Französisch. Ich habe ihn gefilmt und geschnitten.", "Vidéo · NL": "Video · NL", "De Schütte-stand in Kortrijk": "Der Schütte-Stand in Kortrijk (NL)", "La même présentation, en néerlandais. Filmée et montée par moi aussi.": "Dieselbe Präsentation, auf Niederländisch. Ebenfalls von mir gefilmt und geschnitten.", "Rapport de stage": "Praktikumsbericht", "Mon analyse du marché et de l’entreprise, et le récit de ma semaine à la foire de Courtrai.": "Meine Analyse des Marktes und des Unternehmens sowie der Bericht über meine Woche auf der Messe in Kortrijk.", "03/2026": "03/2026", "Édition BIP": "BIP-Ausgabe", "After movie BIP 2026": "Aftermovie BIP 2026", "L’after movie d’un programme qui réunit des étudiants internationaux venus travailler en Belgique sur une problématique. Je l’ai produit moi-même.": "Der Aftermovie eines Programms, das internationale Studierende zusammenbringt, die nach Belgien kommen, um an einer Problemstellung zu arbeiten. Ich habe ihn selbst produziert.", "Vidéo · BIP": "Video · BIP", "L’after movie de l’édition BIP 2026.": "Der Aftermovie der BIP-Ausgabe 2026.", "09/2026 – 02/2027": "09/2026 – 02/2027", "Erasmus à Gand": "Erasmus in Gent", "Je suis en ce moment en International Business à l’Artevelde Hogeschool.": "Derzeit studiere ich International Business an der Artevelde Hogeschool.", "10/2026 – en cours": "10/2026 – laufend", "Projet MealVend": "Projekt MealVend", "MealVend : des repas sains pour étudiants": "MealVend: gesunde Mahlzeiten für Studierende", "Pendant mon Erasmus, je dois lancer un projet : j’ai choisi un distributeur automatique intelligent de repas sains et pratiques pour les étudiants. J’en ai conçu deux prototypes.": "Während meines Erasmus muss ich ein Projekt starten: Ich habe mich für einen intelligenten Automaten mit gesunden und praktischen Mahlzeiten für Studierende entschieden. Ich habe zwei Prototypen davon entworfen.", "Prototype · Téléphone": "Prototyp · Smartphone", "MealVend, l’application": "MealVend, die App", "L’application étudiante : prédictions par IA, promotions et précommande.": "Die Studierenden-App: KI-Vorhersagen, Angebote und Vorbestellung.", "Prototype · Ordinateur": "Prototyp · Computer", "MealVend, le site web": "MealVend, die Website", "Menu de la semaine, distributeur animé, macros et onglet IA.": "Wochenmenü, animierter Automat, Nährwerte und KI-Tab.", "02 – 05/2027": "02 – 05/2027", "Stage en marketing": "Marketingpraktikum", "Un stage d’environ quinze semaines au département marketing de Hubo Belgique est envisagé, et j’aurais très hâte de m’y lancer.": "Ein Praktikum von etwa fünfzehn Wochen in der Marketingabteilung von Hubo Belgique ist im Gespräch, und ich würde mich sehr darauf freuen.", "Dossier stratégique · verrouillé": "Strategiedossier · gesperrt", "Hubo Summer Launch": "Hubo Summer Launch", "Un dossier de recherche sur lequel je travaille en ce moment. Je le présenterai avec plaisir en personne !": "Ein Recherche-Dossier, an dem ich derzeit arbeite. Ich stelle es gern persönlich vor!", "Louvain": "Löwen", "UCM Business Impact Award": "UCM Business Impact Award", "LJE Challenge 2026, face aux mini-entreprises de toute la Belgique.": "LJE Challenge 2026, gegen Mini-Unternehmen aus ganz Belgien.", "Liège": "Lüttich", "Prix du jury": "Jurypreis", "Face aux mini-entreprises de mon école, et une deuxième récompense pour l’équipe.": "Gegen die Mini-Unternehmen meiner Schule, und eine zweite Auszeichnung für das Team.", "Prototype": "Prototyp", "Notre tout premier prototype, avec son entonnoir, son pot et son robinet.": "Unser allererster Prototyp, mit Trichter, Topf und Hahn.", "Packaging": "Verpackung", "Jusqu’à 15 L, plastique recyclé, installation sans outil.": "Bis zu 15 L, recycelter Kunststoff, Montage ohne Werkzeug.", "Le stand": "Der Stand", "À l’atelier, découpe de l’acier pour le stand.": "In der Werkstatt, beim Zuschneiden des Stahls für den Stand.", "Notre stand au LJE Challenge.": "Unser Stand bei der LJE Challenge.", "L’équipe": "Das Team", "Toute l’équipe devant le stand.": "Das ganze Team vor dem Stand.", "La scène": "Die Bühne", "Drop Loop sur grand écran : l’équipe remporte l’UCM Business Impact Award.": "Drop Loop auf der großen Leinwand: Das Team gewinnt den UCM Business Impact Award.", "Le prix": "Der Preis", "Le chèque de l’UCM Business Impact Award.": "Der Scheck des UCM Business Impact Award.", "L’équipe, très fière, avec le certificat du prix du jury.": "Das Team, sehr stolz, mit der Urkunde des Jurypreises.", "Français": "Französisch", "Langue maternelle": "Muttersprache", "Anglais": "Englisch", "Allemand": "Deutsch", "C1 · diplôme DSD II": "C1 · DSD-II-Diplom", "Néerlandais": "Niederländisch", "Employé dans un salon de glaces": "Mitarbeiter in einer Eisdiele", "Aide de cuisine": "Küchenhilfe", "Chauffeur-livreur": "Lieferfahrer", "Employé de magasin": "Verkäufer", "Hubo (2019 – 2020), Okay et Friterie chez Gene · jusqu’en 2022": "Hubo (2019 – 2020), Okay und Friterie chez Gene · bis 2022", "CESS, option économie": "CESS, Schwerpunkt Wirtschaft", "Immersion en allemand": "Deutschsprachige Immersion", "Diplôme DSD II · C1": "DSD-II-Diplom · C1", "Rôle principal": "Hauptrolle", "Permis B": "Führerschein Klasse B", "et voiture": "und Auto", "Impression 3D, O&D 3D": "3D-Druck, O&D 3D", "À mon retour des États-Unis, en août 2024, j’ai rejoint mes amis dans leur aventure de l’impression 3D. Je m’occupe du site web, du SEO et du GEO. Voici quelques moments marquants de cette aventure.": "Nach meiner Rückkehr aus den USA im August 2024 habe ich mich meinen Freunden bei ihrem 3D-Druck-Projekt angeschlossen. Ich kümmere mich um die Website, SEO und GEO. Hier einige Höhepunkte dieses Abenteuers.", "Prototype · Lampe": "Prototyp · Lampe", "Une lampe de bureau imprimée en 3D": "Eine 3D-gedruckte Schreibtischlampe", "Un prototype conçu au laboratoire d’impression 3D d’O&D 3D, que j’aimerais lancer à terme, quand j’aurai du temps à y consacrer.": "Ein Prototyp aus dem 3D-Druck-Labor von O&D 3D, den ich langfristig gern auf den Markt bringen würde, sobald ich Zeit dafür habe.", "Vidéo · Batibouw": "Video · Batibouw", "Aftermovie Batibouw 2025": "Aftermovie Batibouw 2025", "Notre venue à Batibouw avec O&D 3D, grâce à l’invitation d’un de nos clients.": "Unser Besuch auf der Batibouw mit O&D 3D, dank der Einladung eines unserer Kunden.", "Rencontre · Turismo": "Treffen · Turismo", "Une rencontre autour de Turismo": "Ein Treffen rund um Turismo", "Une rencontre avec un homme d’affaires pour parler business et projet commun. Turismo est une plateforme de location de voitures premium, que nous voulions fournir en impression 3D.": "Ein Treffen mit einem Geschäftsmann, um über Geschäfte und ein gemeinsames Projekt zu sprechen. Turismo ist eine Plattform für die Vermietung von Premiumfahrzeugen, die wir mit 3D-Druck beliefern wollten.", "Vidéo · Réseaux sociaux": "Video · Social Media", "Nos routines au quotidien": "Unser Arbeitsalltag", "Un reel pour les réseaux sociaux de l’entreprise, tourné dans notre premier local. Depuis, nous avons déménagé dans la cave d’une ancienne entreprise, puis loué un entrepôt de 200 m².": "Ein Reel für die Social-Media-Kanäle des Unternehmens, gedreht in unserer ersten Werkstatt. Seitdem sind wir in den Keller eines ehemaligen Unternehmens gezogen und haben dann eine 200 m² große Lagerhalle gemietet."}};
+
+/* Drop Loop : prix et planche photo */
+const PRIZES=[
+ {pl:['Louvain','Louvain'],t:['UCM Business Impact Award','UCM Business Impact Award'],d:['LJE Challenge 2026, face aux mini-entreprises de toute la Belgique.','LJE Challenge 2026, tegen de mini-ondernemingen van heel België.']},
+ {pl:['Liège','Luik'],t:['Prix du jury','Juryprijs'],d:['Face aux mini-entreprises de mon école, et une deuxième récompense pour l’équipe.','Tegen de mini-ondernemingen van mijn school, en een tweede beloning voor het team.']}];
+const TROPHY=c=>`<svg class="tr" viewBox="0 0 50 56" aria-hidden="true"><path d="M13 4h24v14a12 12 0 0 1-24 0z" fill="${c}" stroke="#0A1440" stroke-width="2.5" stroke-linejoin="round"/><path d="M13 8H5c0 9 3 14 10 15M37 8h8c0 9-3 14-10 15" fill="none" stroke="#0A1440" stroke-width="2.5" stroke-linecap="round"/><path d="M25 30v9" stroke="#0A1440" stroke-width="2.5"/><path d="M17 39h16l2 6H15z" fill="${c}" stroke="#0A1440" stroke-width="2.5" stroke-linejoin="round"/><rect x="11" y="45" width="28" height="7" rx="1" fill="#0A1440"/><path d="M20 9v8" stroke="#fff" stroke-opacity=".55" stroke-width="3" stroke-linecap="round"/></svg>`;
+const SHEET=[
+ {g:'I',items:[{i:'dl1',r:-1.5,t:['Prototype','Prototype'],c:['Notre tout premier prototype, avec son entonnoir, son pot et son robinet.','Ons allereerste prototype, met trechter, plantenpot en kraantje.']},
+            {i:'dl2',r:1,ar:'2/1',w:1,t:['Packaging','Verpakking'],c:['Jusqu’à 15 L, plastique recyclé, installation sans outil.','Tot 15 L, gerecycled plastic, installatie zonder gereedschap.']},
+            {i:'dl3',r:-1,t:['Le stand','De stand'],c:['À l’atelier, découpe de l’acier pour le stand.','In het atelier snijden we het staal voor de stand.']}]},
+ {g:'II',items:[{i:'dl4',r:1,t:['Le stand','De stand'],c:['Notre stand au LJE Challenge.','Onze stand op de LJE Challenge.']},
+            {i:'dl5',r:-1.2,t:['L’équipe','Het team'],c:['Toute l’équipe devant le stand.','Het hele team voor de stand.']},
+            {i:'dl6',r:1.2,t:['La scène','Het podium'],c:['Drop Loop sur grand écran : l’équipe remporte l’UCM Business Impact Award.','Drop Loop op het grote scherm: het team wint de UCM Business Impact Award.']},
+            {i:'dl7',r:-1,ar:'3/2',w:1,t:['Le prix','De prijs'],c:['Le chèque de l’UCM Business Impact Award.','De cheque van de UCM Business Impact Award.']}]},
+ {g:'III',items:[{i:'dl8',r:1,ar:'6/5',w:1,t:['Prix du jury','Juryprijs'],c:['L’équipe, très fière, avec le certificat du prix du jury.','Het team, apetrots, met het certificaat van de juryprijs.']}]}];
+
+/* En bref */
+const B={
+ lang:[{a:['Français','Frans'],lv:5,n:['Langue maternelle','Moedertaal']},{a:['Anglais','Engels'],lv:4,n:'C1'},{a:['Allemand','Duits'],lv:4,n:['C1 · diplôme DSD II','C1 · diploma DSD II']},{a:['Néerlandais','Nederlands'],lv:2,n:'A2'}],
+ tools:['Microsoft 365','Canva','CapCut','DaVinci','Premiere Pro','Claude','Gemini','ChatGPT','Grok','Mistral','ElevenLabs'],
+ jobs:[
+       {a:['Employé dans un salon de glaces','Medewerker in een ijssalon'],n:["L’emporté, Welkenraedt\n05/2026 → aujourd’hui","L’emporté, Welkenraedt\n05/2026 → vandaag"]},
+       {a:['Aide de cuisine','Keukenhulp'],n:["Monde Sauvage, Aywaille\n09/2024 → aujourd’hui","Monde Sauvage, Aywaille\n09/2024 → vandaag"]},
+       {a:['Aide de cuisine','Keukenhulp'],n:["Bar à Pasta, Lontzen\n09/2024 – 05/2026","Bar à Pasta, Lontzen\n09/2024 – 05/2026"]},
+       {a:['Chauffeur-livreur','Leveringschauffeur'],n:["Duysens, Welkenraedt\n08/2022 – 08/2023\n08/2024 → aujourd’hui","Duysens, Welkenraedt\n08/2022 – 08/2023\n08/2024 → vandaag"]},
+       {a:['Employé de magasin','Winkelbediende'],n:["Okay\n2020 – 2022","Okay\n2020 – 2022"]},
+       {a:['Employé de magasin','Winkelbediende'],n:["Hubo\n2019 – 2020","Hubo\n2019 – 2020"]},
+       {a:['Aide de cuisine','Keukenhulp'],n:["Friterie chez Gene\n2018 – 2019","Friterie chez Gene\n2018 – 2019"]}],
+ school:[{a:['CESS, option économie','CESS, optie economie'],n:'Saint-Joseph, Welkenraedt · 2016 – 2022'},{a:['Immersion en allemand','Duitse immersie'],n:['Diplôme DSD II · C1','Diploma DSD II · C1']}],
+ lic:[{a:['Permis B','Rijbewijs B'],n:['+ voiture personnelle','+ eigen auto']},{a:['Permis A2','Rijbewijs A2'],n:['+ moto personnelle','+ eigen motor']}]
+};
+
+Object.assign(TR.en,{"Le colonel": "The colonel", "Moi, dans mon rôle du colonel. Nous avons tourné dans un avion, à l’aérodrome de Spa.": "Me, in my role as the colonel. We filmed inside an aeroplane, at Spa airfield.", "La salle": "The theatre", "La salle vide, avant l’arrivée du public, avec l’affiche à l’écran.": "The empty theatre, before the audience arrived, with the poster on the screen."});Object.assign(TR.de,{"Le colonel": "Der Oberst", "Moi, dans mon rôle du colonel. Nous avons tourné dans un avion, à l’aérodrome de Spa.": "Ich in meiner Rolle als Oberst. Wir haben in einem Flugzeug gedreht, auf dem Flugplatz von Spa.", "La salle": "Der Saal", "La salle vide, avant l’arrivée du public, avec l’affiche à l’écran.": "Der leere Saal vor der Ankunft des Publikums, mit dem Plakat auf der Leinwand."});
+Object.assign(TR.en,{"L’emporté, Welkenraedt\n05/2026 → aujourd’hui": "L’emporté, Welkenraedt\n05/2026 → today", "Monde Sauvage, Aywaille\n09/2024 → aujourd’hui": "Monde Sauvage, Aywaille\n09/2024 → today", "Duysens, Welkenraedt\n08/2022 – 08/2023\n08/2024 → aujourd’hui": "Duysens, Welkenraedt\n08/2022 – 08/2023\n08/2024 → today", "Bar à Pasta, Lontzen\n09/2024 – 05/2026": "Bar à Pasta, Lontzen\n09/2024 – 05/2026", "Hubo\n2019 – 2020": "Hubo\n2019 – 2020", "Friterie chez Gene\n2018 – 2019": "Friterie chez Gene\n2018 – 2019", "Okay\n2020 – 2022": "Okay\n2020 – 2022"});Object.assign(TR.de,{"L’emporté, Welkenraedt\n05/2026 → aujourd’hui": "L’emporté, Welkenraedt\n05/2026 → heute", "Monde Sauvage, Aywaille\n09/2024 → aujourd’hui": "Monde Sauvage, Aywaille\n09/2024 → heute", "Duysens, Welkenraedt\n08/2022 – 08/2023\n08/2024 → aujourd’hui": "Duysens, Welkenraedt\n08/2022 – 08/2023\n08/2024 → heute", "Bar à Pasta, Lontzen\n09/2024 – 05/2026": "Bar à Pasta, Lontzen\n09/2024 – 05/2026", "Hubo\n2019 – 2020": "Hubo\n2019 – 2020", "Friterie chez Gene\n2018 – 2019": "Friterie chez Gene\n2018 – 2019", "Okay\n2020 – 2022": "Okay\n2020 – 2022"});
+Object.assign(TR.en,{"L’affiche": "The poster", "L’affiche de « Projet: Blood 2 », projeté le 18 mars 2026 au centre culturel de Welkenraedt.": "The poster of “Projet: Blood 2”, screened on 18 March 2026 at the Welkenraedt cultural centre.", "La soirée": "The evening", "Un mot au micro devant le public, le soir de la projection.": "A few words at the microphone in front of the audience, on the night of the screening.", "L’équipe du film et la salle, après la projection.": "The film crew and the audience, after the screening."});Object.assign(TR.de,{"L’affiche": "Das Plakat", "L’affiche de « Projet: Blood 2 », projeté le 18 mars 2026 au centre culturel de Welkenraedt.": "Das Plakat von „Projet: Blood 2“, vorgeführt am 18. März 2026 im Kulturzentrum Welkenraedt.", "La soirée": "Der Abend", "Un mot au micro devant le public, le soir de la projection.": "Ein paar Worte am Mikrofon vor dem Publikum, am Abend der Vorführung.", "L’équipe du film et la salle, après la projection.": "Das Filmteam und der Saal nach der Vorführung."});
+Object.assign(TR.en,{"« Projet Blood 2 », un film dont je suis le colonel": "“Project Blood 2”, a film in which I play the colonel", "Une expérience hors du commun : j’y incarne le colonel, un militaire corrompu, dans un film de 2 h 25.": "An extraordinary experience: I play the colonel, a corrupt soldier, in a 2 h 25 feature film.", "Film · Rôle du colonel": "Film · Role of the colonel", "Projet Blood 2 (2 h 25)": "Project Blood 2 (2 h 25)", "Le film complet, sur YouTube.": "The full film, on YouTube.", "Film : Blood 2": "Film: Blood 2", "Film": "Film", "Permis B": "Licence B", "Permis A2": "Licence A2", "+ voiture personnelle": "+ personal car", "+ moto personnelle": "+ personal motorcycle"});Object.assign(TR.de,{"« Projet Blood 2 », un film dont je suis le colonel": "„Projekt Blood 2“, ein Film, in dem ich den Oberst spiele", "Une expérience hors du commun : j’y incarne le colonel, un militaire corrompu, dans un film de 2 h 25.": "Eine außergewöhnliche Erfahrung: Ich spiele den Oberst, einen korrupten Militär, in einem Film von 2 Std. 25 Min.", "Film · Rôle du colonel": "Film · Rolle des Obersts", "Projet Blood 2 (2 h 25)": "Projekt Blood 2 (2 Std. 25 Min.)", "Le film complet, sur YouTube.": "Der ganze Film auf YouTube.", "Film : Blood 2": "Film: Blood 2", "Film": "Film", "Permis B": "Führerschein Klasse B", "Permis A2": "Führerschein Klasse A2", "+ voiture personnelle": "+ eigenes Auto", "+ moto personnelle": "+ eigenes Motorrad"});
+
+/* ---------- rendu ---------- */
+let L='fr',F='all';
+const LANGS=['fr','nl','en','de'];
+try{const s=localStorage.getItem('mm-lang');if(LANGS.includes(s))L=s;else{const n=(navigator.language||'fr').slice(0,2).toLowerCase();if(LANGS.includes(n))L=n}}catch(e){}
+const T=x=>{if(!Array.isArray(x))return x;if(L==='fr')return x[0];if(L==='nl')return x[1];const f=x[0];if(Array.isArray(f))return f.map(v=>TR[L][v]||v);return TR[L][f]||f};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const counts=()=>{let v=0,d=0;C.forEach(c=>c.p.forEach(p=>{if(p.k==='video')v++;if(p.k==='doc'||p.k==='lock')d++}));return{v,d}};
+
+function proof(p){
+  const s=S[L];
+  const kind=(p.k==='video')?'video':(p.k==='doc'||p.k==='lock')?'doc':'other';
+  if(p.k==='video')return `<a class="proof" data-kind="video" href="${p.url}" target="_blank" rel="noopener"><div class="vthumb${p.img?' has':''}${p.logo?' logo':''}">${p.img?`<img src="${IMG[p.img]}" alt="">`:''}<i>${ICON.play}</i>${p.img?'':`<em>${esc(T(p.tag))}</em>`}</div><div><div class="lbl">${esc(T(p.tag))}</div><h4>${esc(T(p.t))}</h4><p>${esc(T(p.d))}</p><span class="go">${s.watch} ↗</span></div></a>`;
+  if(p.k==='doc')return `<a class="proof" data-kind="doc" href="${p.url}" target="_blank" rel="noopener"><div class="dwrap"><img class="dthumb" src="${IMG[p.img]}" alt="${esc(T(p.t))}" loading="lazy"><span class="dbadge">PDF</span></div><div><div class="lbl">${esc(T(p.tag))}</div><h4>${esc(T(p.t))}</h4><p>${esc(T(p.d))}</p><span class="go">${s.open} ↗</span></div></a>`;
+  if(p.k==='proto')return `<a class="proof" data-kind="other" href="${p.url}" ${p.mv?`data-proto="${p.mv}" data-pt="${esc(T(p.t))}" `:''}target="_blank" rel="noopener"><div class="dwrap"><img class="dthumb" src="${IMG[p.img]}" alt="${esc(T(p.t))}"><span class="dbadge">${p.badge}</span></div><div><div class="lbl">${esc(T(p.tag))}</div><h4>${esc(T(p.t))}</h4><p>${esc(T(p.d))}</p><span class="go">${s.try} ↗</span></div></a>`;
+  if(p.k==='file')return `<a class="proof" data-kind="other" href="${p.url}" target="_blank" rel="noopener"><div class="lthumb"><div>${ICON.doc}FILE</div></div><div><div class="lbl">${esc(T(p.tag))}</div><h4>${esc(T(p.t))}</h4><p>${esc(T(p.d))}</p><span class="go">${s.openf} ↗</span></div></a>`;
+  if(p.k==='link')return `<a class="proof${p.wide?' wide':''}" data-kind="other" href="${p.url}" target="_blank" rel="noopener">${p.img?`<div class="bthumb"><img src="${IMG[p.img]}" alt="${esc(T(p.t))}"></div>`:`<div class="lthumb"><div>${ICON.web}WWW</div></div>`}<div><div class="lbl">${esc(T(p.tag))}</div><h4>${esc(T(p.t))}</h4><p>${esc(T(p.d))}</p><span class="go">${s.visit} ↗</span></div></a>`;
+  return `<div class="proof locked" data-kind="doc"><div class="lthumb"><div>${ICON.lock}</div></div><div><div class="lbl">${esc(T(p.tag))}</div><h4>${esc(T(p.t))}</h4><p>${esc(T(p.d))}</p></div></div>`;
+}
+function sheet(){
+  const s=S[L];
+  return `<div class="sheet"><div class="prizes">${PRIZES.map((z,i)=>`<div class="stamp">${TROPHY(i?'#C9CED2':'#FFD23F')}<div class="tx"><span class="mono">${esc(T(z.pl))}</span><b>${esc(T(z.t))}</b><span>${esc(T(z.d))}</span></div></div>`).join('')}</div>`+
+  SHEET.map(g=>`<h4><b>${s.step} ${g.g}</b> ${esc(s.steps[g.g])}</h4><div class="row">${g.items.map(x=>`<button class="pol${x.w?' wide':''}" style="--r:${x.r}deg;--ar:${x.ar||'3/4'}" data-img="${x.i}" data-cap="${esc(T(x.t))} · ${esc(T(x.c))}"><img src="${IMG[x.i]}" alt="${esc(T(x.c))}" loading="lazy"><figcaption><b>${esc(T(x.t))}</b>${esc(T(x.c))}</figcaption></button>`).join('')}</div>`).join('')+`</div>`;
+}
+function chapter(c){
+  const s=S[L];
+  const kinds=[...new Set(c.p.map(p=>p.k==='video'?'video':(p.k==='doc'||p.k==='lock')?'doc':'other'))].join(' ');
+  const bl=T(c.b);
+  const st=(c.badge?`<span class="st now">${esc(T(c.badge))}</span>`:'')+(c.st==='past'?'':`<span class="st ${c.st}">${STATUS[L][c.st]}</span>`);
+  const hasR=c.p.length>0;
+  return `<article class="ch ${c.st}${c.here?' here':''}${c.hl?' hot':''} rv"id="c-${c.id}" data-kinds="${kinds}"><div class="ch-head"><span class="when">${esc(T(c.when))}</span>${st}</div><h3>${esc(T(c.t))}</h3><div class="body${(hasR&&!c.row)?'':' one'}"><div class="txt"><p>${esc(T(c.d))}</p>${bl.length?`<ul>${bl.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}</div>${hasR?`<div class="proofs${c.row?' row':''}${c.c2?' c2':''}">${c.p.map(proof).join('')}</div>`:''}</div>${c.big?sheet():''}${c.gal?`<div class="sheet"><div class="row gal">${c.gal.map(x=>`<button class="pol${x.w?' wide':''}" style="--r:${x.r}deg;--ar:${x.ar||'3/4'}" data-img="${x.i}" data-cap="${esc(T(x.t))} · ${esc(T(x.c))}"><img src="${IMG[x.i]}" alt="${esc(T(x.c))}" loading="lazy"><figcaption><b>${esc(T(x.t))}</b>${esc(T(x.c))}</figcaption></button>`).join('')}</div></div>`:''}</article>`;
+}
+function rail(){
+  const s=S[L],n=counts();
+  const toc=C.map(c=>`<li><a href="#c-${c.id}" data-t="c-${c.id}"${c.here?' class="here"':''}><b>${(c.when[0].match(/20\d\d/)||[''])[0]}</b>${esc(T(c.short))}${c.here?`<i>${esc(s.here)}</i>`:''}</a></li>`).join('')+
+    `<li><a href="#bref" data-t="bref"><b>CV</b>${esc(s.brefT)}</a></li><li><a href="#contact" data-t="contact"><b>@</b>Contact</a></li>`;
+  return `<div><div class="brand">Max Moor<small>${esc(s.kicker)}</small></div></div>
+  <div class="lang" role="group" aria-label="Langue / Taal / Language / Sprache"><button type="button" data-l="fr" aria-pressed="${L==='fr'}">FR</button><button type="button" data-l="nl" aria-pressed="${L==='nl'}">NL</button><button type="button" data-l="en" aria-pressed="${L==='en'}">EN</button><button type="button" data-l="de" aria-pressed="${L==='de'}">DE</button></div>
+  <div><h2>${s.filter}</h2><div class="chips">${chip('all',s.all,n.v+n.d)}${chip('video',s.vids,n.v)}${chip('doc',s.docs,n.d)}</div></div>
+  <div><h2>${s.nav}</h2><ul class="toc">${toc}</ul></div>`;
+}
+const chip=(k,t,n)=>`<button class="chip" type="button" data-f="${k}" aria-pressed="${F===k}">${esc(t)}<span>${n}</span></button>`;
+function mbar(){
+  const s=S[L],n=counts();
+  return `<div class="brand">Max</div><div class="lang" role="group" aria-label="Langue / Taal / Language / Sprache"><button type="button" data-l="fr" aria-pressed="${L==='fr'}">FR</button><button type="button" data-l="nl" aria-pressed="${L==='nl'}">NL</button><button type="button" data-l="en" aria-pressed="${L==='en'}">EN</button><button type="button" data-l="de" aria-pressed="${L==='de'}">DE</button></div>${chip('all',s.all,n.v+n.d)}${chip('video',s.vids,n.v)}${chip('doc',s.docs,n.d)}`;
+}
+function lv(n){return `<span class="lv" aria-hidden="true">${[1,2,3,4,5].map(i=>`<i class="${i<=n?'f':''}"></i>`).join('')}</span>`}
+function app(){
+  const s=S[L],n=counts();
+  const hero=`<section class="hero" id="top"><div><span class="kicker"><i></i>${esc(s.kicker)}</span><h1>${esc(s.h1a)} <span class="hl">${esc(s.h1b)}</span></h1><div class="tag">${esc(s.tagline)}</div><p class="lead">${esc(s.lead)}</p>
+    <div class="start" role="group" aria-label="${esc(s.startQ)}"><button class="btn pri" type="button" data-go="video">${ICON.play}${esc(s.bVid)} (${n.v})</button><button class="btn" type="button" data-go="doc">${ICON.doc}${esc(s.bDoc)} (${n.d})</button><a class="btn" href="#parcours">${ICON.down}${esc(s.bPath)}</a></div>
+    <p class="tip">${esc(s.tip)}</p><a class="first" href="#c-hubo2019"><b>${esc(s.firstB)}</b> ${esc(s.firstT)} ↓</a></div>
+    <div class="portrait"><span class="tape"></span><img src="${IMG.portrait}" alt="Max Moor"><div class="note">${ICON.arrow}<span>${esc(s.note)}</span></div></div></section>
+    <div class="intro"><div class="pl">${ICON.play.replace('<svg','<svg width="22" height="22"')}</div><div><b>${esc(s.introT)}</b><p>${esc(s.introP)}</p></div></div>`;
+  const path=`<section id="parcours"><div class="sec-h"><h2>${esc(s.pathT)}</h2><p>${esc(s.pathP)}</p></div><div class="tl">${C.map(chapter).join('')}</div></section>`;
+  const bref=`<section class="bref" id="bref"><div class="sec-h"><h2>${esc(s.brefT)}</h2><p>${esc(s.brefIntro)}</p></div><div class="grid4">
+    <div><div class="blk"><h3>${s.bLang}</h3>${B.lang.map(x=>`<div class="li"><span>${esc(T(x.a))}</span><span>${lv(x.lv)} ${esc(T(x.n))}</span></div>`).join('')}</div>
+    <div class="blk" style="margin-top:36px"><h3>${s.bSchool}</h3>${B.school.map(x=>`<div class="li"><span>${esc(T(x.a))}</span><span>${esc(T(x.n))}</span></div>`).join('')}</div></div>
+    <div class="blk"><h3>${s.bTools}</h3><div class="tools">${B.tools.map(x=>`<span>${x}</span>`).join('')}</div><h3 style="margin-top:26px">${s.bLic}</h3>${B.lic.map(x=>`<div class="li"><span>${esc(T(x.a))}</span><span>${esc(T(x.n))}</span></div>`).join('')}</div>
+    <div class="blk jobs"><h3>${s.bJobs}</h3>${B.jobs.map(x=>`<div class="li"><span>${esc(T(x.a))}</span><span>${esc(T(x.n))}</span></div>`).join('')}</div>
+  </div></section>`;
+  document.getElementById('app').innerHTML=hero+path+bref;
+  document.getElementById('rail').innerHTML=rail();
+  document.getElementById('mbar').innerHTML=mbar();
+  document.getElementById('contactWrap').innerHTML=`<footer class="contact" id="contact"><div class="in"><div><h2>${esc(s.cT1)} <em>${esc(s.cT2)}</em></h2><p>${esc(s.cP)}</p>
+    <div class="coords"><div class="coord"><span class="k">${s.mail}</span><b>m.moor@student.helmo.be</b><button class="cp" type="button" data-copy="m.moor@student.helmo.be">${s.copy}</button></div>
+    <div class="coord"><span class="k">${s.phone}</span><b>0478 49 86 55</b><button class="cp" type="button" data-copy="0478 49 86 55">${s.copy}</button></div>
+    <div class="coord"><span class="k">LinkedIn</span><a href="${LK.linkedin}" target="_blank" rel="noopener">Max Moor ↗</a></div></div></div>
+    <img src="${IMG.full}" alt="Max Moor" loading="lazy"></div><div class="foot"><span>${esc(s.foot)}</span><a href="#top">${esc(s.top)} ↑</a></div></footer>`;
+  applyFilter();spy();
+}
+function applyFilter(){
+  document.querySelectorAll('.chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.f===F));
+  document.querySelectorAll('.ch').forEach(ch=>{
+    const ok=F==='all'||ch.dataset.kinds.split(' ').includes(F);
+    ch.classList.toggle('dim',!ok);
+    ch.querySelectorAll('.proof').forEach(p=>p.classList.toggle('dim',F!=='all'&&p.dataset.kind!==F));
+    const a=document.querySelector(`.toc a[data-t="${ch.id}"]`);if(a)a.classList.toggle('dim',!ok);
+  });
+}
+let io;
+function spy(){
+  if(io)io.disconnect();
+  const links=[...document.querySelectorAll('.toc a')];
+  const set=id=>links.forEach(a=>a.classList.toggle('on',a.dataset.t===id));
+  io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)set(e.target.id)})},{rootMargin:'-30% 0px -60% 0px'});
+  document.querySelectorAll('.ch,#bref,#contact').forEach(el=>io.observe(el));
+}
+function openProto(k,title){
+  const s=S[L];
+  document.getElementById('lbHost').innerHTML=`<div class="pv ${k==='app'?'phone':''}" role="dialog" aria-label="${esc(title)}"><div class="bar"><b>${esc(title)}</b><button type="button" data-pvnew="${k}">${esc(s.newtab)} ↗</button><button type="button" class="x" data-pvclose="1">${esc(s.close)} ✕</button></div><iframe title="${esc(title)}" sandbox="allow-scripts allow-forms allow-popups"></iframe></div>`;
+  document.querySelector('#lbHost iframe').srcdoc=MV[k];
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button,a');
+  if(t&&t.dataset.proto&&MV[t.dataset.proto]){e.preventDefault();openProto(t.dataset.proto,t.dataset.pt);return}
+  if(t&&t.dataset.pvclose){document.getElementById('lbHost').innerHTML='';return}
+  if(t&&t.dataset.pvnew){const u=URL.createObjectURL(new Blob([MV[t.dataset.pvnew]],{type:'text/html'}));window.open(u,'_blank');return}
+  if(e.target.closest('.lb')){document.getElementById('lbHost').innerHTML='';return}
+  if(!t)return;
+  if(t.dataset.l){L=t.dataset.l;try{localStorage.setItem('mm-lang',L)}catch(x){}document.documentElement.lang=L;app();return}
+  if(t.dataset.f){F=(F===t.dataset.f&&F!=='all')?'all':t.dataset.f;applyFilter();return}
+  if(t.dataset.go){F=t.dataset.go;applyFilter();const first=[...document.querySelectorAll('.ch:not(.dim)')][0];if(first)first.scrollIntoView({behavior:'smooth',block:'start'});return}
+  if(t.dataset.copy){const v=t.dataset.copy,s=S[L];const done=()=>{t.textContent=s.copied;setTimeout(()=>t.textContent=s.copy,1400)};
+    try{navigator.clipboard.writeText(v).then(done,()=>{})}catch(x){}return}
+  if(t.classList.contains('pol')){
+    document.getElementById('lbHost').innerHTML=`<div class="lb" role="dialog" aria-label="${S[L].close}"><figure><img src="${IMG[t.dataset.img]}" alt=""><figcaption>${esc(t.dataset.cap)}</figcaption></figure></div>`;return}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('lbHost').innerHTML=''});
+document.documentElement.lang=L;
+app();
+</script>
