@@ -144,7 +144,7 @@ a.proof:hover .dwrap .dthumb{transform:translate(-3px,-3px)}
 .dbadge{position:absolute;left:-8px;top:10px;z-index:2;background:var(--ink);color:var(--bg);font:500 11px var(--font-m);letter-spacing:.08em;padding:3px 8px}
 .vthumb{width:132px;aspect-ratio:16/10;background:var(--night);color:var(--night-fg);position:relative;overflow:hidden;display:grid;place-items:center}
 .vthumb::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,transparent 0 10px,rgba(255,255,255,.05) 10px 11px)}
-.vthumb.has::before{display:none}.vthumb.has img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 38%;filter:brightness(.7)}.vthumb.logo{background:#fff;border:1.5px solid var(--ink)}.vthumb.logo img{object-fit:contain;padding:14px 16px;filter:none}.vthumb.logo i{position:absolute;right:6px;bottom:6px;width:30px;height:30px}.vthumb.logo i svg{width:12px;height:12px}
+.vthumb.has::before{display:none}.vthumb.has img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 38%;filter:brightness(.7)}.vthumb.logo{background:#fff;border:1.5px solid var(--ink)}.vthumb.logo img{box-sizing:border-box;object-fit:contain;padding:14px 16px;filter:none}.vthumb.logo i{width:34px;height:34px}.vthumb.logo i svg{width:12px;height:12px}
 .vthumb i{position:relative;width:40px;height:40px;border-radius:50%;background:var(--accent);display:grid;place-items:center;transition:transform .25s}
 a.proof:hover .vthumb i{transform:scale(1.18)}
 .vthumb i svg{width:16px;height:16px;color:var(--accent-ink);margin-left:2px}
@@ -338,7 +338,7 @@ body.sp{overflow:hidden}
   .mth{position:relative;aspect-ratio:16/10;background:linear-gradient(135deg,#27357F,#0A1448);display:grid;place-items:center;overflow:hidden}
   .mth img{width:100%;height:100%;object-fit:cover;display:block}
   .mth.dc img{object-fit:cover;object-position:top}
-  .mth.logo::after{display:none}.mth.logo{background:#fff}.mth.logo img{object-fit:contain;padding:14px}
+  .mth.logo::after{display:none}.mth.logo{background:#fff}.mth.logo img{position:absolute;inset:0;box-sizing:border-box;object-fit:contain;padding:14px}
   .mth.has::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(0,0,0,.45))}
   .mth .pl{position:absolute;z-index:2;width:46px;height:46px;border-radius:50%;background:#D33641;color:#fff;display:grid;place-items:center;box-shadow:0 0 0 6px rgba(255,255,255,.3)}
   .mth .pl svg{width:20px;height:20px;margin-left:2px}
@@ -372,11 +372,13 @@ body.sp{overflow:hidden}
 
   .mc .dn{position:absolute;left:0;right:0;bottom:0;height:70px;display:grid;place-items:end center;padding-bottom:10px;font:800 22px var(--font-m);color:var(--cfg);background:linear-gradient(transparent,var(--cb2,rgba(0,0,0,.35)));pointer-events:none;opacity:0;transition:opacity .3s}
   .mc.p0 .dn{--cb2:rgba(120,10,20,.75)}.mc.p1 .dn{--cb2:rgba(5,10,50,.8)}.mc.p2 .dn{--cb2:rgba(246,247,251,.95)}.mc.p3 .dn{--cb2:rgba(169,183,238,.95)}
+  .mc .dn span{align-self:end;font:800 13px var(--font-m);letter-spacing:.06em;text-transform:uppercase;background:#fff;color:#0A1440;border-radius:999px;padding:8px 15px;box-shadow:0 8px 20px -8px rgba(0,0,0,.6)}
   .mc.ov.on .dn{opacity:1}.mc.ov.on .dn{animation:dnb 1.4s ease-in-out infinite}
   @keyframes dnb{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
   .mg2{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start;margin-bottom:6px}
   .mph{display:block;background:#fff;color:#0A1440;border:0;padding:7px 7px 0;border-radius:6px;text-align:left;font:inherit;cursor:pointer;transform:rotate(var(--r,0deg));box-shadow:0 12px 22px -12px rgba(0,0,0,.6);-webkit-tap-highlight-color:transparent}
   .mph.wide{grid-column:1/-1}
+  .mg2.solo:has(.land){grid-template-columns:minmax(0,1fr)}
   .mg2.solo{grid-template-columns:minmax(0,230px);justify-content:center;margin-top:8px}
   .mph img{display:block;width:100%;height:auto;border-radius:2px}
   .mph .mcp{display:block;padding:7px 1px 9px;font:500 12px/1.35 var(--font-b)}
@@ -587,7 +589,7 @@ const C=[
 {id:'hec',y:'2022',st:'past',when:['09/2022 – 06/2023','09/2022 – 06/2023'],short:['HEC Liège','HEC Luik'],
  t:['Économie et gestion à HEC','Economie en management aan HEC'],
  d:['Ma première année d’études après le secondaire, à HEC Liège.','Mijn eerste studiejaar na het secundair, aan HEC Luik.'],
- b:[['Analyse économique et gestion d’entreprise.','Bases de la comptabilité et de la finance.'],['Economische analyse en bedrijfsbeheer.','Basis van boekhouden en financiën.']],p:[]},
+ b:[['Analyse économique et gestion d’entreprise.','Bases de la comptabilité et de la finance.'],['Economische analyse en bedrijfsbeheer.','Basis van boekhouden en financiën.']],gal:[{i:'hecSchool',r:1,ar:'4/3',t:['HEC Liège','HEC Luik'],c:['L’école, en plein cœur de Liège.','De school, in het hart van Luik.']}],p:[]},
 {id:'aupair',y:'2023',st:'past',when:['08/2023 – 08/2024','08/2023 – 08/2024'],short:['Au pair aux États-Unis','Au pair in de VS'],
  t:['Mon année au pair aux États-Unis','Mijn au-pairjaar in de Verenigde Staten'],
  d:['Un an de l’autre côté de l’Atlantique ! Avant de partir, j’ai tourné et monté ma propre vidéo de candidature.','Een jaar aan de andere kant van de Atlantische Oceaan! Voor ik vertrok, filmde en monteerde ik zelf mijn sollicitatievideo.'],
@@ -606,7 +608,7 @@ const C=[
 {id:'bachelier',y:'2024',st:'past',when:['09/2024 – 06/2027','09/2024 – 06/2027'],short:['Bachelier en marketing','Bachelor marketing'],
  t:['C’est parti pour le bachelier en marketing','Aan de slag met de bachelor marketing'],
  d:['À HELMo Guillemins, à Liège, jusqu’en juin 2027.','Aan HELMo Guillemins in Luik, tot juni 2027.'],
- b:[['Études de marché et analyse du comportement des consommateurs.','Gestion de projet et développement d’une stratégie marketing.','Marketing digital et communication.'],['Marktonderzoek en analyse van consumentengedrag.','Projectmanagement en ontwikkeling van een marketingstrategie.','Digitale marketing en communicatie.']],p:[]},
+ b:[['Études de marché et analyse du comportement des consommateurs.','Gestion de projet et développement d’une stratégie marketing.','Marketing digital et communication.'],['Marktonderzoek en analyse van consumentengedrag.','Projectmanagement en ontwikkeling van een marketingstrategie.','Digitale marketing en communicatie.']],gal:[{i:'helmoSchool',r:-1,ar:'3/2',t:['HELMo','HELMo'],c:['Mon école à Liège : la Haute École Libre Mosane.','Mijn school in Luik: de Haute École Libre Mosane.']}],p:[]},
 {id:'bigmat',y:'2025',st:'past',when:['30/01/2025','30/01/2025'],short:['BigMat Haren','BigMat Haren'],
  t:['BigMat Haren','BigMat Haren'],
  d:['Une vidéo que j’ai également réalisée pour Schütte, de l’idée jusqu’au montage. Elle montre la mise en place des nouveaux rayonnages de la gamme chez BigMat Haren.','Een video die ik ook voor Schütte maakte, van idee tot montage. Ze toont de plaatsing van de nieuwe rekken van het assortiment bij BigMat Haren.'],
@@ -640,7 +642,7 @@ const C=[
 {id:'erasmus',y:'2026',st:'now',when:['09/2026 – 02/2027','09/2026 – 02/2027'],short:['Erasmus à Gand','Erasmus in Gent'],
  t:['Erasmus à Gand','Erasmus in Gent'],
  d:['Je suis en ce moment en International Business à l’Artevelde Hogeschool.','Op dit moment volg ik International Business aan de Artevelde Hogeschool.'],
- b:[['Leadership et inclusion : développer des compétences de leadership pour créer des environnements sûrs.','Entrepreneuriat : préparation à un avenir d’entrepreneur.','Advanced AI in Business : construire des agents autonomes et des automatisations complexes.'],['Leiderschap en inclusie: leiderschapsvaardigheden ontwikkelen om veilige omgevingen te creëren.','Ondernemerschap: voorbereiding op een toekomst als ondernemer.','Advanced AI in Business: autonome agents en complexe automatiseringen bouwen.']],p:[]},
+ b:[['Leadership et inclusion : développer des compétences de leadership pour créer des environnements sûrs.','Entrepreneuriat : préparation à un avenir d’entrepreneur.','Advanced AI in Business : construire des agents autonomes et des automatisations complexes.'],['Leiderschap en inclusie: leiderschapsvaardigheden ontwikkelen om veilige omgevingen te creëren.','Ondernemerschap: voorbereiding op een toekomst als ondernemer.','Advanced AI in Business: autonome agents en complexe automatiseringen bouwen.']],gal:[{i:'gentSchool',r:1,ar:'3/2',t:['Artevelde Hogeschool','Artevelde Hogeschool'],c:['Mon école d’Erasmus à Gand.','Mijn Erasmusschool in Gent.']}],p:[]},
 {id:'mealvend',y:'2026',st:'now',here:true,when:['10/2026 – en cours','10/2026 – lopend'],short:['Projet MealVend','Project MealVend'],
  t:['MealVend : des repas sains pour étudiants','MealVend: gezonde maaltijden voor studenten'],
  d:['Pendant mon Erasmus, je dois lancer un projet : j’ai choisi un distributeur automatique intelligent de repas sains et pratiques pour les étudiants. J’en ai conçu deux prototypes.','Tijdens mijn Erasmus moet ik een project lanceren: ik koos een slimme automaat met gezonde en praktische maaltijden voor studenten. Ik ontwierp er twee prototypes van.'],
@@ -686,7 +688,7 @@ const B={
  lic:[{a:['Permis B','Rijbewijs B'],n:['+ voiture personnelle','+ eigen auto']},{a:['Permis A2','Rijbewijs A2'],n:['+ moto personnelle','+ eigen motor']}]
 };
 
-Object.assign(TR.en,{'Chez Hubo':'At Hubo','Moi, en 2019, dans le t-shirt de l’enseigne.':'Me, in 2019, in the store’s T-shirt.',"Le colonel": "The colonel", "Moi, dans mon rôle du colonel. Nous avons tourné dans un avion, à l’aérodrome de Spa.": "Me, in my role as the colonel. We filmed inside an aeroplane, at Spa airfield.", "La salle": "The theatre", "La salle vide, avant l’arrivée du public, avec l’affiche à l’écran.": "The empty theatre, before the audience arrived, with the poster on the screen."});Object.assign(TR.de,{'Chez Hubo':'Bei Hubo','Moi, en 2019, dans le t-shirt de l’enseigne.':'Ich, 2019, im T-Shirt der Kette.',"Le colonel": "Der Oberst", "Moi, dans mon rôle du colonel. Nous avons tourné dans un avion, à l’aérodrome de Spa.": "Ich in meiner Rolle als Oberst. Wir haben in einem Flugzeug gedreht, auf dem Flugplatz von Spa.", "La salle": "Der Saal", "La salle vide, avant l’arrivée du public, avec l’affiche à l’écran.": "Der leere Saal vor der Ankunft des Publikums, mit dem Plakat auf der Leinwand."});
+Object.assign(TR.en,{'Mon école à Liège : la Haute École Libre Mosane.':'My school in Liège: the Haute École Libre Mosane.','Mon école d’Erasmus à Gand.':'My Erasmus school in Ghent.','HEC Liège':'HEC Liège','L’école, en plein cœur de Liège.':'The school, in the heart of Liège.','Chez Hubo':'At Hubo','Moi, en 2019, dans le t-shirt de l’enseigne.':'Me, in 2019, in the store’s T-shirt.',"Le colonel": "The colonel", "Moi, dans mon rôle du colonel. Nous avons tourné dans un avion, à l’aérodrome de Spa.": "Me, in my role as the colonel. We filmed inside an aeroplane, at Spa airfield.", "La salle": "The theatre", "La salle vide, avant l’arrivée du public, avec l’affiche à l’écran.": "The empty theatre, before the audience arrived, with the poster on the screen."});Object.assign(TR.de,{'Mon école à Liège : la Haute École Libre Mosane.':'Meine Hochschule in Lüttich: die Haute École Libre Mosane.','Mon école d’Erasmus à Gand.':'Meine Erasmus-Hochschule in Gent.','HEC Liège':'HEC Lüttich','L’école, en plein cœur de Liège.':'Die Schule, mitten im Herzen von Lüttich.','Chez Hubo':'Bei Hubo','Moi, en 2019, dans le t-shirt de l’enseigne.':'Ich, 2019, im T-Shirt der Kette.',"Le colonel": "Der Oberst", "Moi, dans mon rôle du colonel. Nous avons tourné dans un avion, à l’aérodrome de Spa.": "Ich in meiner Rolle als Oberst. Wir haben in einem Flugzeug gedreht, auf dem Flugplatz von Spa.", "La salle": "Der Saal", "La salle vide, avant l’arrivée du public, avec l’affiche à l’écran.": "Der leere Saal vor der Ankunft des Publikums, mit dem Plakat auf der Leinwand."});
 Object.assign(TR.en,{"L’emporté, Welkenraedt\n05/2026 → aujourd’hui": "L’emporté, Welkenraedt\n05/2026 → today", "Monde Sauvage, Aywaille\n09/2024 → aujourd’hui": "Monde Sauvage, Aywaille\n09/2024 → today", "Duysens, Welkenraedt\n08/2022 – 08/2023\n08/2024 → aujourd’hui": "Duysens, Welkenraedt\n08/2022 – 08/2023\n08/2024 → today", "Bar à Pasta, Lontzen\n09/2024 – 05/2026": "Bar à Pasta, Lontzen\n09/2024 – 05/2026", "Hubo\n2019 – 2020": "Hubo\n2019 – 2020", "Friterie chez Gene\n2018 – 2019": "Friterie chez Gene\n2018 – 2019", "Okay\n2020 – 2022": "Okay\n2020 – 2022"});Object.assign(TR.de,{"L’emporté, Welkenraedt\n05/2026 → aujourd’hui": "L’emporté, Welkenraedt\n05/2026 → heute", "Monde Sauvage, Aywaille\n09/2024 → aujourd’hui": "Monde Sauvage, Aywaille\n09/2024 → heute", "Duysens, Welkenraedt\n08/2022 – 08/2023\n08/2024 → aujourd’hui": "Duysens, Welkenraedt\n08/2022 – 08/2023\n08/2024 → heute", "Bar à Pasta, Lontzen\n09/2024 – 05/2026": "Bar à Pasta, Lontzen\n09/2024 – 05/2026", "Hubo\n2019 – 2020": "Hubo\n2019 – 2020", "Friterie chez Gene\n2018 – 2019": "Friterie chez Gene\n2018 – 2019", "Okay\n2020 – 2022": "Okay\n2020 – 2022"});
 Object.assign(TR.en,{"L’affiche": "The poster", "L’affiche de « Projet: Blood 2 », projeté le 18 mars 2026 au centre culturel de Welkenraedt.": "The poster of “Projet: Blood 2”, screened on 18 March 2026 at the Welkenraedt cultural centre.", "La soirée": "The evening", "Un mot au micro devant le public, le soir de la projection.": "A few words at the microphone in front of the audience, on the night of the screening.", "L’équipe du film et la salle, après la projection.": "The film crew and the audience, after the screening."});Object.assign(TR.de,{"L’affiche": "Das Plakat", "L’affiche de « Projet: Blood 2 », projeté le 18 mars 2026 au centre culturel de Welkenraedt.": "Das Plakat von „Projet: Blood 2“, vorgeführt am 18. März 2026 im Kulturzentrum Welkenraedt.", "La soirée": "Der Abend", "Un mot au micro devant le public, le soir de la projection.": "Ein paar Worte am Mikrofon vor dem Publikum, am Abend der Vorführung.", "L’équipe du film et la salle, après la projection.": "Das Filmteam und der Saal nach der Vorführung."});
 Object.assign(TR.en,{"« Projet Blood 2 », un film dont je suis le colonel": "“Project Blood 2”, a film in which I play the colonel", "Une expérience hors du commun : j’y incarne le colonel, un militaire corrompu, dans un film de 2 h 25.": "An extraordinary experience: I play the colonel, a corrupt soldier, in a 2 h 25 feature film.", "Film · Rôle du colonel": "Film · Role of the colonel", "Projet Blood 2 (2 h 25)": "Project Blood 2 (2 h 25)", "Le film complet, sur YouTube.": "The full film, on YouTube.", "Film : Blood 2": "Film: Blood 2", "Film": "Film", "Permis B": "Licence B", "Permis A2": "Licence A2", "+ voiture personnelle": "+ personal car", "+ moto personnelle": "+ personal motorcycle"});Object.assign(TR.de,{"« Projet Blood 2 », un film dont je suis le colonel": "„Projekt Blood 2“, ein Film, in dem ich den Oberst spiele", "Une expérience hors du commun : j’y incarne le colonel, un militaire corrompu, dans un film de 2 h 25.": "Eine außergewöhnliche Erfahrung: Ich spiele den Oberst, einen korrupten Militär, in einem Film von 2 Std. 25 Min.", "Film · Rôle du colonel": "Film · Rolle des Obersts", "Projet Blood 2 (2 h 25)": "Projekt Blood 2 (2 Std. 25 Min.)", "Le film complet, sur YouTube.": "Der ganze Film auf YouTube.", "Film : Blood 2": "Film: Blood 2", "Film": "Film", "Permis B": "Führerschein Klasse B", "Permis A2": "Führerschein Klasse A2", "+ voiture personnelle": "+ eigenes Auto", "+ moto personnelle": "+ eigenes Motorrad"});
@@ -787,7 +789,7 @@ function openProto(k,title){
 }
 
 /* ===== MOBILE DECK ===== */
-const MS={fr:{pr:'À voir',sw:'Glissez',cv:'En bref',ct:'Contact',of:'sur'},nl:{pr:'Te zien',sw:'Swipe',cv:'In het kort',ct:'Contact',of:'van'},en:{pr:'See it',sw:'Swipe',cv:'At a glance',ct:'Contact',of:'of'},de:{pr:'Ansehen',sw:'Wischen',cv:'Kurz & knapp',ct:'Kontakt',of:'von'}};
+const MS={fr:{ph:'Photos',pr:'À voir',sw:'Glissez',cv:'En bref',ct:'Contact',of:'sur'},nl:{ph:'Foto’s',pr:'Te zien',sw:'Swipe',cv:'In het kort',ct:'Contact',of:'van'},en:{ph:'Photos',pr:'See it',sw:'Swipe',cv:'At a glance',ct:'Contact',of:'of'},de:{ph:'Fotos',pr:'Ansehen',sw:'Wischen',cv:'Kurz & knapp',ct:'Kontakt',of:'von'}};
 const mq=window.matchMedia('(max-width:760px)');
 let MI=0,mSeen=new Set([0]);
 const PORT=['coverDrop','coverSch','coverBook','mvApp','mvWeb','bloodPoster','bloodTalk','bloodColonel'];
@@ -804,7 +806,7 @@ function mtile(p){
   return `<div class="mt lk"><div class="mth"><span class="ic">${ICON.lock}</span></div>${tx}</div></div>`;
 }
 const mpol=x=>`<button class="mp${x.w?' wide':''}" type="button" style="--r:${x.r||0}deg;--ar:${x.ar||'3/4'}" data-img="${x.i}" data-cap="${esc(T(x.t))} · ${esc(T(x.c))}"><img src="${IMG[x.i]}" alt="${esc(T(x.c))}" loading="lazy"><span class="mcp"><b>${esc(T(x.t))}</b>${esc(T(x.c))}</span></button>`;
-const mph=x=>`<button class="mph${x.w?' wide':''}" type="button" style="--r:${(x.r||0)/2}deg" data-img="${x.i}" data-cap="${esc(T(x.t))} · ${esc(T(x.c))}"><img src="${IMG[x.i]}" alt="${esc(T(x.c))}" loading="lazy"><span class="mcp"><b>${esc(T(x.t))}</b>${esc(T(x.c))}</span></button>`;
+const mph=x=>`<button class="mph${x.w?' wide':''}${/^(\d+)\/(\d+)$/.test(x.ar||'')&&(+RegExp.$1>+RegExp.$2)?' land':''}" type="button" style="--r:${(x.r||0)/2}deg" data-img="${x.i}" data-cap="${esc(T(x.t))} · ${esc(T(x.c))}"><img src="${IMG[x.i]}" alt="${esc(T(x.c))}" loading="lazy"><span class="mcp"><b>${esc(T(x.t))}</b>${esc(T(x.c))}</span></button>`;
 const PAL=[0,1,2,3];
 function mchapter(c,i){
   const s=S[L],bl=T(c.b);
@@ -818,15 +820,12 @@ function mchapter(c,i){
   if(c.p.length)x+=`<div class="sub">${c.p.some(p=>p.k==='video')?'▶ ':''}${esc(MS[L].pr)}</div><div class="hs">${c.p.map(mtile).join('')}</div>`;
   const solo=!c.big&&c.gal&&c.gal.length===1;
   if(solo)x+=`<div class="mg2 solo">${mph(c.gal[0])}</div>`;
-  const main=`<section class="mc p${pal}" data-id="${c.id}" data-y="${esc(yr)}" data-t="${esc(T(c.short))}"${c.here?' data-here="1"':''}><div class="my">${yr}</div><div class="in">${x}</div><div class="dn">↓</div></section>`;
-  if(solo||(!c.big&&!c.gal))return [main];
-  let g=`<div class="tags"><span class="tag1">${esc(T(c.short))}</span></div><h3>${esc(s.sheetT)}</h3>`;
+  const photos=(c.big||(c.gal&&!solo));
   if(c.big){
-    g+=`<div class="mtro">${PRIZES.map((z,k)=>`<div>${TROPHY(k?'#C9CED2':'#FFD23F')}<p style="margin:0"><small>${esc(T(z.pl))}</small><b>${esc(T(z.t))}</b><span>${esc(T(z.d))}</span></p></div>`).join('')}</div>`;
-    g+=SHEET.map(q=>`<div class="sub">${s.step} ${q.g} · ${esc(s.steps[q.g])}</div><div class="mg2">${q.items.map(mph).join('')}</div>`).join('');
-  }else g+=`<div class="mg2">${c.gal.map(mph).join('')}</div>`;
-  const p2=(pal+1)%4;
-  return [main,`<section class="mc p${p2}" data-id="${c.id}-ph" data-y="${esc(yr)}" data-t="${esc(T(c.short))} · photos"><div class="my">${yr}</div><div class="in">${g}</div><div class="dn">↓</div></section>`];
+    x+=`<div class="sub">${esc(s.sheetT)}</div><div class="mtro">${PRIZES.map((z,k)=>`<div>${TROPHY(k?'#C9CED2':'#FFD23F')}<p style="margin:0"><small>${esc(T(z.pl))}</small><b>${esc(T(z.t))}</b><span>${esc(T(z.d))}</span></p></div>`).join('')}</div>`;
+    x+=SHEET.map(q=>`<div class="sub">${s.step} ${q.g} · ${esc(s.steps[q.g])}</div><div class="mg2">${q.items.map(mph).join('')}</div>`).join('');
+  }else if(c.gal&&!solo)x+=`<div class="sub">${esc(MS[L].ph)}</div><div class="mg2">${c.gal.map(mph).join('')}</div>`;
+  return [`<section class="mc p${pal}" data-id="${c.id}" data-y="${esc(yr)}" data-t="${esc(T(c.short))}"${c.here?' data-here="1"':''}><div class="my">${yr}</div><div class="in">${x}</div><div class="dn">${photos?`<span>↓ ${esc(MS[L].ph)}</span>`:'↓'}</div></section>`];
 }
 function mobApp(){
   const host=document.getElementById('mob');
