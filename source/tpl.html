@@ -246,6 +246,53 @@ a.proof:hover .vthumb i{transform:scale(1.18)}
 #flang{position:fixed;top:12px;right:16px;z-index:40}
 #flang .lang{background:var(--surface);box-shadow:0 6px 18px -8px rgba(10,20,64,.45)}
 @media (max-width:980px){#flang{display:none}}
+
+/* ===== SPLASH LANGUE ===== */
+body.sp{overflow:hidden}
+#splash[hidden]{display:none}
+#splash{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;background:#070A1C;color:#fff;transition:opacity .6s ease,transform .6s ease}
+#splash.out{opacity:0;transform:scale(1.04);pointer-events:none}
+#splash .sh{flex:none;text-align:center;padding:calc(env(safe-area-inset-top,0px) + 22px) 20px 16px;position:relative;z-index:3}
+#splash .sh b{display:block;font:800 clamp(30px,5vw,54px)/1 var(--font-d);letter-spacing:-.04em}
+#splash .sh b i{font-style:normal;color:#FF5C68}
+#splash .sh p{margin:10px 0 0;font:500 clamp(12px,1.5vw,15px) var(--font-m);letter-spacing:.08em;text-transform:uppercase;color:#BFC9F2}
+#splash .sh p span{display:inline-block;margin:0 8px;white-space:nowrap}
+#splash .ps{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:16px;padding:6px 20px 8px;max-width:1200px;width:100%;margin:0 auto}
+#splash .lp{position:relative;border-radius:26px;box-shadow:0 20px 40px -20px rgba(0,0,0,.8);border:0;padding:0;margin:0;overflow:hidden;cursor:pointer;color:#fff;text-align:left;font:inherit;transition:transform .4s cubic-bezier(.2,.8,.2,1),filter .4s;animation:lpin .8s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--k)*110ms + 150ms);-webkit-tap-highlight-color:transparent}
+@keyframes lpin{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+#splash .lp svg.fl{position:absolute;inset:0;width:100%;height:100%;transition:transform .8s cubic-bezier(.2,.8,.2,1),filter .4s;filter:saturate(1.15)}
+#splash .lp::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(to top,rgba(7,10,28,.9),rgba(7,10,28,.35) 55%,rgba(7,10,28,.15));transition:opacity .4s}
+#splash .lp .tx{position:absolute;z-index:2;left:0;right:0;bottom:0;padding:26px 28px 30px}
+#splash .lp small{display:block;font:600 12px var(--font-m);letter-spacing:.12em;text-transform:uppercase;opacity:.85;margin-bottom:8px}
+#splash .lp h2{margin:0;font:800 clamp(34px,4.6vw,66px)/.95 var(--font-d);letter-spacing:-.045em;text-shadow:0 4px 24px rgba(0,0,0,.5)}
+#splash .lp .go{display:inline-flex;align-items:center;gap:8px;margin-top:16px;font:700 15px var(--font-b);background:#fff;color:#0A1440;border-radius:999px;padding:10px 16px;transition:transform .3s,background .3s,color .3s}
+#splash .lp .go b{transition:transform .3s}
+#splash .lp .lg{position:absolute;z-index:2;top:20px;left:24px;font:800 15px var(--font-m);letter-spacing:.1em;border:2px solid #fff;border-radius:999px;padding:4px 11px;background:rgba(7,10,28,.35);backdrop-filter:blur(4px)}
+#splash .lp .rc{position:absolute;z-index:2;top:20px;right:20px;font:700 11px var(--font-m);letter-spacing:.08em;text-transform:uppercase;background:#D33641;border-radius:999px;padding:4px 10px;display:none}
+#splash .lp.rec .rc{display:block}
+@media (hover:hover){
+  #splash .ps:hover .lp:not(:hover){filter:brightness(.3) saturate(.5)}
+  #splash .ps .lp:hover{transform:scale(1.025);z-index:2}
+  #splash .lp:hover svg.fl{transform:scale(1.08)}
+  #splash .lp:hover::after{opacity:.75}
+  #splash .lp:hover .go{background:#D33641;color:#fff}
+  #splash .lp:hover .go b{transform:translateX(5px)}
+}
+#splash .lp:focus-visible{outline:4px solid #FF5C68;outline-offset:-4px}
+#splash .sf{flex:none;text-align:center;padding:10px 16px calc(env(safe-area-inset-bottom,0px) + 12px);font:500 12px var(--font-m);color:#BFC9F2;letter-spacing:.05em;position:relative;z-index:3}
+@media (max-width:760px){
+  #splash .ps{grid-template-columns:1fr;grid-template-rows:repeat(4,1fr);gap:10px;padding:4px 14px 6px}
+  #splash .lp .tx{padding:0 20px;top:0;display:flex;flex-direction:column;justify-content:center}
+  #splash .lp::after{background:linear-gradient(to right,rgba(7,10,28,.88),rgba(7,10,28,.3) 70%,rgba(7,10,28,.1))}
+  #splash .lp h2{font-size:clamp(32px,10vw,46px)}
+  #splash .lp small{margin-bottom:5px;font-size:11px}
+  #splash .lp .go{margin-top:10px;align-self:flex-start;padding:7px 13px;font-size:13px}
+  #splash .lp .lg{top:12px;left:auto;right:14px}
+  #splash .lp .rc{top:auto;bottom:12px;right:14px}
+  #splash .sh p span:nth-child(n+3){display:none}
+  #splash .sh{padding-bottom:12px}
+}
+@media (prefers-reduced-motion:reduce){#splash .lp{animation:none}#splash,#splash .lp,#splash .lp svg.fl{transition:none}}
 /* ===== MOBILE DECK ===== */
 #mob{display:none}
 @media (max-width:760px){
@@ -408,6 +455,7 @@ a.proof:hover .vthumb i{transform:scale(1.18)}
 <div id="lbHost"></div>
 <div id="mob"></div>
 <div id="flang"></div>
+<div id="splash" hidden></div>
 
 <script>
 const IMG=/*IMG*/{};
@@ -836,6 +884,29 @@ document.addEventListener('click',e=>{
     document.getElementById('lbHost').innerHTML=`<div class="lb" role="dialog" aria-label="${S[L].close}"><figure><img src="${IMG[t.dataset.img]}" alt=""><figcaption>${esc(t.dataset.cap)}</figcaption></figure></div>`;return}
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('lbHost').innerHTML=''});
+
+/* ===== SPLASH ===== */
+const FLAGS={
+ fr:'<svg class="fl" viewBox="0 0 3 2" preserveAspectRatio="none" aria-hidden="true"><rect width="1" height="2" fill="#0055A4"/><rect x="1" width="1" height="2" fill="#fff"/><rect x="2" width="1" height="2" fill="#EF4135"/></svg>',
+ nl:'<svg class="fl" viewBox="0 0 9 6" preserveAspectRatio="none" aria-hidden="true"><rect width="9" height="2" fill="#AE1C28"/><rect y="2" width="9" height="2" fill="#fff"/><rect y="4" width="9" height="2" fill="#21468B"/></svg>',
+ en:'<svg class="fl" viewBox="0 0 60 30" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><clipPath id="ukc"><path d="M30,15h30v15zv15h-30zh-30v-15zv-15h30z"/></clipPath><path d="M0,0v30h60v-30z" fill="#012169"/><path d="M0,0 60,30M60,0 0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 60,30M60,0 0,30" clip-path="url(#ukc)" stroke="#C8102E" stroke-width="4"/><path d="M30,0v30M0,15h60" stroke="#fff" stroke-width="10"/><path d="M30,0v30M0,15h60" stroke="#C8102E" stroke-width="6"/></svg>',
+ de:'<svg class="fl" viewBox="0 0 5 3" preserveAspectRatio="none" aria-hidden="true"><rect width="5" height="1" fill="#000"/><rect y="1" width="5" height="1" fill="#DD0000"/><rect y="2" width="5" height="1" fill="#FFCE00"/></svg>'};
+const SP={fr:{h:'Bonjour',n:'Français',go:'Lire en français'},nl:{h:'Hallo',n:'Nederlands',go:'Lees in het Nederlands'},en:{h:'Hello',n:'English',go:'Read in English'},de:{h:'Guten Tag',n:'Deutsch',go:'Auf Deutsch lesen'}};
+function splash(){
+  let seen=false;try{seen=sessionStorage.getItem('mm-sp')==='1'}catch(e){}
+  if(seen)return;
+  const host=document.getElementById('splash');
+  const nav=(navigator.language||'fr').slice(0,2).toLowerCase();
+  host.innerHTML=`<div class="sh"><b>Max Moor<i>.</i></b><p><span>Choose your language</span></p></div>
+   <div class="ps">${LANGS.map((l,k)=>`<button type="button" class="lp${l===nav?' rec':''}" data-sp="${l}" style="--k:${k}" aria-label="${SP[l].n}">${FLAGS[l]}<span class="lg">${l.toUpperCase()}</span><span class="tx"><small>${SP[l].n}</small><h2>${SP[l].h}</h2><span class="go">${SP[l].go} <b>→</b></span></span></button>`).join('')}</div>
+   <div class="sf">Portfolio · FR · NL · EN · DE</div>`;
+  host.hidden=false;document.body.classList.add('sp');
+  host.onclick=e=>{const b=e.target.closest('[data-sp]');if(!b)return;
+    L=b.dataset.sp;try{localStorage.setItem('mm-lang',L);sessionStorage.setItem('mm-sp','1')}catch(x){}
+    document.documentElement.lang=L;app();host.classList.add('out');document.body.classList.remove('sp');
+    setTimeout(()=>{host.hidden=true;host.innerHTML='';host.classList.remove('out')},650)};
+}
 document.documentElement.lang=L;
 app();
+splash();
 </script>
