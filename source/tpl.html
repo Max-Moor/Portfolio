@@ -111,6 +111,7 @@ p{margin:0}
 .st.now{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .ch h3{font-size:clamp(30px,3.8vw,52px);font-weight:800;margin-bottom:14px}
 .body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px 40px;align-items:start}
+.solo{justify-self:center;width:min(100%,300px);padding-top:6px}
 .body.one{grid-template-columns:minmax(0,1fr)}
 .txt p{max-width:36em}
 .txt ul{margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;max-width:36em}
@@ -306,8 +307,33 @@ a.proof:hover .vthumb i{transform:scale(1.18)}
   .mp{flex:none;position:relative;width:auto;min-width:150px;scroll-snap-align:start;border:0;background:#fff;padding:8px 8px 0;border-radius:6px;transform:rotate(var(--r,0deg));box-shadow:0 12px 22px -10px rgba(0,0,0,.6);color:#0A1440;text-align:left;cursor:pointer;font:inherit;-webkit-tap-highlight-color:transparent}
   .mp img{display:block;height:170px;width:auto;max-width:72vw;object-fit:cover;aspect-ratio:var(--ar,3/4);border-radius:2px}
   .mp.wide img{height:150px}
-  .mp figcaption,.mp .cp{display:block;padding:8px 2px 10px;font:500 12px/1.3 var(--font-b);max-width:100%;width:0;min-width:100%}
-  .mp .cp b{display:block;font:700 12px var(--font-d);margin-bottom:1px}
+  .mp .mcp{display:block;padding:8px 2px 10px;font:500 12px/1.3 var(--font-b);max-width:100%;width:0;min-width:100%}
+  .mp .mcp b{display:block;font:700 12px var(--font-d);margin-bottom:1px}
+
+  .mt.por{width:292px;flex-direction:row}
+  .mt.por .mth{flex:none;width:112px;aspect-ratio:auto;align-self:flex-start;background:transparent;padding:10px 0 10px 10px;overflow:visible}
+  .mt.por .mth img{width:100%;height:auto;object-fit:contain;border-radius:6px;box-shadow:0 8px 16px -8px rgba(0,0,0,.6)}
+  .mt.por .mth.has::after{display:none}
+  .mt.por .mth .pl{position:absolute;left:50%;top:50%;margin:-23px 0 0 -18px}
+  .mt.por .mth .bd{left:16px;top:16px}
+  .mt.por .mtb p{-webkit-line-clamp:4}
+  .mth.nat{aspect-ratio:auto;display:block}
+  .mth.nat img{height:auto;max-height:200px;object-fit:contain;background:#0A1448}
+  .mth.nat .pl{top:50%;left:50%;margin:-23px 0 0 -23px}
+  .mp img{aspect-ratio:auto!important;object-fit:contain!important;height:190px;width:auto;max-width:78vw}
+  .mp.wide img{height:170px}
+
+  .mc .dn{position:absolute;left:0;right:0;bottom:0;height:70px;display:grid;place-items:end center;padding-bottom:10px;font:800 22px var(--font-m);color:var(--cfg);background:linear-gradient(transparent,var(--cb2,rgba(0,0,0,.35)));pointer-events:none;opacity:0;transition:opacity .3s}
+  .mc.p0 .dn{--cb2:rgba(120,10,20,.75)}.mc.p1 .dn{--cb2:rgba(5,10,50,.8)}.mc.p2 .dn{--cb2:rgba(246,247,251,.95)}.mc.p3 .dn{--cb2:rgba(169,183,238,.95)}
+  .mc.ov.on .dn{opacity:1}.mc.ov.on .dn{animation:dnb 1.4s ease-in-out infinite}
+  @keyframes dnb{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+  .mg2{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start;margin-bottom:6px}
+  .mph{display:block;background:#fff;color:#0A1440;border:0;padding:7px 7px 0;border-radius:6px;text-align:left;font:inherit;cursor:pointer;transform:rotate(var(--r,0deg));box-shadow:0 12px 22px -12px rgba(0,0,0,.6);-webkit-tap-highlight-color:transparent}
+  .mph.wide{grid-column:1/-1}
+  .mg2.solo{grid-template-columns:minmax(0,230px);justify-content:center;margin-top:8px}
+  .mph img{display:block;width:100%;height:auto;border-radius:2px}
+  .mph .mcp{display:block;padding:7px 1px 9px;font:500 12px/1.35 var(--font-b)}
+  .mph .mcp b{display:block;font:700 12.5px var(--font-d);margin-bottom:2px}
   .mtro{display:grid;gap:10px;margin:4px 0 6px}
   .mtro div{display:flex;gap:12px;align-items:center;background:var(--tile);color:var(--tfg);border-radius:18px;padding:12px 14px}
   .mtro svg{flex:none;width:44px;height:50px;transform-origin:50% 92%;animation:tvib 1.8s ease-in-out infinite}
@@ -509,7 +535,7 @@ const C=[
 {id:'hubo2019',y:'2019',st:'past',hl:true,badge:['Un de mes tout premiers jobs étudiants','Een van mijn allereerste studentenjobs'],when:['2019 – 2020','2019 – 2020'],short:['Hubo, un de mes premiers jobs','Hubo, een van mijn eerste jobs'],
  t:['Un de mes tout premiers jobs étudiants, chez Hubo','Een van mijn allereerste studentenjobs, bij Hubo'],
  d:['Tout a commencé là : l’un de mes tout premiers jobs étudiants, en 2019, dans un magasin Hubo. Je connais la maison et les rouages de l’enseigne de l’intérieur. Si mon stage de 2027 se confirme, il pourrait me ramener dans la même enseigne, côté marketing cette fois.','Het begon daar: een van mijn allereerste studentenjobs, in 2019, in een Hubo-winkel. Ik ken het huis en de werking van de winkelketen van binnenuit. Als mijn stage in 2027 doorgaat, brengt die me misschien terug naar dezelfde winkelketen, dit keer aan de marketingkant.'],
- b:[['Étudiant responsable du rayon outillage et visserie.','Réapprovisionnement des rayons.','Conseil aux clients.','Le seul à pouvoir s’occuper des clients anglophones.'],['Student-verantwoordelijke voor de afdeling gereedschap en bevestigingsmateriaal.','Rekken bevoorraden.','Klanten adviseren.','De enige die Engelstalige klanten kon helpen.']],p:[]},
+ b:[['Étudiant responsable du rayon outillage et visserie.','Réapprovisionnement des rayons.','Conseil aux clients.','Le seul à pouvoir s’occuper des clients anglophones.'],['Student-verantwoordelijke voor de afdeling gereedschap en bevestigingsmateriaal.','Rekken bevoorraden.','Klanten adviseren.','De enige die Engelstalige klanten kon helpen.']],gal:[{i:'hubo',r:-1,ar:'3/4',t:['Chez Hubo','Bij Hubo'],c:['Moi, en 2019, dans le t-shirt de l’enseigne.','Ik, in 2019, in het T-shirt van de winkelketen.']}],p:[]},
 {id:'hec',y:'2022',st:'past',when:['09/2022 – 06/2023','09/2022 – 06/2023'],short:['HEC Liège','HEC Luik'],
  t:['Économie et gestion à HEC','Economie en management aan HEC'],
  d:['Ma première année d’études après le secondaire, à HEC Liège.','Mijn eerste studiejaar na het secundair, aan HEC Luik.'],
@@ -612,7 +638,7 @@ const B={
  lic:[{a:['Permis B','Rijbewijs B'],n:['+ voiture personnelle','+ eigen auto']},{a:['Permis A2','Rijbewijs A2'],n:['+ moto personnelle','+ eigen motor']}]
 };
 
-Object.assign(TR.en,{"Le colonel": "The colonel", "Moi, dans mon rôle du colonel. Nous avons tourné dans un avion, à l’aérodrome de Spa.": "Me, in my role as the colonel. We filmed inside an aeroplane, at Spa airfield.", "La salle": "The theatre", "La salle vide, avant l’arrivée du public, avec l’affiche à l’écran.": "The empty theatre, before the audience arrived, with the poster on the screen."});Object.assign(TR.de,{"Le colonel": "Der Oberst", "Moi, dans mon rôle du colonel. Nous avons tourné dans un avion, à l’aérodrome de Spa.": "Ich in meiner Rolle als Oberst. Wir haben in einem Flugzeug gedreht, auf dem Flugplatz von Spa.", "La salle": "Der Saal", "La salle vide, avant l’arrivée du public, avec l’affiche à l’écran.": "Der leere Saal vor der Ankunft des Publikums, mit dem Plakat auf der Leinwand."});
+Object.assign(TR.en,{'Chez Hubo':'At Hubo','Moi, en 2019, dans le t-shirt de l’enseigne.':'Me, in 2019, in the store’s T-shirt.',"Le colonel": "The colonel", "Moi, dans mon rôle du colonel. Nous avons tourné dans un avion, à l’aérodrome de Spa.": "Me, in my role as the colonel. We filmed inside an aeroplane, at Spa airfield.", "La salle": "The theatre", "La salle vide, avant l’arrivée du public, avec l’affiche à l’écran.": "The empty theatre, before the audience arrived, with the poster on the screen."});Object.assign(TR.de,{'Chez Hubo':'Bei Hubo','Moi, en 2019, dans le t-shirt de l’enseigne.':'Ich, 2019, im T-Shirt der Kette.',"Le colonel": "Der Oberst", "Moi, dans mon rôle du colonel. Nous avons tourné dans un avion, à l’aérodrome de Spa.": "Ich in meiner Rolle als Oberst. Wir haben in einem Flugzeug gedreht, auf dem Flugplatz von Spa.", "La salle": "Der Saal", "La salle vide, avant l’arrivée du public, avec l’affiche à l’écran.": "Der leere Saal vor der Ankunft des Publikums, mit dem Plakat auf der Leinwand."});
 Object.assign(TR.en,{"L’emporté, Welkenraedt\n05/2026 → aujourd’hui": "L’emporté, Welkenraedt\n05/2026 → today", "Monde Sauvage, Aywaille\n09/2024 → aujourd’hui": "Monde Sauvage, Aywaille\n09/2024 → today", "Duysens, Welkenraedt\n08/2022 – 08/2023\n08/2024 → aujourd’hui": "Duysens, Welkenraedt\n08/2022 – 08/2023\n08/2024 → today", "Bar à Pasta, Lontzen\n09/2024 – 05/2026": "Bar à Pasta, Lontzen\n09/2024 – 05/2026", "Hubo\n2019 – 2020": "Hubo\n2019 – 2020", "Friterie chez Gene\n2018 – 2019": "Friterie chez Gene\n2018 – 2019", "Okay\n2020 – 2022": "Okay\n2020 – 2022"});Object.assign(TR.de,{"L’emporté, Welkenraedt\n05/2026 → aujourd’hui": "L’emporté, Welkenraedt\n05/2026 → heute", "Monde Sauvage, Aywaille\n09/2024 → aujourd’hui": "Monde Sauvage, Aywaille\n09/2024 → heute", "Duysens, Welkenraedt\n08/2022 – 08/2023\n08/2024 → aujourd’hui": "Duysens, Welkenraedt\n08/2022 – 08/2023\n08/2024 → heute", "Bar à Pasta, Lontzen\n09/2024 – 05/2026": "Bar à Pasta, Lontzen\n09/2024 – 05/2026", "Hubo\n2019 – 2020": "Hubo\n2019 – 2020", "Friterie chez Gene\n2018 – 2019": "Friterie chez Gene\n2018 – 2019", "Okay\n2020 – 2022": "Okay\n2020 – 2022"});
 Object.assign(TR.en,{"L’affiche": "The poster", "L’affiche de « Projet: Blood 2 », projeté le 18 mars 2026 au centre culturel de Welkenraedt.": "The poster of “Projet: Blood 2”, screened on 18 March 2026 at the Welkenraedt cultural centre.", "La soirée": "The evening", "Un mot au micro devant le public, le soir de la projection.": "A few words at the microphone in front of the audience, on the night of the screening.", "L’équipe du film et la salle, après la projection.": "The film crew and the audience, after the screening."});Object.assign(TR.de,{"L’affiche": "Das Plakat", "L’affiche de « Projet: Blood 2 », projeté le 18 mars 2026 au centre culturel de Welkenraedt.": "Das Plakat von „Projet: Blood 2“, vorgeführt am 18. März 2026 im Kulturzentrum Welkenraedt.", "La soirée": "Der Abend", "Un mot au micro devant le public, le soir de la projection.": "Ein paar Worte am Mikrofon vor dem Publikum, am Abend der Vorführung.", "L’équipe du film et la salle, après la projection.": "Das Filmteam und der Saal nach der Vorführung."});
 Object.assign(TR.en,{"« Projet Blood 2 », un film dont je suis le colonel": "“Project Blood 2”, a film in which I play the colonel", "Une expérience hors du commun : j’y incarne le colonel, un militaire corrompu, dans un film de 2 h 25.": "An extraordinary experience: I play the colonel, a corrupt soldier, in a 2 h 25 feature film.", "Film · Rôle du colonel": "Film · Role of the colonel", "Projet Blood 2 (2 h 25)": "Project Blood 2 (2 h 25)", "Le film complet, sur YouTube.": "The full film, on YouTube.", "Film : Blood 2": "Film: Blood 2", "Film": "Film", "Permis B": "Licence B", "Permis A2": "Licence A2", "+ voiture personnelle": "+ personal car", "+ moto personnelle": "+ personal motorcycle"});Object.assign(TR.de,{"« Projet Blood 2 », un film dont je suis le colonel": "„Projekt Blood 2“, ein Film, in dem ich den Oberst spiele", "Une expérience hors du commun : j’y incarne le colonel, un militaire corrompu, dans un film de 2 h 25.": "Eine außergewöhnliche Erfahrung: Ich spiele den Oberst, einen korrupten Militär, in einem Film von 2 Std. 25 Min.", "Film · Rôle du colonel": "Film · Rolle des Obersts", "Projet Blood 2 (2 h 25)": "Projekt Blood 2 (2 Std. 25 Min.)", "Le film complet, sur YouTube.": "Der ganze Film auf YouTube.", "Film : Blood 2": "Film: Blood 2", "Film": "Film", "Permis B": "Führerschein Klasse B", "Permis A2": "Führerschein Klasse A2", "+ voiture personnelle": "+ eigenes Auto", "+ moto personnelle": "+ eigenes Motorrad"});
@@ -646,7 +672,9 @@ function chapter(c){
   const bl=T(c.b);
   const st=(c.badge?`<span class="st now">${esc(T(c.badge))}</span>`:'')+(c.st==='past'?'':`<span class="st ${c.st}">${STATUS[L][c.st]}</span>`);
   const hasR=c.p.length>0;
-  return `<article class="ch ${c.st}${c.here?' here':''}${c.hl?' hot':''} rv"id="c-${c.id}" data-kinds="${kinds}"><div class="ch-head"><span class="when">${esc(T(c.when))}</span>${st}</div><h3>${esc(T(c.t))}</h3><div class="body${(hasR&&!c.row)?'':' one'}"><div class="txt"><p>${esc(T(c.d))}</p>${bl.length?`<ul>${bl.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}</div>${hasR?`<div class="proofs${c.row?' row':''}${c.c2?' c2':''}">${c.p.map(proof).join('')}</div>`:''}</div>${c.big?sheet():''}${c.gal?`<div class="sheet"><div class="row gal">${c.gal.map(x=>`<button class="pol${x.w?' wide':''}" style="--r:${x.r}deg;--ar:${x.ar||'3/4'}" data-img="${x.i}" data-cap="${esc(T(x.t))} · ${esc(T(x.c))}"><img src="${IMG[x.i]}" alt="${esc(T(x.c))}" loading="lazy"><figcaption><b>${esc(T(x.t))}</b>${esc(T(x.c))}</figcaption></button>`).join('')}</div></div>`:''}</article>`;
+  const solo=!c.big&&c.gal&&c.gal.length===1&&!hasR;
+  const polB=x=>`<button class="pol" style="--r:${x.r}deg;--ar:${x.ar||'3/4'}" data-img="${x.i}" data-cap="${esc(T(x.t))} · ${esc(T(x.c))}"><img src="${IMG[x.i]}" alt="${esc(T(x.c))}" loading="lazy"><figcaption><b>${esc(T(x.t))}</b>${esc(T(x.c))}</figcaption></button>`;
+  return `<article class="ch ${c.st}${c.here?' here':''}${c.hl?' hot':''} rv"id="c-${c.id}" data-kinds="${kinds}"><div class="ch-head"><span class="when">${esc(T(c.when))}</span>${st}</div><h3>${esc(T(c.t))}</h3><div class="body${((hasR&&!c.row)||solo)?'':' one'}"><div class="txt"><p>${esc(T(c.d))}</p>${bl.length?`<ul>${bl.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}</div>${solo?`<div class="solo">${polB(c.gal[0])}</div>`:''}${hasR?`<div class="proofs${c.row?' row':''}${c.c2?' c2':''}">${c.p.map(proof).join('')}</div>`:''}</div>${c.big?sheet():''}${(c.gal&&!solo)?`<div class="sheet"><div class="row gal">${c.gal.map(x=>`<button class="pol${x.w?' wide':''}" style="--r:${x.r}deg;--ar:${x.ar||'3/4'}" data-img="${x.i}" data-cap="${esc(T(x.t))} · ${esc(T(x.c))}"><img src="${IMG[x.i]}" alt="${esc(T(x.c))}" loading="lazy"><figcaption><b>${esc(T(x.t))}</b>${esc(T(x.c))}</figcaption></button>`).join('')}</div></div>`:''}</article>`;
 }
 function rail(){
   const s=S[L],n=counts();
@@ -714,18 +742,21 @@ function openProto(k,title){
 const MS={fr:{pr:'À voir',sw:'Glissez',cv:'En bref',ct:'Contact',of:'sur'},nl:{pr:'Te zien',sw:'Swipe',cv:'In het kort',ct:'Contact',of:'van'},en:{pr:'See it',sw:'Swipe',cv:'At a glance',ct:'Contact',of:'of'},de:{pr:'Ansehen',sw:'Wischen',cv:'Kurz & knapp',ct:'Kontakt',of:'von'}};
 const mq=window.matchMedia('(max-width:760px)');
 let MI=0,mSeen=new Set([0]);
+const PORT=['coverDrop','coverSch','coverBook','mvApp','mvWeb','bloodPoster','bloodTalk','bloodColonel'];
 function mtile(p){
   const s=S[L];
   const tx=`<div class="mtb"><div class="ml">${esc(T(p.tag))}</div><h4>${esc(T(p.t))}</h4><p>${esc(T(p.d))}</p>`;
-  const a=(extra,h,go)=>`<a class="mt" ${extra}href="${p.url}" target="_blank" rel="noopener">${h}${tx}<span class="mg">${go} ↗</span></div></a>`;
-  if(p.k==='video')return a('',`<div class="mth${p.img?' has':''}${p.logo?' logo':''}">${p.img?`<img src="${IMG[p.img]}" alt="" loading="lazy">`:''}<span class="pl">${ICON.play}</span></div>`,s.watch);
+  const por=PORT.includes(p.img);
+  const a=(extra,h,go)=>`<a class="mt${por?' por':''}" ${extra}href="${p.url}" target="_blank" rel="noopener">${h}${tx}<span class="mg">${go} ↗</span></div></a>`;
+  if(p.k==='video')return a('',`<div class="mth${p.img?' has':''}${p.logo?' logo':''}${p.img&&!p.logo&&!por?' nat':''}">${p.img?`<img src="${IMG[p.img]}" alt="" loading="lazy">`:''}<span class="pl">${ICON.play}</span></div>`,s.watch);
   if(p.k==='doc')return a('',`<div class="mth dc has"><img src="${IMG[p.img]}" alt="" loading="lazy"><span class="bd">PDF</span></div>`,s.open);
   if(p.k==='proto')return a(`${p.mv?`data-proto="${p.mv}" data-pt="${esc(T(p.t))}" `:''}`,`<div class="mth dc has"><img src="${IMG[p.img]}" alt="" loading="lazy"><span class="bd">${p.badge}</span></div>`,s.try);
   if(p.k==='file')return a('',`<div class="mth"><span class="ic">${ICON.doc}</span></div>`,s.openf);
-  if(p.k==='link')return a('',p.img?`<div class="mth has"><img src="${IMG[p.img]}" alt="" loading="lazy"></div>`:`<div class="mth"><span class="ic">${ICON.web}</span></div>`,s.visit);
+  if(p.k==='link')return a('',p.img?`<div class="mth has${por?'':' nat'}"><img src="${IMG[p.img]}" alt="" loading="lazy"></div>`:`<div class="mth"><span class="ic">${ICON.web}</span></div>`,s.visit);
   return `<div class="mt lk"><div class="mth"><span class="ic">${ICON.lock}</span></div>${tx}</div></div>`;
 }
-const mpol=x=>`<button class="mp${x.w?' wide':''}" type="button" style="--r:${x.r||0}deg;--ar:${x.ar||'3/4'}" data-img="${x.i}" data-cap="${esc(T(x.t))} · ${esc(T(x.c))}"><img src="${IMG[x.i]}" alt="${esc(T(x.c))}" loading="lazy"><span class="cp"><b>${esc(T(x.t))}</b>${esc(T(x.c))}</span></button>`;
+const mpol=x=>`<button class="mp${x.w?' wide':''}" type="button" style="--r:${x.r||0}deg;--ar:${x.ar||'3/4'}" data-img="${x.i}" data-cap="${esc(T(x.t))} · ${esc(T(x.c))}"><img src="${IMG[x.i]}" alt="${esc(T(x.c))}" loading="lazy"><span class="mcp"><b>${esc(T(x.t))}</b>${esc(T(x.c))}</span></button>`;
+const mph=x=>`<button class="mph${x.w?' wide':''}" type="button" style="--r:${(x.r||0)/2}deg" data-img="${x.i}" data-cap="${esc(T(x.t))} · ${esc(T(x.c))}"><img src="${IMG[x.i]}" alt="${esc(T(x.c))}" loading="lazy"><span class="mcp"><b>${esc(T(x.t))}</b>${esc(T(x.c))}</span></button>`;
 const PAL=[0,1,2,3];
 function mchapter(c,i){
   const s=S[L],bl=T(c.b);
@@ -737,30 +768,35 @@ function mchapter(c,i){
   x+=`<h3>${esc(T(c.t))}</h3><p class="dd">${esc(T(c.d))}</p>`;
   if(bl.length)x+=`<ul>${bl.map(b=>`<li>${esc(b)}</li>`).join('')}</ul>`;
   if(c.p.length)x+=`<div class="sub">${c.p.some(p=>p.k==='video')?'▶ ':''}${esc(MS[L].pr)}</div><div class="hs">${c.p.map(mtile).join('')}</div>`;
+  const solo=!c.big&&c.gal&&c.gal.length===1;
+  if(solo)x+=`<div class="mg2 solo">${mph(c.gal[0])}</div>`;
+  const main=`<section class="mc p${pal}" data-id="${c.id}" data-y="${esc(yr)}" data-t="${esc(T(c.short))}"${c.here?' data-here="1"':''}><div class="my">${yr}</div><div class="in">${x}</div><div class="dn">↓</div></section>`;
+  if(solo||(!c.big&&!c.gal))return [main];
+  let g=`<div class="tags"><span class="tag1">${esc(T(c.short))}</span></div><h3>${esc(s.sheetT)}</h3>`;
   if(c.big){
-    x+=`<div class="sub">${esc(s.sheetT)}</div><div class="mtro">${PRIZES.map((z,k)=>`<div>${TROPHY(k?'#C9CED2':'#FFD23F')}<p style="margin:0"><small>${esc(T(z.pl))}</small><b>${esc(T(z.t))}</b><span>${esc(T(z.d))}</span></p></div>`).join('')}</div>`;
-    x+=SHEET.map(g=>`<div class="sub">${s.step} ${g.g} · ${esc(s.steps[g.g])}</div><div class="hs">${g.items.map(mpol).join('')}</div>`).join('');
-  }
-  if(c.gal)x+=`<div class="sub">${esc(s.sheetT)}</div><div class="hs">${c.gal.map(mpol).join('')}</div>`;
-  return `<section class="mc p${pal}" data-id="${c.id}" data-y="${esc(yr)}" data-t="${esc(T(c.short))}"${c.here?' data-here="1"':''}><div class="my">${yr}</div><div class="in">${x}</div></section>`;
+    g+=`<div class="mtro">${PRIZES.map((z,k)=>`<div>${TROPHY(k?'#C9CED2':'#FFD23F')}<p style="margin:0"><small>${esc(T(z.pl))}</small><b>${esc(T(z.t))}</b><span>${esc(T(z.d))}</span></p></div>`).join('')}</div>`;
+    g+=SHEET.map(q=>`<div class="sub">${s.step} ${q.g} · ${esc(s.steps[q.g])}</div><div class="mg2">${q.items.map(mph).join('')}</div>`).join('');
+  }else g+=`<div class="mg2">${c.gal.map(mph).join('')}</div>`;
+  const p2=(pal+1)%4;
+  return [main,`<section class="mc p${p2}" data-id="${c.id}-ph" data-y="${esc(yr)}" data-t="${esc(T(c.short))} · photos"><div class="my">${yr}</div><div class="in">${g}</div><div class="dn">↓</div></section>`];
 }
 function mobApp(){
   const host=document.getElementById('mob');
   if(!mq.matches){host.innerHTML='';return}
   const s=S[L],n=counts(),m=MS[L];
-  const hero=`<section class="mc hero0" data-id="top" data-y="" data-t="${esc(s.kicker)}"><div class="in"><div class="kk"><i></i>${esc(s.kicker)}</div><h1>${esc(s.h1a)} <em>${esc(s.h1b)}</em></h1><div class="tg">${esc(s.tagline)}</div><p class="ld">${esc(s.lead)}</p><div class="pt"><img src="${IMG.portrait}" alt="Max Moor"></div><div class="sw">${m.sw}<span>→</span></div></div></section>`;
+  const hero=`<section class="mc hero0" data-id="top" data-y="" data-t="${esc(s.kicker)}"><div class="in"><div class="kk"><i></i>${esc(s.kicker)}</div><h1>${esc(s.h1a)} <em>${esc(s.h1b)}</em></h1><div class="tg">${esc(s.tagline)}</div><p class="ld">${esc(s.lead)}</p><div class="pt"><img src="${IMG.portrait}" alt="Max Moor"></div><div class="sw">${m.sw}<span>→</span></div></div><div class="dn">↓</div></section>`;
   const cv=`<section class="mc cv" data-id="bref" data-y="CV" data-t="${esc(s.brefT)}"><div class="in"><h3>${esc(s.brefT)}</h3><p class="dd">${esc(s.brefIntro)}</p>
     <div class="blk"><h5>${s.bLang}</h5>${B.lang.map(x=>`<div class="li"><span>${esc(T(x.a))}</span><span>${lv(x.lv)} ${esc(T(x.n))}</span></div>`).join('')}</div>
     <div class="blk"><h5>${s.bSchool}</h5>${B.school.map(x=>`<div class="li"><span>${esc(T(x.a))}</span><span>${esc(T(x.n))}</span></div>`).join('')}</div>
     <div class="blk"><h5>${s.bTools}</h5><div class="tl2">${B.tools.map(x=>`<span>${x}</span>`).join('')}</div></div>
     <div class="blk"><h5>${s.bLic}</h5>${B.lic.map(x=>`<div class="li"><span>${esc(T(x.a))}</span><span>${esc(T(x.n))}</span></div>`).join('')}</div>
-    <div class="blk"><h5>${s.bJobs}</h5>${B.jobs.map(x=>`<div class="li"><span>${esc(T(x.a))}</span><span>${esc(T(x.n))}</span></div>`).join('')}</div></div></section>`;
+    <div class="blk"><h5>${s.bJobs}</h5>${B.jobs.map(x=>`<div class="li"><span>${esc(T(x.a))}</span><span>${esc(T(x.n))}</span></div>`).join('')}</div></div><div class="dn">↓</div></section>`;
   const ct=`<section class="mc ct" data-id="contact" data-y="@" data-t="Contact"><div class="in"><h2>${esc(s.cT1)} <em>${esc(s.cT2)}</em></h2><p>${esc(s.cP)}</p>
     <div class="cc"><div><small>${s.mail}</small><b>m.moor@student.helmo.be</b></div><button type="button" data-copy="m.moor@student.helmo.be">${s.copy}</button></div>
     <div class="cc"><div><small>${s.phone}</small><b>0478 49 86 55</b></div><button type="button" data-copy="0478 49 86 55">${s.copy}</button></div>
     <div class="cc"><div><small>LinkedIn</small><b>Max Moor</b></div><a class="b" href="${LK.linkedin}" target="_blank" rel="noopener">↗</a></div>
-    <div class="ph"><img src="${IMG.full}" alt="Max Moor" loading="lazy"></div></div></section>`;
-  const slides=[hero,...C.map(mchapter),cv,ct];
+    <div class="ph"><img src="${IMG.full}" alt="Max Moor" loading="lazy"></div></div><div class="dn">↓</div></section>`;
+  const slides=[hero,...C.flatMap(mchapter),cv,ct];
   const lang=LANGS.map(l=>`<button type="button" data-l="${l}" aria-pressed="${L===l}">${l.toUpperCase()}</button>`).join('');
   host.innerHTML=`<div class="mtop"><b>Max Moor<i>.</i></b><div class="lang" role="group" aria-label="Langue / Taal / Language / Sprache">${lang}</div></div>
    <div class="deck" id="deck">${slides.join('')}</div>
@@ -774,12 +810,14 @@ function mobApp(){
     MI=b;mSeen.add(b);
     sl.forEach((e,k)=>{e.classList.toggle('on',k===b);if(mSeen.has(k))e.classList.add('seen')});
     document.querySelectorAll('.tk').forEach((t,k)=>{t.classList.toggle('on',k===b);t.classList.toggle('seen',mSeen.has(k)&&k!==b)});
+    sl.forEach(e=>{const n=e.querySelector('.in');if(n)e.classList.toggle('ov',n.scrollHeight>n.clientHeight+24&&n.scrollTop<24)});
     const e=sl[b];document.getElementById('mcy').textContent=e.dataset.y;document.getElementById('mct').textContent=e.dataset.t;document.getElementById('mcn').textContent=`${b+1} ${m.of} ${sl.length}`;
     const ar=document.querySelectorAll('.mnav .ar');ar[0].disabled=b===0;ar[1].disabled=b===sl.length-1;
   };
   let tk=0;deck.addEventListener('scroll',()=>{if(!tk)tk=requestAnimationFrame(()=>{tk=0;upd()})},{passive:true});
   host.onclick=e=>{const t=e.target.closest('[data-mi],[data-mv]');if(!t)return;go(t.dataset.mi!==undefined?+t.dataset.mi:MI+ +t.dataset.mv,true)};
-  go(Math.min(MI,sl.length-1),false);upd();
+  deck.addEventListener('scroll',()=>{},{passive:true});sl.forEach(e=>{const n=e.querySelector('.in');if(n)n.addEventListener('scroll',()=>e.classList.toggle('ov',n.scrollHeight>n.clientHeight+24&&n.scrollTop<24),{passive:true})});
+  go(Math.min(MI,sl.length-1),false);upd();setTimeout(upd,600);
 }
 mq.addEventListener?mq.addEventListener('change',()=>app()):mq.addListener(()=>app());
 document.addEventListener('click',e=>{
@@ -794,7 +832,7 @@ document.addEventListener('click',e=>{
   if(t.dataset.go){F=t.dataset.go;applyFilter();const first=[...document.querySelectorAll('.ch:not(.dim)')][0];if(first)first.scrollIntoView({behavior:'smooth',block:'start'});return}
   if(t.dataset.copy){const v=t.dataset.copy,s=S[L];const done=()=>{t.textContent=s.copied;setTimeout(()=>t.textContent=s.copy,1400)};
     try{navigator.clipboard.writeText(v).then(done,()=>{})}catch(x){}return}
-  if(t.classList.contains('pol')||t.classList.contains('mp')){
+  if(t.classList.contains('pol')||t.classList.contains('mp')||t.classList.contains('mph')){
     document.getElementById('lbHost').innerHTML=`<div class="lb" role="dialog" aria-label="${S[L].close}"><figure><img src="${IMG[t.dataset.img]}" alt=""><figcaption>${esc(t.dataset.cap)}</figcaption></figure></div>`;return}
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('lbHost').innerHTML=''});
