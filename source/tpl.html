@@ -88,7 +88,15 @@ p{margin:0}
 .note{position:absolute;right:-6px;bottom:-34px;font:600 30px/1 var(--font-h);rotate:-5deg;color:var(--ink);display:flex;gap:6px;align-items:flex-end}
 .note svg{width:46px;height:34px;color:var(--accent);rotate:10deg}
 
-/* carte vidéo d'intro (à venir) */
+/* carte vidéo d'intro */
+a.intro{text-decoration:none;color:inherit;border:2px solid var(--ink);gap:22px;padding:14px;transition:transform .25s,box-shadow .25s}
+a.intro:hover{transform:translate(-3px,-3px);box-shadow:6px 6px 0 var(--ink)}
+.intro .it{position:relative;width:min(240px,34vw);aspect-ratio:16/10;overflow:hidden;border:2px solid var(--ink)}
+.intro .it img{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(.8)}
+.intro .it .pl{position:absolute;left:50%;top:50%;margin:-28px 0 0 -28px;box-shadow:0 0 0 6px rgba(255,255,255,.35)}
+.intro .go{display:inline-block;margin-top:10px;font:600 13px var(--font-m);letter-spacing:.06em;text-transform:uppercase;background:var(--accent);color:var(--accent-ink);padding:7px 14px;border-radius:999px}
+@media(max-width:520px){a.intro{grid-template-columns:minmax(0,1fr)}.intro .it{width:100%}}
+
 .intro{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center;border:2px dashed var(--ink);padding:16px 18px;margin:0 0 72px;background:var(--surface)}
 .intro .pl{width:56px;height:56px;border-radius:50%;background:var(--accent);display:grid;place-items:center;color:var(--accent-ink)}
 .intro p{font-size:15px;color:var(--muted)}
@@ -403,7 +411,16 @@ body.sp{overflow:hidden}
   .hero0 .pt{position:relative;margin:auto auto 6px;width:min(62%,230px);aspect-ratio:3/4}
   .hero0 .pt::before{content:"";position:absolute;inset:10px -12px -10px 12px;border-radius:120px 120px 24px 24px;background:#D33641}
   .hero0 .pt img{position:relative;width:100%;height:100%;object-fit:cover;border-radius:120px 120px 24px 24px;border:3px solid #fff;display:block}
-  .hero0 .sw{display:flex;align-items:center;justify-content:center;gap:10px;font:700 14px var(--font-m);letter-spacing:.06em;text-transform:uppercase;color:#fff;margin-top:22px}
+
+  .hero0 .pt{width:min(34%,138px);margin-top:2px}
+  .hero0 .vi{display:flex;align-items:center;gap:12px;margin:18px 0 0;background:rgba(255,255,255,.12);border-radius:18px;padding:8px;text-decoration:none;color:#fff;-webkit-tap-highlight-color:transparent}
+  .hero0 .vi .vt{position:relative;flex:none;width:112px;aspect-ratio:16/10;border-radius:12px;overflow:hidden;display:grid;place-items:center}
+  .hero0 .vi .vt img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.8)}
+  .hero0 .vi .vt i{position:relative;width:34px;height:34px;border-radius:50%;background:#D33641;display:grid;place-items:center}
+  .hero0 .vi .vt i svg{width:14px;height:14px;margin-left:2px}
+  .hero0 .vi .vx b{display:block;font:700 15px/1.2 var(--font-d)}
+  .hero0 .vi .vx em{font:700 12px var(--font-m);font-style:normal;color:#FF9AA2;letter-spacing:.04em;text-transform:uppercase}
+  .hero0 .sw{display:flex;align-items:center;justify-content:center;gap:10px;font:700 14px var(--font-m);letter-spacing:.06em;text-transform:uppercase;color:#fff;margin-top:14px}
   .hero0 .sw span{display:inline-block;animation:sw 1.4s ease-in-out infinite;font-size:22px}
   @keyframes sw{0%,100%{transform:translateX(0)}50%{transform:translateX(9px)}}
   .hero0 .my{display:none}
@@ -478,7 +495,7 @@ const LK={
   dropPdf:'https://drive.google.com/file/d/1hKwLe4xHWKN6h7ihU0NGwc-PBaZadkxV/view?usp=sharing',
   schPdf:'https://drive.google.com/file/d/1iW0peCHUZrg9o2dw5LR6ye_AbroT-I3X/view?usp=sharing',
   lamp:'https://drive.google.com/file/d/1riSLulvQYamvwyXCXa5DmlpcLKn1JPKy/view?usp=sharing',bati:'https://drive.google.com/file/d/1HBjsna6jD6MYjmxuFu7ZlpmBUWYIUxb4/view?usp=sharing',turismo:'https://drive.google.com/file/d/1wHgbumLz5tY48A3KWvYP-RuYA7WTI8gW/view?usp=sharing',reel:'https://drive.google.com/file/d/16iAIsC8bXrFdG0udll0brUr2UZ0ScPD4/view?usp=sharing',
-  od3d:'https://www.od3d.be/',linkedin:'https://www.linkedin.com/in/max-moor-b253a624b'
+  od3d:'https://www.od3d.be/',intro:'https://youtu.be/wmLUrjZK_xg',linkedin:'https://www.linkedin.com/in/max-moor-b253a624b'
 };
 
 /* ---------- textes de l'interface ---------- */
@@ -493,7 +510,7 @@ fr:{
   tip:'Chaque étape du parcours réunit au même endroit le texte, les photos, la vidéo et le document qui vont avec. Rien à chercher ailleurs.',
   note:'me voici !',
   firstB:'Petit clin d’œil :',firstT:'un de mes tout premiers jobs étudiants, en 2019, c’était déjà chez Hubo.',
-  introT:'Ma vidéo de présentation',introP:'Elle arrive bientôt. En attendant, tout le reste est juste en dessous.',
+  introT:'Ma vidéo de présentation',introP:'Pour faire connaissance, avant de parcourir le reste.',
   filter:'Afficher',all:'Tout',vids:'Vidéos',docs:'Documents',nav:'Où je suis',
   pathT:'Mon parcours',pathP:'Du plus ancien au plus récent. Les filtres permettent de ne voir que les vidéos ou que les documents.',
   watch:'Regarder',try:'Essayer le prototype',open:'Ouvrir le PDF',visit:'Visiter le site',openf:'Ouvrir',newtab:'Ouvrir dans un onglet',here:'Je suis ici',
@@ -517,7 +534,7 @@ nl:{
   tip:'Elke stap in het traject bundelt de tekst, foto’s, video en het document die erbij horen. Nergens anders zoeken.',
   note:'hier ben ik!',
   firstB:'Kleine knipoog:',firstT:'een van mijn allereerste studentenjobs, in 2019, was al bij Hubo.',
-  introT:'Mijn voorstellingsvideo',introP:'Die komt eraan. Intussen staat alles hieronder al klaar.',
+  introT:'Mijn voorstellingsvideo',introP:'Om kennis te maken, voor u de rest bekijkt.',
   filter:'Tonen',all:'Alles',vids:'Video’s',docs:'Documenten',nav:'Waar ik ben',
   pathT:'Mijn traject',pathP:'Van oud naar nieuw. Met de filters ziet u alleen de video’s of alleen de documenten.',
   watch:'Bekijken',try:'Prototype proberen',open:'PDF openen',visit:'Site bezoeken',openf:'Openen',newtab:'Openen in een tabblad',here:'Hier ben ik nu',
@@ -541,7 +558,7 @@ en:{
   tip:'Each stage of the journey brings together the text, photos, video and document that go with it, in one place. Nothing to look for elsewhere.',
   note:'here I am!',
   firstB:'A little nod:',firstT:'one of my very first student jobs, in 2019, was already at Hubo.',
-  introT:'My introduction video',introP:'It is coming soon. In the meantime, everything else is right below.',
+  introT:'My introduction video',introP:'A quick way to get to know me before exploring the rest.',
   filter:'Show',all:'All',vids:'Videos',docs:'Documents',nav:'Where I am',
   pathT:'My journey',pathP:'From oldest to most recent. The filters let you see only the videos or only the documents.',
   watch:'Watch',try:'Try the prototype',open:'Open the PDF',visit:'Visit the website',openf:'Open',newtab:'Open in a new tab',here:'I am here',
@@ -565,7 +582,7 @@ de:{
   tip:'Jede Station des Werdegangs vereint Text, Fotos, Video und das dazugehörige Dokument an einem Ort. Sie müssen nirgendwo anders suchen.',
   note:'hier bin ich!',
   firstB:'Ein kleiner Hinweis:',firstT:'Einer meiner allerersten Studentenjobs war 2019 schon bei Hubo.',
-  introT:'Mein Vorstellungsvideo',introP:'Es kommt bald. Bis dahin finden Sie alles andere direkt darunter.',
+  introT:'Mein Vorstellungsvideo',introP:'Zum Kennenlernen, bevor Sie sich den Rest ansehen.',
   filter:'Anzeigen',all:'Alles',vids:'Videos',docs:'Dokumente',nav:'Wo ich bin',
   pathT:'Mein Werdegang',pathP:'Vom Ältesten zum Neuesten. Mit den Filtern sehen Sie nur die Videos oder nur die Dokumente.',
   watch:'Ansehen',try:'Prototyp ausprobieren',open:'PDF öffnen',visit:'Website besuchen',openf:'Öffnen',newtab:'In neuem Tab öffnen',here:'Hier bin ich gerade',
@@ -746,7 +763,7 @@ function app(){
     <div class="start" role="group" aria-label="${esc(s.startQ)}"><button class="btn pri" type="button" data-go="video">${ICON.play}${esc(s.bVid)} (${n.v})</button><button class="btn" type="button" data-go="doc">${ICON.doc}${esc(s.bDoc)} (${n.d})</button><a class="btn" href="#parcours">${ICON.down}${esc(s.bPath)}</a></div>
     <p class="tip">${esc(s.tip)}</p><a class="first" href="#c-hubo2019"><b>${esc(s.firstB)}</b> ${esc(s.firstT)} ↓</a></div>
     <div class="portrait"><span class="tape"></span><img src="${IMG.portrait}" alt="Max Moor"><div class="note">${ICON.arrow}<span>${esc(s.note)}</span></div></div></section>
-    <div class="intro"><div class="pl">${ICON.play.replace('<svg','<svg width="22" height="22"')}</div><div><b>${esc(s.introT)}</b><p>${esc(s.introP)}</p></div></div>`;
+    <a class="intro" href="${LK.intro}" target="_blank" rel="noopener"><div class="it"><img src="${IMG.introThumb}" alt=""><span class="pl">${ICON.play.replace('<svg','<svg width="22" height="22"')}</span></div><div><b>${esc(s.introT)}</b><p>${esc(s.introP)}</p><span class="go">${esc(s.watch)} ↗</span></div></a>`;
   const path=`<section id="parcours"><div class="sec-h"><h2>${esc(s.pathT)}</h2><p>${esc(s.pathP)}</p></div><div class="tl">${C.map(chapter).join('')}</div></section>`;
   const bref=`<section class="bref" id="bref"><div class="sec-h"><h2>${esc(s.brefT)}</h2><p>${esc(s.brefIntro)}</p></div><div class="grid4">
     <div><div class="blk"><h3>${s.bLang}</h3>${B.lang.map(x=>`<div class="li"><span>${esc(T(x.a))}</span><span>${lv(x.lv)} ${esc(T(x.n))}</span></div>`).join('')}</div>
@@ -831,7 +848,7 @@ function mobApp(){
   const host=document.getElementById('mob');
   if(!mq.matches){host.innerHTML='';return}
   const s=S[L],n=counts(),m=MS[L];
-  const hero=`<section class="mc hero0" data-id="top" data-y="" data-t="${esc(s.kicker)}"><div class="in"><div class="kk"><i></i>${esc(s.kicker)}</div><h1>${esc(s.h1a)} <em>${esc(s.h1b)}</em></h1><div class="tg">${esc(s.tagline)}</div><p class="ld">${esc(s.lead)}</p><div class="pt"><img src="${IMG.portrait}" alt="Max Moor"></div><div class="sw">${m.sw}<span>→</span></div></div><div class="dn">↓</div></section>`;
+  const hero=`<section class="mc hero0" data-id="top" data-y="" data-t="${esc(s.kicker)}"><div class="in"><div class="kk"><i></i>${esc(s.kicker)}</div><h1>${esc(s.h1a)} <em>${esc(s.h1b)}</em></h1><div class="tg">${esc(s.tagline)}</div><p class="ld">${esc(s.lead)}</p><div class="pt"><img src="${IMG.portrait}" alt="Max Moor"></div><a class="vi" href="${LK.intro}" target="_blank" rel="noopener"><span class="vt"><img src="${IMG.introThumb}" alt=""><i>${ICON.play}</i></span><span class="vx"><b>${esc(s.introT)}</b><em>${esc(s.watch)} ↗</em></span></a><div class="sw">${m.sw}<span>→</span></div></div><div class="dn">↓</div></section>`;
   const cv=`<section class="mc cv" data-id="bref" data-y="CV" data-t="${esc(s.brefT)}"><div class="in"><h3>${esc(s.brefT)}</h3><p class="dd">${esc(s.brefIntro)}</p>
     <div class="blk"><h5>${s.bLang}</h5>${B.lang.map(x=>`<div class="li"><span>${esc(T(x.a))}</span><span>${lv(x.lv)} ${esc(T(x.n))}</span></div>`).join('')}</div>
     <div class="blk"><h5>${s.bSchool}</h5>${B.school.map(x=>`<div class="li"><span>${esc(T(x.a))}</span><span>${esc(T(x.n))}</span></div>`).join('')}</div>
