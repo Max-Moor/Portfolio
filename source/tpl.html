@@ -1,6 +1,14 @@
 <title>Max Moor, carnet de chantier</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Max Moor, étudiant en marketing (HELMo · Artevelde). Portfolio en FR · NL · EN · DE : vidéos, projets, prix. Disponible pour un stage de 15 semaines (02–05/2027).">
+<meta name="theme-color" content="#0A1440">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Max Moor">
+<meta property="og:title" content="Max Moor · Portfolio marketing (FR · NL · EN · DE)">
+<meta property="og:description" content="Vidéos, projets et prix : le parcours d’un étudiant en marketing, de Hubo (2019) à la Belgique entière. Stage de 15 semaines recherché pour 02–05/2027.">
+<meta property="og:image" content="https://max-moor.github.io/portfolio/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:url" content="https://max-moor.github.io/portfolio/">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://max-moor.github.io/portfolio/og.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&family=DM+Mono:wght@400;500&family=Caveat:wght@600&display=swap">
@@ -155,8 +163,14 @@ a.proof:hover .dwrap .dthumb{transform:translate(-3px,-3px)}
 .dbadge{position:absolute;left:-8px;top:10px;z-index:2;background:var(--ink);color:var(--bg);font:500 11px var(--font-m);letter-spacing:.08em;padding:3px 8px}
 .vthumb{width:132px;aspect-ratio:16/10;background:var(--night);color:var(--night-fg);position:relative;overflow:hidden;display:grid;place-items:center}
 .vthumb::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,transparent 0 10px,rgba(255,255,255,.05) 10px 11px)}
-.vthumb.has::before{display:none}.vthumb.has img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 38%;filter:brightness(.7)}.vthumb.logo{background:#fff;border:1.5px solid var(--ink)}.vthumb.logo img{box-sizing:border-box;object-fit:contain;padding:14px 16px;filter:none}.vthumb.logo i{width:34px;height:34px}.vthumb.logo i svg{width:12px;height:12px}
-.vthumb i{position:relative;width:40px;height:40px;border-radius:50%;background:var(--accent);display:grid;place-items:center;transition:transform .25s}
+.vthumb.has::before{display:none}.vthumb.has img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 38%;filter:brightness(.7)}.vthumb.logo{background:#fff;border:1.5px solid var(--ink)}.vthumb.logo img{box-sizing:border-box;object-fit:contain;padding:14px 16px;filter:none}.vthumb.logo i svg{width:12px;height:12px}
+.vthumb.big{width:220px}
+.vthumb.big img{object-position:50% 50%;filter:brightness(.85)}
+@media(max-width:520px){.vthumb.big{width:100%}}
+.vthumb img{filter:none}
+a.proof:hover .vthumb i{transform:scale(1.15)}
+.vthumb i svg{width:12px;height:12px}
+.vthumb i{position:absolute;right:7px;bottom:7px;width:30px;height:30px;border-radius:50%;background:var(--accent);display:grid;place-items:center;transition:transform .25s}
 a.proof:hover .vthumb i{transform:scale(1.18)}
 .vthumb i svg{width:16px;height:16px;color:var(--accent-ink);margin-left:2px}
 .vthumb em{position:absolute;left:8px;bottom:6px;font:500 10px var(--font-m);letter-spacing:.08em;text-transform:uppercase;font-style:normal;color:var(--night-fg);opacity:.8}
@@ -256,6 +270,16 @@ a.proof:hover .vthumb i{transform:scale(1.18)}
 @keyframes up{from{transform:translateY(18px)}to{transform:none}}
 #flang{position:fixed;top:12px;right:16px;z-index:40}
 #flang .lang{background:var(--surface);box-shadow:0 6px 18px -8px rgba(10,20,64,.45)}
+
+#flang{display:flex;gap:8px;align-items:center}
+.qa{border:1.5px solid rgba(255,255,255,.75);font:600 13px var(--font-b,Figtree,sans-serif);display:inline-flex;align-items:center;gap:6px;background:var(--ink);color:#fff;border:0;border-radius:99px;padding:9px 14px;cursor:pointer;text-decoration:none;box-shadow:0 6px 18px -8px rgba(10,20,64,.55)}
+.qa.red{background:var(--accent)}
+.qa:hover{transform:translateY(-1px)}
+.dlcv{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font:600 15px Figtree,sans-serif;background:var(--accent);color:#fff;border:0;border-radius:10px;padding:12px 18px;cursor:pointer}
+.mc .dlcv{margin:14px 0 22px;width:100%;justify-content:center}
+.qrb{display:flex;gap:14px;align-items:center;margin-top:18px}
+.qrb img{width:84px;height:84px;border-radius:8px;background:#fff;padding:4px}
+.qrb span{font:500 12px 'DM Mono',monospace;opacity:.8;line-height:1.5}
 @media (max-width:980px){#flang{display:none}}
 
 /* ===== SPLASH LANGUE ===== */
@@ -353,6 +377,9 @@ body.sp{overflow:hidden}
   .mth.has::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(0,0,0,.45))}
   .mth .pl{position:absolute;z-index:2;width:46px;height:46px;border-radius:50%;background:#D33641;color:#fff;display:grid;place-items:center;box-shadow:0 0 0 6px rgba(255,255,255,.3)}
   .mth .pl svg{width:20px;height:20px;margin-left:2px}
+  .mth .pl{left:auto;top:auto;right:10px;bottom:10px;margin:0;width:34px;height:34px;box-shadow:0 0 0 3px rgba(255,255,255,.35)}
+  .mth .pl svg{width:14px;height:14px}
+  .mth.nat .pl{left:auto;top:auto;right:10px;bottom:10px;margin:0}
   .mth .bd{position:absolute;z-index:2;left:10px;top:10px;font:700 11px var(--font-m);background:#0A1440;color:#fff;border-radius:6px;padding:3px 7px}
   .mth .ic{color:#fff;opacity:.85}.mth .ic svg{width:38px;height:38px}
   .mtb{padding:12px 14px 14px;display:flex;flex-direction:column;gap:3px;flex:1}
@@ -372,7 +399,6 @@ body.sp{overflow:hidden}
   .mt.por .mth{flex:none;width:112px;aspect-ratio:auto;align-self:flex-start;background:transparent;padding:10px 0 10px 10px;overflow:visible}
   .mt.por .mth img{width:100%;height:auto;object-fit:contain;border-radius:6px;box-shadow:0 8px 16px -8px rgba(0,0,0,.6)}
   .mt.por .mth.has::after{display:none}
-  .mt.por .mth .pl{position:absolute;left:50%;top:50%;margin:-23px 0 0 -18px}
   .mt.por .mth .bd{left:16px;top:16px}
   .mt.por .mtb p{-webkit-line-clamp:4}
   .mth.nat{aspect-ratio:auto;display:block}
@@ -518,7 +544,7 @@ fr:{
   filter:'Afficher',all:'Tout',vids:'Vidéos',docs:'Documents',nav:'Où je suis',
   pathT:'Mon parcours',pathP:'Du plus ancien au plus récent. Les filtres permettent de ne voir que les vidéos ou que les documents.',
   watch:'Regarder',try:'Essayer le prototype',open:'Ouvrir le PDF',visit:'Visiter le site',openf:'Ouvrir',newtab:'Ouvrir dans un onglet',here:'Je suis ici',
-  brefT:'En bref',brefIntro:'Je termine mon bachelier en marketing entre HELMo (Liège) et l’Artevelde Hogeschool (Gand). Je cherche un stage de 15 semaines dans une entreprise dynamique, où je pourrai apprendre plein de choses dans des domaines variés, idéalement dans un univers créatif.',
+  cvDl:'Télécharger mon CV (PDF)',cvS:'CV',brefT:'En bref',brefIntro:'Je termine mon bachelier en marketing entre HELMo (Liège) et l’Artevelde Hogeschool (Gand). Je cherche un stage de 15 semaines dans une entreprise dynamique, où je pourrai apprendre plein de choses dans des domaines variés, idéalement dans un univers créatif.',
   bLang:'Langues',bTools:'Outils',bJobs:'Expériences',bSchool:'Secondaire',bLic:'Permis',
   cT1:'Parlons',cT2:'ensemble.',cP:'Je serai ravi de vous présenter ces projets en personne et de répondre à toutes vos questions. N’hésitez pas à m’écrire.',
   mail:'E-mail',phone:'Téléphone',copy:'Copier',copied:'Copié',li:'Voir le profil',
@@ -542,7 +568,7 @@ nl:{
   filter:'Tonen',all:'Alles',vids:'Video’s',docs:'Documenten',nav:'Waar ik ben',
   pathT:'Mijn traject',pathP:'Van oud naar nieuw. Met de filters ziet u alleen de video’s of alleen de documenten.',
   watch:'Bekijken',try:'Prototype proberen',open:'PDF openen',visit:'Site bezoeken',openf:'Openen',newtab:'Openen in een tabblad',here:'Hier ben ik nu',
-  brefT:'In het kort',brefIntro:'Ik rond mijn bachelor Marketing af tussen HELMo (Luik) en de Artevelde Hogeschool (Gent). Ik zoek een stage van 15 weken in een dynamisch bedrijf, waar ik veel kan bijleren in verschillende domeinen, het liefst in een creatieve sector.',
+  cvDl:'Download mijn cv (PDF)',cvS:'CV',brefT:'In het kort',brefIntro:'Ik rond mijn bachelor Marketing af tussen HELMo (Luik) en de Artevelde Hogeschool (Gent). Ik zoek een stage van 15 weken in een dynamisch bedrijf, waar ik veel kan bijleren in verschillende domeinen, het liefst in een creatieve sector.',
   bLang:'Talen',bTools:'Tools',bJobs:'Werkervaring',bSchool:'Secundair',bLic:'Rijbewijzen',
   cT1:'Laten we',cT2:'praten.',cP:'Ik vertel er graag meer over en beantwoord al uw vragen. U kunt me gerust schrijven.',
   mail:'E-mail',phone:'Telefoon',copy:'Kopiëren',copied:'Gekopieerd',li:'Profiel bekijken',
@@ -566,7 +592,7 @@ en:{
   filter:'Show',all:'All',vids:'Videos',docs:'Documents',nav:'Where I am',
   pathT:'My journey',pathP:'From oldest to most recent. The filters let you see only the videos or only the documents.',
   watch:'Watch',try:'Try the prototype',open:'Open the PDF',visit:'Visit the website',openf:'Open',newtab:'Open in a new tab',here:'I am here',
-  brefT:'At a glance',brefIntro:'I am finishing my bachelor’s degree in marketing between HELMo (Liège) and Artevelde Hogeschool (Ghent). I am looking for a 15-week internship in a dynamic company, where I can learn a lot in a variety of fields, ideally in a creative environment.',
+  cvDl:'Download my CV (PDF)',cvS:'CV',brefT:'At a glance',brefIntro:'I am finishing my bachelor’s degree in marketing between HELMo (Liège) and Artevelde Hogeschool (Ghent). I am looking for a 15-week internship in a dynamic company, where I can learn a lot in a variety of fields, ideally in a creative environment.',
   bLang:'Languages',bTools:'Tools',bJobs:'Experience',bSchool:'Secondary school',bLic:'Licences',
   cT1:'Let’s talk',cT2:'together.',cP:'I would be delighted to present these projects in person and answer any questions you may have. Please do not hesitate to write to me.',
   mail:'E-mail',phone:'Phone',copy:'Copy',copied:'Copied',li:'View profile',
@@ -590,7 +616,7 @@ de:{
   filter:'Anzeigen',all:'Alles',vids:'Videos',docs:'Dokumente',nav:'Wo ich bin',
   pathT:'Mein Werdegang',pathP:'Vom Ältesten zum Neuesten. Mit den Filtern sehen Sie nur die Videos oder nur die Dokumente.',
   watch:'Ansehen',try:'Prototyp ausprobieren',open:'PDF öffnen',visit:'Website besuchen',openf:'Öffnen',newtab:'In neuem Tab öffnen',here:'Hier bin ich gerade',
-  brefT:'Kurz gefasst',brefIntro:'Ich schließe meinen Bachelor in Marketing zwischen der HELMo (Lüttich) und der Artevelde Hogeschool (Gent) ab. Ich suche ein 15-wöchiges Praktikum in einem dynamischen Unternehmen, in dem ich in verschiedenen Bereichen viel lernen kann, am liebsten in einem kreativen Umfeld.',
+  cvDl:'Meinen Lebenslauf herunterladen (PDF)',cvS:'CV',brefT:'Kurz gefasst',brefIntro:'Ich schließe meinen Bachelor in Marketing zwischen der HELMo (Lüttich) und der Artevelde Hogeschool (Gent) ab. Ich suche ein 15-wöchiges Praktikum in einem dynamischen Unternehmen, in dem ich in verschiedenen Bereichen viel lernen kann, am liebsten in einem kreativen Umfeld.',
   bLang:'Sprachen',bTools:'Tools',bJobs:'Berufserfahrung',bSchool:'Sekundarschule',bLic:'Führerscheine',
   cT1:'Lassen Sie uns',cT2:'sprechen.',cP:'Ich stelle Ihnen diese Projekte gern persönlich vor und beantworte alle Ihre Fragen. Schreiben Sie mir gerne.',
   mail:'E-Mail',phone:'Telefon',copy:'Kopieren',copied:'Kopiert',li:'Profil ansehen',
@@ -606,7 +632,7 @@ const C=[
 {id:'hubo2019',y:'2019',st:'past',hl:true,badge:['Un de mes tout premiers jobs étudiants','Een van mijn allereerste studentenjobs'],when:['2019 – 2020','2019 – 2020'],short:['Hubo, mes débuts','Hubo, mijn begin'],
  t:['Mon histoire avec Hubo commence ici','Mijn verhaal met Hubo begint hier'],
  d:['En 2019, je commençais dans un magasin Hubo. Je connais la maison et les rouages de l’enseigne de l’intérieur. Si mon stage de 2027 se confirme, il pourrait me ramener dans la même enseigne, côté marketing cette fois.','In 2019 begon ik in een Hubo-winkel. Ik ken het huis en de werking van de winkelketen van binnenuit. Als mijn stage in 2027 doorgaat, brengt die me misschien terug naar dezelfde winkelketen, dit keer aan de marketingkant.'],
- b:[['Étudiant responsable du rayon outillage et visserie.','Réapprovisionnement des rayons.','Conseil aux clients.','Le seul à pouvoir s’occuper des clients anglophones.'],['Student-verantwoordelijke voor de afdeling gereedschap en bevestigingsmateriaal.','Rekken bevoorraden.','Klanten adviseren.','De enige die Engelstalige klanten kon helpen.']],gal:[{i:'hubo',r:-1,ar:'3/4',t:['Chez Hubo','Bij Hubo'],c:['Moi, en 2019, dans le t-shirt de l’enseigne.','Ik, in 2019, in het T-shirt van de winkelketen.']}],p:[]},
+ b:[['Étudiant responsable du rayon outillage et visserie.','Réapprovisionnement des rayons.','Conseil aux clients.','Le seul à pouvoir s’occuper des clients anglophones.'],['Als student verantwoordelijk voor de afdeling gereedschap en bevestigingsmateriaal.','Rekken bevoorraden.','Klanten adviseren.','De enige die Engelstalige klanten kon helpen.']],gal:[{i:'hubo',r:-1,ar:'3/4',t:['Chez Hubo','Bij Hubo'],c:['Moi, en 2019, dans le t-shirt de l’enseigne.','Ik, in 2019, in het T-shirt van de winkelketen.']}],p:[]},
 {id:'hec',y:'2022',st:'past',when:['09/2022 – 06/2023','09/2022 – 06/2023'],short:['HEC Liège','HEC Luik'],
  t:['Économie et gestion à HEC','Economie en management aan HEC'],
  d:['Ma première année d’études après le secondaire, à HEC Liège.','Mijn eerste studiejaar na het secundair, aan HEC Luik.'],
@@ -622,10 +648,10 @@ const C=[
  t:['Impression 3D, O&D 3D','3D-printen, O&D 3D'],
  d:['À mon retour des États-Unis, en août 2024, j’ai rejoint mes amis dans leur aventure de l’impression 3D. Je m’occupe du site web, du SEO et du GEO. Voici quelques moments marquants de cette aventure.','Bij mijn terugkeer uit de VS, in augustus 2024, sloot ik me aan bij mijn vrienden in hun avontuur met 3D-printen. Ik zorg voor de website, SEO en GEO. Hier enkele hoogtepunten van dat avontuur.'],
  b:[[],[]],p:[{k:'link',wide:true,img:'od3dBanner',url:LK.od3d,tag:['Site web','Website'],t:['od3d.be','od3d.be'],d:['Le site que je gère : contenu, SEO et GEO.','De site die ik beheer: inhoud, SEO en GEO.']},
-  {k:'video',url:LK.lamp,tag:['Prototype · Lampe','Prototype · Lamp'],t:['Une lampe de bureau imprimée en 3D','Een 3D-geprinte bureaulamp'],d:['Un prototype conçu au laboratoire d’impression 3D d’O&D 3D, que j’aimerais lancer à terme, quand j’aurai du temps à y consacrer.','Een prototype dat ik in het 3D-printlab van O&D 3D maakte en op termijn graag zou lanceren, als ik er tijd voor heb.']},
+  {k:'video',img:'lampThumb',url:LK.lamp,tag:['Prototype · Lampe','Prototype · Lamp'],t:['Une lampe de bureau imprimée en 3D','Een 3D-geprinte bureaulamp'],d:['Un prototype conçu au laboratoire d’impression 3D d’O&D 3D, que j’aimerais lancer à terme, quand j’aurai du temps à y consacrer.','Een prototype dat ik in het 3D-printlab van O&D 3D maakte en op termijn graag zou lanceren, als ik er tijd voor heb.']},
   {k:'video',img:'logoBati',logo:1,url:LK.bati,tag:['Vidéo · Batibouw','Video · Batibouw'],t:['Aftermovie Batibouw 2025','Aftermovie Batibouw 2025'],d:['Notre venue à Batibouw avec O&D 3D, grâce à l’invitation d’un de nos clients.','Ons bezoek aan Batibouw met O&D 3D, dankzij de uitnodiging van een van onze klanten.']},
-  {k:'video',url:LK.turismo,tag:['Rencontre · Turismo','Ontmoeting · Turismo'],t:['Une rencontre autour de Turismo','Een ontmoeting rond Turismo'],d:['Une rencontre avec un homme d’affaires pour parler business et projet commun. Turismo est une plateforme de location de voitures premium, que nous voulions fournir en impression 3D.','Een ontmoeting met een zakenman om te praten over zaken en een gezamenlijk project. Turismo is een platform voor de verhuur van premiumwagens, dat we met 3D-print wilden beleveren.']},
-  {k:'video',url:LK.reel,tag:['Vidéo · Réseaux sociaux','Video · Sociale media'],t:['Nos routines au quotidien','Onze dagelijkse routines'],d:['Un reel pour les réseaux sociaux de l’entreprise, tourné dans notre premier local. Depuis, nous avons déménagé dans la cave d’une ancienne entreprise, puis loué un entrepôt de 200 m².','Een reel voor de sociale media van het bedrijf, gefilmd in ons eerste lokaal. Sindsdien verhuisden we naar de kelder van een oud bedrijf en huren we nu een magazijn van 200 m².']}]},
+  {k:'video',img:'turismoThumb',url:LK.turismo,tag:['Rencontre · Turismo','Ontmoeting · Turismo'],t:['Une rencontre autour de Turismo','Een ontmoeting rond Turismo'],d:['Une rencontre avec un homme d’affaires pour parler business et projet commun. Turismo est une plateforme de location de voitures premium, que nous voulions fournir en impression 3D.','Een ontmoeting met een zakenman om te praten over zaken en een gezamenlijk project. Turismo is een platform voor de verhuur van premiumwagens, dat we met 3D-geprinte producten wilden bevoorraden.']},
+  {k:'video',img:'routinesThumb',url:LK.reel,tag:['Vidéo · Réseaux sociaux','Video · Sociale media'],t:['Nos routines au quotidien','Onze dagelijkse routines'],d:['Un reel pour les réseaux sociaux de l’entreprise, tourné dans notre premier local. Depuis, nous avons déménagé dans la cave d’une ancienne entreprise, puis loué un entrepôt de 200 m².','Een reel voor de sociale media van het bedrijf, gefilmd in ons eerste lokaal. Sindsdien verhuisden we naar de kelder van een oud bedrijf en huren we nu een magazijn van 200 m².']}]},
 {id:'bachelier',y:'2024',st:'past',when:['09/2024 – 06/2027','09/2024 – 06/2027'],short:['Bachelier en marketing','Bachelor marketing'],
  t:['C’est parti pour le bachelier en marketing','Aan de slag met de bachelor marketing'],
  d:['À HELMo Guillemins, à Liège, jusqu’en juin 2027.','Aan HELMo Guillemins in Luik, tot juni 2027.'],
@@ -636,12 +662,12 @@ const C=[
  b:[[],[]],p:[{k:'video',img:'logoBigmat',logo:1,url:LK.bigmat,tag:['Vidéo · Client','Video · Klant'],t:['BigMat Haren','BigMat Haren'],d:['La mise en place des nouveaux rayonnages de la gamme, chez BigMat Haren.','De plaatsing van de nieuwe rekken van het assortiment bij BigMat Haren.']}]},
 {id:'droploop',y:'2025',st:'past',when:['09/2025 – 05/2026','09/2025 – 05/2026'],short:['Drop Loop','Drop Loop'],big:true,
  t:['Drop Loop','Drop Loop'],
- d:['Un récupérateur d’eau de pluie pour balcons, jusqu’à 15 litres. Avec mon équipe, nous l’avons imaginé, fabriqué et présenté, du premier prototype jusqu’à deux prix dont nous sommes très fiers. Hubo était notre principal sponsor.','Een regenwatertank voor balkons, tot 15 liter. Met mijn team bedachten, bouwden en presenteerden we hem, van het eerste prototype tot twee prijzen waar we heel trots op zijn. Hubo was onze belangrijkste sponsor.'],
+ d:['Un récupérateur d’eau de pluie pour balcons, jusqu’à 15 litres. Avec mon équipe, nous l’avons imaginé, fabriqué et présenté, du premier prototype jusqu’à deux prix dont nous sommes très fiers. Hubo était notre principal sponsor.','Een regenton voor balkons, tot 15 liter. Met mijn team bedachten, bouwden en presenteerden we hem, van het eerste prototype tot twee prijzen waar we heel trots op zijn. Hubo was onze belangrijkste sponsor.'],
  b:[[],[]],
  p:[{k:'doc',img:'coverDrop',url:LK.dropPdf,tag:['Recherche · PDF','Onderzoek · PDF'],t:['Rapport final Drop Loop','Eindverslag Drop Loop'],d:['Le dossier de recherche, avec photos. Groupe 8.','Het onderzoeksdossier, met foto’s. Groep 8.']}]},
 {id:'schutte',row:true,y:'2026',st:'past',when:['26 – 30/01/2026','26 – 30/01/2026'],short:['Stage chez Schütte','Stage bij Schütte'],
  t:['Stage chez Schütte','Stage bij Schütte'],
- d:['Une semaine d’immersion chez ce grossiste B2B de robinetterie et de salle de bain. J’ai passé deux jours à la foire DIY Pro & Garden de Courtrai, où j’ai tourné et monté deux vidéos du stand, puis j’ai découvert le siège à Osnabrück, en Allemagne. Mon rapport de stage raconte tout ça.','Een week onderdompeling bij deze B2B-groothandel in kranen en badkamerproducten. Ik bracht twee dagen door op de beurs DIY Pro & Garden in Kortrijk, waar ik twee video’s van de stand filmde en monteerde, en ontdekte daarna het hoofdkantoor in Osnabrück, Duitsland. Mijn stageverslag vertelt het hele verhaal.'],
+ d:['Une semaine d’immersion chez ce grossiste B2B de robinetterie et de salle de bain. J’ai passé deux jours à la foire DIY Pro & Garden de Courtrai, où j’ai tourné et monté deux vidéos du stand, puis j’ai découvert le siège à Osnabrück, en Allemagne. Mon rapport de stage raconte tout ça.','Een week meelopen bij deze B2B-groothandel in kranen en badkamerproducten. Ik bracht twee dagen door op de beurs DIY Pro & Garden in Kortrijk, waar ik twee video’s van de stand filmde en monteerde, en ontdekte daarna het hoofdkantoor in Osnabrück, Duitsland. Mijn stageverslag vertelt het hele verhaal.'],
  b:[[],[]],
  p:[{k:'video',img:'logoSchutte',logo:1,url:LK.schFR,tag:['Vidéo · FR','Video · FR'],t:['Le stand Schütte à Courtrai','De Schütte-stand in Kortrijk (FR)'],d:['Mon père présente le stand Schütte à la foire DIY Pro & Garden de Courtrai, en français. Je l’ai filmé et monté.','Mijn vader stelt de Schütte-stand voor op de beurs DIY Pro & Garden in Kortrijk, in het Frans. Ik filmde en monteerde het.']},
     {k:'video',img:'logoSchutte',logo:1,url:LK.schNL,tag:['Vidéo · NL','Video · NL'],t:['De Schütte-stand in Kortrijk','De Schütte-stand in Kortrijk'],d:['La même présentation, en néerlandais. Filmée et montée par moi aussi.','Dezelfde presentatie, in het Nederlands. Ook door mij gefilmd en gemonteerd.']},
@@ -672,7 +698,7 @@ const C=[
   {k:'proto',mv:'web',img:'mvWeb',badge:'WEB',url:LK.mvWeb,tag:['Prototype · Ordinateur','Prototype · Computer'],t:['MealVend, le site web','MealVend, de website'],d:['Menu de la semaine, distributeur animé, macros et onglet IA.','Weekmenu, geanimeerde automaat, macro’s en AI-tabblad.']}]},
 {id:'stage',y:'2027',st:'next',row:true,c1:true,when:['02 – 05/2027','02 – 05/2027'],short:['Stage en marketing','Stage in marketing'],
  t:['Stage en marketing','Stage in marketing'],
- d:['Un stage d’environ quinze semaines au département marketing de Hubo Belgique est envisagé, et j’aurais très hâte de m’y lancer.','Een stage van ongeveer vijftien weken op de marketingafdeling van Hubo Belgique is in beeld, en ik zou er enorm veel zin in hebben.'],
+ d:['Un stage d’environ quinze semaines au département marketing de Hubo Belgique est envisagé, et j’aurais très hâte de m’y lancer.','Een stage van ongeveer vijftien weken op de marketingafdeling van Hubo Belgique wordt overwogen, en ik zou er enorm veel zin in hebben.'],
  b:[[],[]],p:[{k:'link',try:1,nat:1,img:'borneVisserie',url:LK.borne,tag:["Prototype · Borne tactile","Prototype · Touchscreenzuil"],t:["Conseiller visserie pour Hubo : borne tactile","Schroevenadviseur voor Hubo: touchscreenzuil"],d:["Un client hésite devant des centaines de références de vis. Ma borne lui pose quelques questions (support, poids, lieu), puis lui indique la bonne vis ou cheville, la taille exacte et l’emplacement dans le rayon. Elle intègre 1 479 références réelles, avec photos, prix et caractéristiques. Un projet né de mon expérience au rayon outillage et visserie.","Een klant twijfelt tussen honderden schroefreferenties. Mijn zuil stelt enkele vragen (ondergrond, gewicht, plaats) en toont dan de juiste schroef of plug, de exacte maat en de locatie in het schap. Met 1.479 echte referenties, met foto, prijs en kenmerken. Een project dat voortkomt uit mijn ervaring in de afdeling gereedschap en schroeven."]},{k:'link',try:1,nat:1,img:'bornePeinture',url:LK.bornePeinture,tag:["Prototype · Borne tactile","Prototype · Touchscreenzuil"],t:["Conseiller peinture pour Hubo : borne tactile","Verfadviseur voor Hubo: touchscreenzuil"],d:["Un client hésite devant le rayon peinture. La borne recueille ses besoins et le conseiller voit déjà ce que le client a répondu, sans lui reposer les mêmes questions. Les calculs de quantités reposent sur des paramètres à faire valider par un expert, et les données de la démonstration sont simulées.","Een klant twijfelt aan het verfschap. De zuil verzamelt zijn behoeften en de adviseur ziet meteen wat de klant al heeft geantwoord, zonder dezelfde vragen opnieuw te stellen. De berekeningen van hoeveelheden steunen op parameters die een expert moet valideren, en de gegevens in de demo zijn gesimuleerd."]},{k:'lock',tag:['Dossier stratégique · verrouillé','Strategisch dossier · vergrendeld'],t:['Hubo Summer Launch','Hubo Summer Launch'],d:['Un dossier de recherche sur lequel je travaille en ce moment. Je le présenterai avec plaisir en personne !','Een onderzoeksdossier waar ik op dit moment aan werk. Ik presenteer het graag persoonlijk!']}]}
 ];
 const STATUS={fr:{now:'En cours',next:'À venir'},nl:{now:'Bezig',next:'Binnenkort'},en:{now:'Ongoing',next:'Upcoming'},de:{now:'Laufend',next:'Demnächst'}};
@@ -715,6 +741,11 @@ Object.assign(TR.en,{"L’affiche": "The poster", "L’affiche de « Projet: Blo
 Object.assign(TR.en,{"« Projet Blood 2 », un film dont je suis le colonel": "“Project Blood 2”, a film in which I play the colonel", "Une expérience hors du commun : j’y incarne le colonel, un militaire corrompu, dans un film de 2 h 25.": "An extraordinary experience: I play the colonel, a corrupt soldier, in a 2 h 25 feature film.", "Film · Rôle du colonel": "Film · Role of the colonel", "Projet Blood 2 (2 h 25)": "Project Blood 2 (2 h 25)", "Le film complet, sur YouTube.": "The full film, on YouTube.", "Film : Blood 2": "Film: Blood 2", "Film": "Film", "Permis B": "Licence B", "Permis A2": "Licence A2", "+ voiture personnelle": "+ personal car", "+ moto personnelle": "+ personal motorcycle"});Object.assign(TR.de,{"« Projet Blood 2 », un film dont je suis le colonel": "„Projekt Blood 2“, ein Film, in dem ich den Oberst spiele", "Une expérience hors du commun : j’y incarne le colonel, un militaire corrompu, dans un film de 2 h 25.": "Eine außergewöhnliche Erfahrung: Ich spiele den Oberst, einen korrupten Militär, in einem Film von 2 Std. 25 Min.", "Film · Rôle du colonel": "Film · Rolle des Obersts", "Projet Blood 2 (2 h 25)": "Projekt Blood 2 (2 Std. 25 Min.)", "Le film complet, sur YouTube.": "Der ganze Film auf YouTube.", "Film : Blood 2": "Film: Blood 2", "Film": "Film", "Permis B": "Führerschein Klasse B", "Permis A2": "Führerschein Klasse A2", "+ voiture personnelle": "+ eigenes Auto", "+ moto personnelle": "+ eigenes Motorrad"});
 
 /* ---------- rendu ---------- */
+
+const CVPDF=/*CV*/{};
+function dlCV(){try{const b=atob(CVPDF[L]||CVPDF.fr),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);
+ const url=URL.createObjectURL(new Blob([u],{type:'application/pdf'})),a=document.createElement('a');a.href=url;a.download='Max-Moor-CV-'+L.toUpperCase()+'.pdf';document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(url)},800)}catch(e){window.open(LK.linkedin,'_blank')}}
+document.addEventListener('click',e=>{if(e.target.closest('[data-cv]')){e.preventDefault();dlCV()}});
 let L='fr',F='all';
 const LANGS=['fr','nl','en','de'];
 try{const s=localStorage.getItem('mm-lang');if(LANGS.includes(s))L=s;else{const n=(navigator.language||'fr').slice(0,2).toLowerCase();if(LANGS.includes(n))L=n}}catch(e){}
@@ -725,7 +756,7 @@ const counts=()=>{let v=0,d=0;C.forEach(c=>c.p.forEach(p=>{if(p.k==='video')v++;
 function proof(p){
   const s=S[L];
   const kind=(p.k==='video')?'video':(p.k==='doc'||p.k==='lock')?'doc':'other';
-  if(p.k==='video')return `<a class="proof" data-kind="video" href="${p.url}" target="_blank" rel="noopener"><div class="vthumb${p.img?' has':''}${p.logo?' logo':''}">${p.img?`<img src="${IMG[p.img]}" alt="">`:''}<i>${ICON.play}</i>${p.img?'':`<em>${esc(T(p.tag))}</em>`}</div><div><div class="lbl">${esc(T(p.tag))}</div><h4>${esc(T(p.t))}</h4><p>${esc(T(p.d))}</p><span class="go">${s.watch} ↗</span></div></a>`;
+  if(p.k==='video')return `<a class="proof" data-kind="video" href="${p.url}" target="_blank" rel="noopener"><div class="vthumb${p.img?' has':''}${p.logo?' logo':''}${p.big?' big':''}">${p.img?`<img src="${IMG[p.img]}" alt="">`:''}<i>${ICON.play}</i>${p.img?'':`<em>${esc(T(p.tag))}</em>`}</div><div><div class="lbl">${esc(T(p.tag))}</div><h4>${esc(T(p.t))}</h4><p>${esc(T(p.d))}</p><span class="go">${s.watch} ↗</span></div></a>`;
   if(p.k==='doc')return `<a class="proof" data-kind="doc" href="${p.url}" target="_blank" rel="noopener"><div class="dwrap"><img class="dthumb" src="${IMG[p.img]}" alt="${esc(T(p.t))}" loading="lazy"><span class="dbadge">PDF</span></div><div><div class="lbl">${esc(T(p.tag))}</div><h4>${esc(T(p.t))}</h4><p>${esc(T(p.d))}</p><span class="go">${s.open} ↗</span></div></a>`;
   if(p.k==='proto')return `<a class="proof" data-kind="other" href="${p.url}" ${p.mv?`data-proto="${p.mv}" data-pt="${esc(T(p.t))}" `:''}target="_blank" rel="noopener"><div class="dwrap"><img class="dthumb" src="${IMG[p.img]}" alt="${esc(T(p.t))}"><span class="dbadge">${p.badge}</span></div><div><div class="lbl">${esc(T(p.tag))}</div><h4>${esc(T(p.t))}</h4><p>${esc(T(p.d))}</p><span class="go">${s.try} ↗</span></div></a>`;
   if(p.k==='file')return `<a class="proof" data-kind="other" href="${p.url}" target="_blank" rel="noopener"><div class="lthumb"><div>${ICON.doc}FILE</div></div><div><div class="lbl">${esc(T(p.tag))}</div><h4>${esc(T(p.t))}</h4><p>${esc(T(p.d))}</p><span class="go">${s.openf} ↗</span></div></a>`;
@@ -769,7 +800,7 @@ function app(){
     <div class="portrait"><span class="tape"></span><img src="${IMG.portrait}" alt="Max Moor"><div class="note">${ICON.arrow}<span>${esc(s.note)}</span></div></div></section>
     <a class="intro" href="${LK.intro}" target="_blank" rel="noopener"><div class="it"><img src="${IMG.introThumb}" alt=""><span class="pl">${ICON.play.replace('<svg','<svg width="22" height="22"')}</span></div><div><b>${esc(s.introT)}</b><p>${esc(s.introP)}</p><span class="go">${esc(s.watch)} ↗</span></div></a>`;
   const path=`<section id="parcours"><div class="sec-h"><h2>${esc(s.pathT)}</h2><p>${esc(s.pathP)}</p></div><div class="tl">${C.map(chapter).join('')}</div></section>`;
-  const bref=`<section class="bref" id="bref"><div class="sec-h"><h2>${esc(s.brefT)}</h2><p>${esc(s.brefIntro)}</p></div><div class="grid4">
+  const bref=`<section class="bref" id="bref"><div class="sec-h"><h2>${esc(s.brefT)}</h2><p>${esc(s.brefIntro)}</p><button class="dlcv" type="button" data-cv>↓ ${esc(s.cvDl)}</button></div><div class="grid4">
     <div><div class="blk"><h3>${s.bLang}</h3>${B.lang.map(x=>`<div class="li"><span>${esc(T(x.a))}</span><span>${lv(x.lv)} ${esc(T(x.n))}</span></div>`).join('')}</div>
     <div class="blk" style="margin-top:36px"><h3>${s.bSchool}</h3>${B.school.map(x=>`<div class="li"><span>${esc(T(x.a))}</span><span>${esc(T(x.n))}</span></div>`).join('')}</div></div>
     <div class="blk"><h3>${s.bTools}</h3><div class="tools">${B.tools.map(x=>`<span>${x}</span>`).join('')}</div><h3 style="margin-top:26px">${s.bLic}</h3>${B.lic.map(x=>`<div class="li"><span>${esc(T(x.a))}</span><span>${esc(T(x.n))}</span></div>`).join('')}</div>
@@ -777,12 +808,12 @@ function app(){
   </div></section>`;
   document.getElementById('app').innerHTML=hero+path+bref;
   document.getElementById('rail').innerHTML=rail();
-  document.getElementById('flang').innerHTML=`<div class="lang" role="group" aria-label="Langue / Taal / Language / Sprache">${LANGS.map(l=>`<button type="button" data-l="${l}" aria-pressed="${L===l}">${l.toUpperCase()}</button>`).join('')}</div>`;
+  document.getElementById('flang').innerHTML=`<a class="qa red" href="#contact">✉ Contact</a><button class="qa" type="button" data-cv>↓ ${s.cvS}</button><div class="lang" role="group" aria-label="Langue / Taal / Language / Sprache">${LANGS.map(l=>`<button type="button" data-l="${l}" aria-pressed="${L===l}">${l.toUpperCase()}</button>`).join('')}</div>`;
   document.getElementById('mbar').innerHTML=mbar();
   document.getElementById('contactWrap').innerHTML=`<footer class="contact" id="contact"><div class="in"><div><h2>${esc(s.cT1)} <em>${esc(s.cT2)}</em></h2><p>${esc(s.cP)}</p>
     <div class="coords"><div class="coord"><span class="k">${s.mail}</span><b>m.moor@student.helmo.be</b><button class="cp" type="button" data-copy="m.moor@student.helmo.be">${s.copy}</button></div>
     <div class="coord"><span class="k">${s.phone}</span><b>0478 49 86 55</b><button class="cp" type="button" data-copy="0478 49 86 55">${s.copy}</button></div>
-    <div class="coord"><span class="k">LinkedIn</span><a href="${LK.linkedin}" target="_blank" rel="noopener">Max Moor ↗</a></div></div></div>
+    <div class="coord"><span class="k">LinkedIn</span><a href="${LK.linkedin}" target="_blank" rel="noopener">Max Moor ↗</a></div></div><button class="dlcv" type="button" data-cv>↓ ${esc(s.cvDl)}</button><div class="qrb"><img src="${IMG.qr}" alt="QR code"><span>max-moor.github.io<br>/portfolio</span></div></div>
     <img src="${IMG.full}" alt="Max Moor" loading="lazy"></div><div class="foot"><span>${esc(s.foot)}</span><a href="#top">${esc(s.top)} ↑</a></div></footer>`;
   applyFilter();spy();mobApp();
 }
@@ -853,7 +884,7 @@ function mobApp(){
   if(!mq.matches){host.innerHTML='';return}
   const s=S[L],n=counts(),m=MS[L];
   const hero=`<section class="mc hero0" data-id="top" data-y="" data-t="${esc(s.kicker)}"><div class="in"><div class="kk"><i></i>${esc(s.kicker)}</div><h1>${esc(s.h1a)} <em>${esc(s.h1b)}</em></h1><div class="tg">${esc(s.tagline)}</div><p class="ld">${esc(s.lead)}</p><div class="pt"><img src="${IMG.portrait}" alt="Max Moor"></div><a class="vi" href="${LK.intro}" target="_blank" rel="noopener"><span class="vt"><img src="${IMG.introThumb}" alt=""><i>${ICON.play}</i></span><span class="vx"><b>${esc(s.introT)}</b><em>${esc(s.watch)} ↗</em></span></a><div class="sw">${m.sw}<span>→</span></div></div><div class="dn">↓</div></section>`;
-  const cv=`<section class="mc cv" data-id="bref" data-y="CV" data-t="${esc(s.brefT)}"><div class="in"><h3>${esc(s.brefT)}</h3><p class="dd">${esc(s.brefIntro)}</p>
+  const cv=`<section class="mc cv" data-id="bref" data-y="CV" data-t="${esc(s.brefT)}"><div class="in"><h3>${esc(s.brefT)}</h3><p class="dd">${esc(s.brefIntro)}</p><button class="dlcv" type="button" data-cv>↓ ${esc(s.cvDl)}</button>
     <div class="blk"><h5>${s.bLang}</h5>${B.lang.map(x=>`<div class="li"><span>${esc(T(x.a))}</span><span>${lv(x.lv)} ${esc(T(x.n))}</span></div>`).join('')}</div>
     <div class="blk"><h5>${s.bSchool}</h5>${B.school.map(x=>`<div class="li"><span>${esc(T(x.a))}</span><span>${esc(T(x.n))}</span></div>`).join('')}</div>
     <div class="blk"><h5>${s.bTools}</h5><div class="tl2">${B.tools.map(x=>`<span>${x}</span>`).join('')}</div></div>
@@ -863,6 +894,7 @@ function mobApp(){
     <div class="cc"><div><small>${s.mail}</small><b>m.moor@student.helmo.be</b></div><button type="button" data-copy="m.moor@student.helmo.be">${s.copy}</button></div>
     <div class="cc"><div><small>${s.phone}</small><b>0478 49 86 55</b></div><button type="button" data-copy="0478 49 86 55">${s.copy}</button></div>
     <div class="cc"><div><small>LinkedIn</small><b>Max Moor</b></div><a class="b" href="${LK.linkedin}" target="_blank" rel="noopener">↗</a></div>
+    <button class="dlcv" type="button" data-cv>↓ ${esc(s.cvDl)}</button>
     <div class="ph"><img src="${IMG.full}" alt="Max Moor" loading="lazy"></div></div><div class="dn">↓</div></section>`;
   const slides=[hero,...C.flatMap(mchapter),cv,ct];
   const lang=LANGS.map(l=>`<button type="button" data-l="${l}" aria-pressed="${L===l}">${l.toUpperCase()}</button>`).join('');
